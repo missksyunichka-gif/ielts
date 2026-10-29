@@ -107,44 +107,48 @@
   <section id="tab-vocab">
     <div class="card">
       <h2>📚 Лексика</h2>
-      <p class="muted">Слова разбиты на 4 небольших набора. Бери по одному: сначала карточки, потом упражнения. Слово с ошибкой вернётся ещё раз в конце упражнения.</p>
-      <div class="sets" id="sets"></div>
+      <p class="muted">Иди строго по шагам: следующий шаг откроется, когда закончишь текущий. Ошибки возвращаются в конце шага. Если в написании ошибёшься, нужно один раз перепечатать слово правильно.</p>
+      <div class="bar"><div id="vBar"></div></div>
+      <div id="vProg" class="muted"></div>
       <div class="speed">🔊 Скорость голоса <input type="range" id="rate" min="0.6" max="1.1" step="0.05" value="0.85"> <span id="rateVal">0.85</span></div>
     </div>
 
-    <div class="card">
-      <h3>Карточки</h3>
-      <p class="muted">Нажми на карточку, чтобы перевернуть. 🔊 — послушать.</p>
-      <div class="flash" id="flash" onclick="this.classList.toggle('flip')">
-        <div class="in">
-          <div class="side front"><span id="fFront"></span><small id="fPos"></small></div>
-          <div class="side back"><span id="fBack"></span><small id="fEx"></small></div>
+    <div class="card" id="stage">
+      <div class="muted" id="sStep"></div>
+      <h3 id="sTitle"></h3>
+      <p class="muted" id="sHint"></p>
+
+      <div id="cardsBox" class="hidden">
+        <div class="flash" id="flash" onclick="this.classList.toggle('flip')">
+          <div class="in">
+            <div class="side front"><span id="fFront"></span><small id="fPos"></small></div>
+            <div class="side back"><span id="fBack"></span><small id="fEx"></small></div>
+          </div>
         </div>
+        <button onclick="flashMove(-1)">←</button>
+        <button class="dark" onclick="say(CW[fi].en)">🔊</button>
+        <button onclick="flashMove(1)">→</button>
+        <span class="muted" id="fCount"></span>
+        <p><button class="primary" id="cardsDone" onclick="finishCards()" disabled>Посмотрела все карточки — дальше →</button></p>
       </div>
-      <button onclick="flashMove(-1)">←</button>
-      <button class="dark" onclick="say(curSet().words[fi].en)">🔊</button>
-      <button onclick="flashMove(1)">→</button>
-      <span class="muted" id="fCount"></span>
+
+      <div id="drillBox" class="hidden">
+        <div class="bar"><div id="dBar"></div></div>
+        <div class="big" id="dPrompt"></div>
+        <div class="opts" id="dOpts"></div>
+        <div id="dWrite" class="hidden">
+          <input type="text" id="dIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')dCheck()">
+          <button class="primary" onclick="dCheck()">Проверить</button>
+        </div>
+        <div class="feedback" id="dFb"></div>
+      </div>
+      <div id="nextBox" class="hidden"><button class="primary" onclick="goCurrent()">Дальше →</button></div>
     </div>
 
     <div class="card">
-      <h3>Упражнения к набору</h3>
-      <div class="ex" id="exSet"></div>
-      <h3 style="margin-top:16px">Упражнения на всю лексику</h3>
-      <div class="ex" id="exAll"></div>
-    </div>
-
-    <div class="card hidden" id="drillCard">
-      <h3 id="dTitle"></h3>
-      <p class="muted" id="dHint"></p>
-      <div class="bar"><div id="dBar"></div></div>
-      <div class="big" id="dPrompt"></div>
-      <div class="opts" id="dOpts"></div>
-      <div id="dWrite" class="hidden">
-        <input type="text" id="dIn" autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')dCheck()">
-        <button class="primary" onclick="dCheck()">Проверить</button>
-      </div>
-      <div class="feedback" id="dFb"></div>
+      <h3>Весь путь</h3>
+      <p class="muted">✓ — сделано (можно нажать и повторить), ▶ — сейчас, 🔒 — пока закрыто.</p>
+      <div id="path"></div>
     </div>
   </section>
 
@@ -162,7 +166,7 @@
   <!-- READING -->
   <section id="tab-reading" class="hidden">
     <div class="card">
-      <h2>📖 Reading — Table completion</h2>
+      <h2>📖 Reading 1 — Table completion</h2>
       <p class="ielts">Questions 1–10</p>
       <p>Complete the table below.<br>Choose <b>ONE WORD OR A NUMBER</b> from the passage for each answer.</p>
       <p class="muted">Как на уроке: в таблице слова-синонимы (fashionable = trendy, not dangerous = safe…). Найди синоним в тексте, ответ рядом с ним. Ответ пишем точно как в тексте.</p>
@@ -172,6 +176,19 @@
       <div id="rTable"></div>
       <button class="primary" onclick="rCheck()">Проверить ответы</button>
       <div class="score" id="rScore"></div>
+    </div>
+    <div class="card">
+      <h2>📖 Reading 2 — Note completion</h2>
+      <p class="muted">Как Reading 2 в учебнике: сначала найди синонимы, потом заполни заметки.</p>
+      <div class="reading" id="r2Text"></div>
+    </div>
+    <div class="card">
+      <h3>A. Match the <u>underlined</u> words in the passage with words that have a similar meaning.</h3>
+      <div id="r2Syn"></div>
+      <h3 style="margin-top:18px">B. Complete the notes below. Choose <b>ONE WORD OR A NUMBER</b> from the passage for each answer.</h3>
+      <div class="form" id="r2Notes"></div>
+      <button class="primary" onclick="r2Check()">Проверить ответы</button>
+      <div class="score" id="r2Score"></div>
     </div>
   </section>
 
@@ -213,9 +230,9 @@ const SETS = [
   {en:"surroundings", pos:"n", ru:"окрестности, окружение", def:"the place around you and the things in it", ex:"The hotel has lovely surroundings."}
  ]},
  {id:"B", name:"B · Люди и жизнь", words:[
-  {en:"resident", pos:"n", ru:"житель", def:"a person who lives in a place", ex:"The city has 200,000 residents."},
-  {en:"inhabitants", pos:"n", ru:"жители, население", def:"the people who live in a place", ex:"The inhabitants are very friendly."},
-  {en:"locals", pos:"n", ru:"местные жители", def:"people who live in the area (not tourists)", ex:"Ask the locals for a good café."},
+  {en:"resident", pos:"n", ru:"житель", def:"a person whose home is in a particular place", ex:"The city has 200,000 residents."},
+  {en:"inhabitants", pos:"n", ru:"жители, население", def:"all the people or animals that live in a town, country or area", ex:"The inhabitants are very friendly."},
+  {en:"locals", pos:"n", ru:"местные жители", def:"people from this area, not tourists or visitors", ex:"Ask the locals for a good café."},
   {en:"community", pos:"n", ru:"сообщество, местные жители", def:"all the people living in one area", ex:"Our community is very close."},
   {en:"council", pos:"n", ru:"городской совет, администрация", def:"the group of people elected to run a town and its services", ex:"The council is building a new park."},
   {en:"immigrant", pos:"n", ru:"иммигрант", def:"a person who comes to live in a different country", ex:"Many immigrants live in this city."},
@@ -254,7 +271,7 @@ const SETS = [
   {en:"surround", pos:"v", ru:"окружать", def:"to be all around something", ex:"Mountains surround the town."},
   {en:"festival", pos:"n", ru:"фестиваль, праздник", def:"a special event when people celebrate something", ex:"There are colourful festivals every year."},
   {en:"village", pos:"n", ru:"деревня, село", def:"a very small town in the countryside", ex:"We stayed in a small village."},
-  {en:"inhabitant", pos:"n", ru:"житель", def:"a person who lives in a place", ex:"The village has 300 inhabitants."},
+  {en:"rate", pos:"n", ru:"уровень, показатель", def:"how often something happens, for example how much crime there is", ex:"The city has a high crime rate."},
   {en:"apartment", pos:"n", ru:"квартира", def:"a flat (American English)", ex:"They live in a small apartment."}
  ]},
  {id:"E", name:"E · Торговый центр", words:[
@@ -445,10 +462,32 @@ const READING = {
   ans:{1:["cafés","cafes","cafe","café"],2:["architecture"],3:["rent"],4:["summer"],5:["suburb"],6:["schools"],7:["woodland"],8:["40","forty"],9:["apartments"],10:["night"]}
 };
 
+const READING2 = {
+  title:"Where is the best place to live?",
+  text:`<p>Every year, the magazine <i>Home &amp; Life</i> asks its readers a simple question: where is the best place to live in the UK? This year, <u>more than</u> 8,000 people answered an online questionnaire. They gave marks from 1 to 10 for things like housing, transport, safety and the local community.</p>
+<p>The winner this year is Hartfield, a small town on the outskirts of Leeds. Readers said that Hartfield was very safe, and that the local <u>residents</u> were <u>extremely</u> friendly. Many people also liked the town's pretty old buildings and the woodland nearby.</p>
+<p>In second place was Seabrook, a seaside town on the east coast. People enjoy the relaxed lifestyle there, and the beaches are <u>spectacular</u>. However, some readers said there were <u>not many</u> jobs in the area.</p>
+<p>Big cities did not do well in the survey. Readers <u>believe</u> that life in the city centre is too expensive, and that the streets are too crowded. “Most people want a quiet life with a garden,” said the editor, Kate Barnes. “That is difficult to find in a big city.”</p>
+<p>The magazine will publish the full list of 100 towns in its March issue.</p>`,
+  syn:[["more than","over"],["residents","people who live there"],["extremely","very"],["spectacular","amazing"],["not many","few"],["believe","think"]],
+  notesTitle:"Home & Life survey: best places to live",
+  notes:[
+    {q:1, pre:"Number of people who answered: over", ans:["8,000","8000"], mode:"num"},
+    {q:2, pre:"Readers gave marks for housing, transport,", post:"and the community.", ans:["safety"]},
+    {q:3, pre:"Winner: Hartfield, a town on the", post:"of Leeds.", ans:["outskirts"]},
+    {q:4, pre:"The people in Hartfield are very", post:".", ans:["friendly"]},
+    {q:5, pre:"People also like the old buildings and the", post:"near the town.", ans:["woodland"]},
+    {q:6, pre:"Second place: Seabrook, a", post:"town.", ans:["seaside"]},
+    {q:7, pre:"Problem in Seabrook: there are few", post:".", ans:["jobs"]},
+    {q:8, pre:"Readers think city centres are too", post:"and crowded.", ans:["expensive"]},
+    {q:9, pre:"The full list will be in the", post:"issue of the magazine.", ans:["march"]}
+  ]
+};
+
 /* ============ ЛОГИКА ============ */
 let STATE = {name:"", started:null, vocab:{}, listening:null, reading:null};
 const $ = id => document.getElementById(id);
-const KEY="ielts_u1_state_v2";
+const KEY="ielts_u1_state_v3";
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){} }
 function load(){ try{const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.name) STATE=s;}catch(e){} }
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -473,8 +512,8 @@ function say(text,slow){ if(noTTS())return; speechSynthesis.cancel(); const u=ut
 /* вход, вкладки */
 function start(){
   const n=$("nameInput").value.trim(); if(!n){$("nameInput").focus();return;}
-  if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{},listening:null,reading:null};
-  save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; markDone(); renderEx();
+  if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{},listening:null,reading:null,reading2:null};
+  save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; markDone(); goCurrent();
 }
 $("nav").addEventListener("click",e=>{
   const t=e.target.dataset.tab; if(!t)return; speechSynthesis.cancel();
@@ -483,78 +522,130 @@ $("nav").addEventListener("click",e=>{
   if(t==="finish") renderResults(); window.scrollTo(0,0);
 });
 function markDone(){
-  const d={vocab:Object.keys(STATE.vocab).length>0, listening:!!(STATE.listening&&Object.keys(STATE.listening).length), reading:!!STATE.reading};
+  const d={vocab:Object.keys(STATE.vocab).length>0, listening:!!(STATE.listening&&Object.keys(STATE.listening).length), reading:!!(STATE.reading||STATE.reading2)};
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("done",!!d[b.dataset.tab]));
 }
 $("rate").oninput=()=>$("rateVal").textContent=$("rate").value;
 
-/* наборы и карточки */
-let si=0, fi=0;
-function curSet(){ return SETS[si]; }
-function renderSets(){
-  $("sets").innerHTML=SETS.map((s,i)=>`<button class="${i===si?"active":""}" onclick="pickSet(${i})">${esc(s.name)} (${s.words.length})</button>`).join("");
-}
-function pickSet(i){ si=i; fi=0; renderSets(); flashShow(); renderEx(); $("drillCard").classList.add("hidden"); }
-function flashShow(){ const w=curSet().words[fi]; $("flash").classList.remove("flip"); $("fFront").textContent=w.en; $("fPos").textContent=w.pos; $("fBack").textContent=w.ru; $("fEx").textContent=w.ex; $("fCount").textContent=(fi+1)+" / "+curSet().words.length; }
-function flashMove(d){ const n=curSet().words.length; fi=(fi+d+n)%n; flashShow(); }
-
-/* список упражнений */
-const EX_SET=[
-  {id:"tr",  name:"1. Выбери перевод"},
-  {id:"def", name:"2. Слово по определению"},
-  {id:"wr",  name:"3. Напиши по-английски"}
+/* ============ ЛЕКСИКА: путь по шагам ============ */
+const STEP_TYPES=[
+  {t:"cards", name:"Карточки"},
+  {t:"tr",    name:"Выбери перевод"},
+  {t:"def",   name:"Слово по определению"},
+  {t:"gaps",  name:"✍️ Вставь пропущенные буквы"},
+  {t:"scr",   name:"✍️ Собери слово из букв"},
+  {t:"lis",   name:"✍️ Послушай и напиши"},
+  {t:"wr",    name:"✍️ Напиши по переводу (без подсказок)"}
 ];
-const EX_ALL=[
-  {id:"prep", name:"Предлоги: in / on / by / at / next to…"},
-  {id:"pos",  name:"Прилагательное или существительное?"},
-  {id:"dict", name:"Диктант: буквы и цифры (для Listening)"}
-];
-function exKey(id){ const set=["tr","def","wr"].includes(id)?"Набор "+curSet().id+": ":""; return set+[...EX_SET,...EX_ALL].find(e=>e.id===id).name.replace(/^\d\.\s/,""); }
-function renderEx(){
-  $("exSet").innerHTML=EX_SET.map(e=>`<button class="${STATE.vocab[exKey(e.id)]?"done":""}" onclick="runDrill('${e.id}')">${e.name}</button>`).join("");
-  $("exAll").innerHTML=EX_ALL.map(e=>`<button class="${STATE.vocab[exKey(e.id)]?"done":""}" onclick="runDrill('${e.id}')">${e.name}</button>`).join("");
+const STEPS=[];
+SETS.forEach(s=>STEP_TYPES.forEach(x=>STEPS.push({key:s.id+":"+x.t, set:s, t:x.t, name:x.name})));
+STEPS.push({key:"all:prep", t:"prep", name:"Предлоги: in / on / by / at / next to…"});
+STEPS.push({key:"all:pos",  t:"pos",  name:"Прилагательное или существительное?"});
+STEPS.push({key:"all:dict", t:"dict", name:"✍️ Диктант: буквы и цифры (для Listening)"});
+
+function base(en){ return en.replace(/^the /,""); }
+function curIdx(){ const i=STEPS.findIndex(s=>!STATE.vocab[s.key]); return i<0?STEPS.length:i; }
+function renderPath(){
+  const ci=curIdx(), done=STEPS.filter(s=>STATE.vocab[s.key]).length;
+  $("vBar").style.width=(100*done/STEPS.length)+"%";
+  $("vProg").textContent="Пройдено шагов: "+done+" из "+STEPS.length;
+  let h="", last=null;
+  STEPS.forEach((s,i)=>{
+    const g=s.set?s.set.name:"Итоговые упражнения";
+    if(g!==last){ if(last!==null)h+="</div>"; h+='<div style="margin:10px 0 4px;font-weight:700">'+esc(g)+'</div><div class="ex">'; last=g; }
+    const st=STATE.vocab[s.key]?"done":i===ci?"cur":"lock";
+    h+='<button class="sm '+(st==="done"?"done":"")+'" '+(st==="lock"?"disabled":"")+' onclick="openStep('+i+')">'+(st==="done"?"✓ ":st==="cur"?"▶ ":"🔒 ")+esc(s.name)+'</button>';
+  });
+  $("path").innerHTML=h+"</div>";
+}
+function goCurrent(){ openStep(curIdx()); }
+function openStep(i){
+  speechSynthesis.cancel();
+  ["cardsBox","drillBox","nextBox"].forEach(x=>$(x).classList.add("hidden"));
+  if(i>=STEPS.length){ $("sStep").textContent=""; $("sTitle").textContent="🎉 Вся лексика пройдена!"; $("sHint").textContent="Переходи к Listening (вкладка 2)."; renderPath(); return; }
+  const s=STEPS[i];
+  $("sStep").textContent="Шаг "+(i+1)+" из "+STEPS.length+(s.set?" · "+s.set.name:"");
+  $("sTitle").textContent=s.name;
+  if(s.t==="cards") startCards(s); else runDrill(s);
+  renderPath();
+  $("stage").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-/* универсальный тренажёр */
+/* карточки */
+let CW=[], fi=0, seen=new Set(), cardsStep=null;
+function startCards(s){
+  cardsStep=s; CW=s.set.words; fi=0; seen=new Set();
+  $("sHint").textContent="Нажми на карточку, чтобы увидеть перевод. Послушай каждое слово 🔊 и произнеси вслух. Пролистай все карточки до конца.";
+  $("cardsBox").classList.remove("hidden"); flashShow();
+}
+function flashShow(){
+  const w=CW[fi]; seen.add(fi); $("flash").classList.remove("flip");
+  $("fFront").textContent=w.en; $("fPos").textContent=w.pos; $("fBack").textContent=w.ru; $("fEx").textContent=w.ex;
+  $("fCount").textContent=(fi+1)+" / "+CW.length+"  (просмотрено "+seen.size+")";
+  $("cardsDone").disabled=seen.size<CW.length;
+}
+function flashMove(d){ fi=(fi+d+CW.length)%CW.length; flashShow(); }
+function finishCards(){
+  STATE.vocab[cardsStep.key]={name:cardsStep.name,set:cardsStep.set.id,seen:true}; save(); markDone(); goCurrent();
+}
+
+/* построение заданий */
+function mask(word){
+  const idx=[]; [...word].forEach((c,i)=>{ if(/[a-z]/i.test(c) && i>0 && word[i-1]!==" " && word[i-1]!=="-") idx.push(i); });
+  const k=Math.max(1,Math.round(idx.length*0.45)); const hide=new Set(shuffle(idx).slice(0,k));
+  return [...word].map((c,i)=>c===" "?"&nbsp;&nbsp;":hide.has(i)?"_":esc(c)).join(" ");
+}
+function scramble(word){
+  return word.split(" ").map(w=>{ if(w.length<3) return w; let s; let n=0; do{ s=shuffle([...w]).join(""); n++; }while(s===w && n<10); return s; })
+    .map(w=>[...w].map(c=>'<span style="display:inline-block;min-width:30px;padding:4px 6px;margin:2px;border-radius:7px;background:#eef3ff;text-align:center;font-family:monospace">'+esc(c)+'</span>').join("")).join('<span style="display:inline-block;width:18px"></span>');
+}
+function buildItems(s){
+  const W=s.set?s.set.words:null;
+  const others=(w,f)=>shuffle(W.filter(x=>x!==w)).slice(0,3).map(f);
+  const ru=w=>esc(w.ru)+" <span class='muted' style='font-size:15px'>("+w.pos+")</span>";
+  switch(s.t){
+  case "tr": return {type:"mc", hint:"Послушай слово и выбери перевод.", items:W.map(w=>({prompt:esc(w.en), sayText:w.en, opts:shuffle([w.ru,...others(w,x=>x.ru)]), ans:w.ru, after:w.en+" — "+w.ru, word:w.en}))};
+  case "def": return {type:"mc", hint:"Прочитай определение по-английски и выбери слово. Так в IELTS перефразируют слова.", items:W.map(w=>({prompt:"<span style='font-size:19px'>"+esc(w.def)+"</span>", opts:shuffle([w.en,...others(w,x=>x.en)]), ans:w.en, after:w.en+" = "+w.def, word:w.en}))};
+  case "gaps": return {type:"write", hint:"Напиши слово целиком, вставив пропущенные буквы. «the» писать не нужно.", items:W.map(w=>({prompt:ru(w)+"<div style='font-family:monospace;font-size:26px;letter-spacing:1px;margin-top:8px'>"+mask(base(w.en))+"</div>", ans:[base(w.en),w.en], word:base(w.en), sayText:w.en}))};
+  case "scr": return {type:"write", hint:"Буквы перемешаны. Собери слово и напиши его. Если слов два, буквы перемешаны в каждом слове отдельно.", items:W.map(w=>({prompt:ru(w)+"<div style='margin-top:8px'>"+scramble(base(w.en))+"</div>", ans:[base(w.en),w.en], word:base(w.en), sayText:w.en}))};
+  case "lis": return {type:"write", autoSay:true, hint:"Послушай слово и напиши его. Нажми 🔊, чтобы послушать ещё раз. «the» писать не нужно.", items:W.map(w=>({prompt:"🎧 <span class='muted' style='font-size:15px'>("+base(w.en).length+" знаков)</span>", ans:[base(w.en),w.en], word:base(w.en), sayText:w.en, after:w.ru}))};
+  case "wr": return {type:"write", hint:"Итоговая проверка набора: видишь перевод и пишешь слово по-английски, без подсказок. «the» писать не нужно.", items:W.map(w=>({prompt:ru(w), ans:[base(w.en),w.en], word:base(w.en), sayText:w.en}))};
+  case "prep": return {type:"mc", ordered:true, hint:"Выбери предлог.", items:PREPS.map(p=>({prompt:esc(p.s).replace("___","<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>"), opts:p.o, ans:p.a, after:p.s.replace("___",p.a.toUpperCase()), word:p.s.replace("___",p.a.toUpperCase())}))};
+  case "pos": return {type:"mc", hint:"Это прилагательное (какой?) или существительное (что? кто?)?", items:shuffle(POS).slice(0,14).map(x=>{const [w,p]=x.split(":"); return {prompt:esc(w), sayText:w, opts:["adjective","noun"], ans:p==="adj"?"adjective":"noun", after:w+" — "+(p==="adj"?"adjective (прилагательное)":"noun (существительное)"), word:w};})};
+  case "dict": return {type:"write", ordered:true, autoSay:true, slow:true, hint:"Послушай и запиши. Так в Listening Part 1 диктуют фамилии, адреса и телефоны. Нажми 🔊, чтобы послушать ещё раз.", items:DICTATION.map(d=>({prompt:esc(d.label)+(d.hint?" <span class='muted'>("+esc(d.hint)+")</span>":""), sayText:d.say, ans:[d.ans,...(d.alt||[])], mode:d.num?"num":d.code?"code":null, word:d.ans.toUpperCase()}))};
+  }
+}
+
+/* тренажёр */
 let D=null;
-function buildItems(id){
-  const W=curSet().words;
-  if(id==="tr") return {type:"mc", hint:"Послушай слово и выбери перевод.", items:W.map(w=>({prompt:esc(w.en), sayText:w.en, opts:shuffle([w.ru,...shuffle(W.filter(x=>x!==w)).slice(0,3).map(x=>x.ru)]), ans:w.ru, after:w.en+" — "+w.ru}))};
-  if(id==="def") return {type:"mc", hint:"Прочитай определение по-английски и выбери слово. Так слова объясняют в словарях — и так перефразируют в IELTS.", items:W.map(w=>({prompt:"<span style='font-size:19px'>"+esc(w.def)+"</span>", opts:shuffle([w.en,...shuffle(W.filter(x=>x!==w)).slice(0,3).map(x=>x.en)]), ans:w.en, after:w.en+" = "+w.def}))};
-  if(id==="wr") return {type:"write", hint:"Видишь перевод — пишешь слово по-английски. Орфография важна: в IELTS ошибка в одной букве = неправильный ответ. Артикль «the» можно не писать.", items:W.map(w=>({prompt:esc(w.ru)+" <span class='muted'>("+w.pos+")</span>", ans:[w.en, w.en.replace(/^the /,"")], ph:"начинается на «"+w.en.replace(/^the /,"")[0]+"»", sayText:w.en}))};
-  if(id==="prep") return {type:"mc", hint:"Выбери предлог.", items:shuffle(PREPS).map(p=>({prompt:esc(p.s).replace("___","<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>"), opts:p.o, ans:p.a, after:p.s.replace("___",p.a.toUpperCase())}))};
-  if(id==="pos") return {type:"mc", hint:"Это прилагательное (какой?) или существительное (что? кто?)?", items:shuffle(POS).slice(0,14).map(x=>{const [w,p]=x.split(":"); return {prompt:esc(w), sayText:w, opts:["adjective","noun"], ans:p==="adj"?"adjective":"noun", after:w+" — "+(p==="adj"?"adjective (прилагательное)":"noun (существительное)")};})};
-  if(id==="dict") return {type:"write", dict:true, hint:"Послушай и запиши. Так в Listening Part 1 диктуют фамилии, адреса и телефоны. Нажми 🔊, чтобы послушать ещё раз.", items:DICTATION.map(d=>({prompt:esc(d.label)+(d.hint?" <span class='muted'>("+esc(d.hint)+")</span>":""), sayText:d.say, ans:[d.ans,...(d.alt||[])], mode:d.num?"num":d.code?"code":null, show:d.ans.toUpperCase()}))};
-}
-function runDrill(id){
-  const b=buildItems(id); const ex=[...EX_SET,...EX_ALL].find(e=>e.id===id);
-  D={id, key:exKey(id), type:b.type, dict:b.dict, items:b.items, queue:shuffle(b.items.map((_,i)=>i)), total:b.items.length, first:0, done:0, wrong:new Set(), mistakes:[], cur:null, lock:false};
-  if(id==="prep"||id==="dict") D.queue=b.items.map((_,i)=>i);
-  $("drillCard").classList.remove("hidden"); $("dTitle").textContent=ex.name+(["tr","def","wr"].includes(id)?" · "+curSet().name:""); $("dHint").textContent=b.hint;
-  dNext(); $("drillCard").scrollIntoView({behavior:"smooth"});
+function runDrill(s){
+  const b=buildItems(s);
+  D={step:s, type:b.type, autoSay:b.autoSay, slow:b.slow, items:b.items, queue:b.ordered?b.items.map((_,i)=>i):shuffle(b.items.map((_,i)=>i)), total:b.items.length, first:0, done:0, wrong:new Set(), mistakes:[], cur:null, lock:false, retype:null};
+  $("sHint").textContent=b.hint; $("drillBox").classList.remove("hidden"); dNext();
 }
 function dNext(){
-  D.lock=false; $("dBar").style.width=(100*D.done/D.total)+"%"; $("dFb").innerHTML=""; $("dOpts").innerHTML="";
+  D.lock=false; D.retype=null; $("dBar").style.width=(100*D.done/D.total)+"%"; $("dFb").innerHTML=""; $("dOpts").innerHTML="";
   if(!D.queue.length){
-    $("dPrompt").innerHTML="✅ Готово! С первого раза: "+D.first+" / "+D.total+(D.mistakes.length?"<div class='muted' style='font-size:15px;font-weight:400'>Повтори: "+D.mistakes.map(m=>esc(m.split(" (")[0])).join(", ")+"</div>":"");
+    $("dPrompt").innerHTML="✅ Готово! С первого раза: "+D.first+" / "+D.total+(D.mistakes.length?"<div class='muted' style='font-size:15px;font-weight:400'>Повтори эти слова: "+D.mistakes.map(m=>esc(m.split(" (")[0])).join(", ")+"</div>":"");
     $("dWrite").classList.add("hidden");
-    STATE.vocab[D.key]={score:D.first,total:D.total,mistakes:D.mistakes}; save(); markDone(); renderEx(); return;
+    STATE.vocab[D.step.key]={name:D.step.name,set:D.step.set?D.step.set.id:null,score:D.first,total:D.total,mistakes:D.mistakes};
+    save(); markDone(); renderPath(); $("nextBox").classList.remove("hidden"); return;
   }
   D.cur=D.queue.shift(); const it=D.items[D.cur];
-  const sayBtn=it.sayText?` <button class="dark sm" onclick="say(${esc(JSON.stringify(it.sayText))},${!!D.dict})">🔊</button>`:"";
+  const sayBtn=it.sayText&&(D.type==="mc"||D.autoSay)?` <button class="dark sm" onclick="say(${esc(JSON.stringify(it.sayText))},${!!D.slow})">🔊</button>`:"";
   $("dPrompt").innerHTML=it.prompt+sayBtn;
   if(D.type==="mc"){
     $("dWrite").classList.add("hidden");
     it.opts.forEach(o=>{const b=document.createElement("button"); b.textContent=o; b.onclick=()=>dPick(b,o); $("dOpts").appendChild(b);});
   }else{
-    $("dWrite").classList.remove("hidden"); $("dIn").value=""; $("dIn").className=""; $("dIn").placeholder=it.ph||""; $("dIn").focus();
-    if(D.dict) say(it.sayText,true);
+    $("dWrite").classList.remove("hidden"); $("dIn").value=""; $("dIn").className=""; $("dIn").placeholder=""; $("dIn").focus();
+    if(D.autoSay) say(it.sayText,D.slow);
   }
 }
 function dResult(ok, given){
   const it=D.items[D.cur];
   if(ok){ if(!D.wrong.has(D.cur)) D.first++; D.done++; }
-  else{ if(!D.wrong.has(D.cur)){ D.wrong.add(D.cur); D.mistakes.push((it.show||it.after||it.ans[0]).split(" = ")[0]+" (написала: "+(given||"—")+")"); } D.queue.push(D.cur); }
+  else{ if(!D.wrong.has(D.cur)){ D.wrong.add(D.cur); D.mistakes.push(it.word+" (написала: "+(given||"—")+")"); } D.queue.push(D.cur); }
 }
 function dPick(btn,o){
   if(D.lock)return; D.lock=true; const it=D.items[D.cur]; const ok=o===it.ans;
@@ -567,11 +658,16 @@ function dPick(btn,o){
 }
 function dCheck(){
   if(D.lock)return; const it=D.items[D.cur]; const v=$("dIn").value; if(!v.trim())return;
-  D.lock=true; const ok=isRight(v,it.ans,it.mode); $("dIn").className=ok?"ok":"bad";
+  if(D.retype){ // перепечатать правильно
+    if(isRight(v,it.ans,it.mode)){ D.lock=true; $("dIn").className="ok"; $("dFb").innerHTML="👍 Теперь правильно. Это слово будет ещё раз в конце."; setTimeout(dNext,1100); }
+    else{ $("dIn").className="bad"; $("dFb").innerHTML="Ещё не так. Напиши точно: <b>"+esc(it.word)+"</b>"; }
+    return;
+  }
+  const ok=isRight(v,it.ans,it.mode); $("dIn").className=ok?"ok":"bad";
   dResult(ok,v);
-  $("dFb").innerHTML=ok?"👍 "+esc(it.show||it.ans[0]):"Правильно: <b>"+esc(it.show||it.ans[0])+"</b><br><span class='muted'>Это задание будет ещё раз.</span>";
-  if(!D.dict && it.sayText) say(it.sayText);
-  setTimeout(dNext, ok?1000:2800);
+  if(it.sayText && !(D.step.t==="dict")) say(it.sayText);
+  if(ok){ D.lock=true; $("dFb").innerHTML="👍 "+esc(it.word)+(it.after?" — "+esc(it.after):""); setTimeout(dNext,1000); }
+  else{ D.retype=true; $("dFb").innerHTML="Правильно: <b style='font-size:20px'>"+esc(it.word)+"</b><br>Перепечатай слово правильно и нажми «Проверить»."; $("dIn").value=""; $("dIn").focus(); }
 }
 
 /* Listening */
@@ -683,33 +779,74 @@ function rCheck(){
   if(!STATE.reading){STATE.reading={score:s,total:n,mistakes:m};save();markDone();}
 }
 
+/* Reading 2 */
+let r2Opts=[];
+function r2Render(){
+  $("r2Text").innerHTML="<h4>"+esc(READING2.title)+"</h4>"+READING2.text;
+  r2Opts=shuffle(READING2.syn.map(x=>x[1]));
+  $("r2Syn").innerHTML=READING2.syn.map(([w],i)=>'<div class="row"><span class="lab"><b>'+(i+1)+'.</b> '+esc(w)+'</span><select id="r2s'+i+'" style="font:inherit;padding:5px;border-radius:8px"><option value="">—</option>'+r2Opts.map(o=>'<option>'+esc(o)+'</option>').join("")+'</select><span class="fix" id="r2sf'+i+'"></span></div>').join("");
+  $("r2Notes").innerHTML='<div class="title">'+esc(READING2.notesTitle)+'</div>'+READING2.notes.map(n=>'<div class="row">• '+esc(n.pre)+' <span class="qn">'+n.q+'</span><input class="gap" id="r2n'+n.q+'" autocomplete="off" autocapitalize="off" spellcheck="false"> '+esc(n.post||"")+'<span class="fix" id="r2nf'+n.q+'"></span></div>').join("");
+}
+function r2Check(){
+  let s=0,t=0; const m=[];
+  READING2.syn.forEach(([w,a],i)=>{ t++; const v=$("r2s"+i).value, ok=v===a; $("r2sf"+i).textContent=ok?"✓":"→ "+a; $("r2sf"+i).style.color=ok?"var(--ok)":"var(--bad)"; if(ok)s++; else m.push("A"+(i+1)+" "+w+": "+(v||"—")+" → "+a); });
+  READING2.notes.forEach(n=>{ t++; const el=$("r2n"+n.q), ok=isRight(el.value,n.ans,n.mode); el.classList.toggle("ok",ok); el.classList.toggle("bad",!ok); $("r2nf"+n.q).textContent=ok?"":"→ "+n.ans[0]; if(ok)s++; else m.push("B"+n.q+": "+(el.value||"—")+" → "+n.ans[0]); });
+  $("r2Score").textContent="Результат: "+s+" / "+t;
+  if(!STATE.reading2){ STATE.reading2={score:s,total:t,mistakes:m}; save(); markDone(); }
+}
+
 /* Итоги и Telegram */
-function rows(){ const r=Object.entries(STATE.vocab).map(([k,v])=>["Лексика · "+k,v]); LTASKS.forEach(t=>{ const v=(STATE.listening||{})[t.id]; r.push(["Listening · "+t.name.replace(/^Задание \d\.\s*/,""),v||null]); }); r.push(["Reading",STATE.reading]); [11,12].forEach(n=>{ const v=(STATE.textbook||{})[n]; r.push(["Учебник · Track "+n, v||null]); }); return r; }
+const SHORT={tr:"перевод",def:"определение",gaps:"буквы",scr:"собери слово",lis:"на слух",wr:"по переводу"};
+function rows(){
+  const r=[];
+  SETS.forEach(st=>{
+    const got=STEPS.filter(x=>x.set===st && x.t!=="cards" && STATE.vocab[x.key]);
+    if(!got.length && !STATE.vocab[st.id+":cards"]){ r.push(["Лексика · "+st.name,null]); return; }
+    const sc=got.reduce((a,x)=>a+STATE.vocab[x.key].score,0), tt=got.reduce((a,x)=>a+STATE.vocab[x.key].total,0);
+    const miss=[]; got.forEach(x=>STATE.vocab[x.key].mistakes.forEach(mm=>miss.push(SHORT[x.t]+": "+mm)));
+    r.push(["Лексика · "+st.name+" ("+got.length+"/6 упр.)",{score:sc,total:tt,mistakes:miss,detail:got.map(x=>SHORT[x.t]+" "+STATE.vocab[x.key].score+"/"+STATE.vocab[x.key].total).join(" · ")}]);
+  });
+  STEPS.filter(x=>!x.set).forEach(x=>r.push(["Лексика · "+x.name,STATE.vocab[x.key]||null]));
+  LTASKS.forEach(t=>{ const v=(STATE.listening||{})[t.id]; r.push(["Listening · "+t.name.replace(/^Задание \d\.\s*/,""),v||null]); });
+  [11,12].forEach(n=>{ const v=(STATE.textbook||{})[n]; r.push(["Учебник · Track "+n, v||null]); });
+  r.push(["Reading 1",STATE.reading]); r.push(["Reading 2",STATE.reading2]);
+  return r;
+}
 function renderResults(){
   $("resTable").innerHTML=rows().map(([k,v])=>"<tr><td>"+esc(k)+"</td><td style='text-align:right'><b>"+(v?(v.total?v.score+" / "+v.total:"✓ сдано"):"<span class=muted>не сделано</span>")+"</b></td></tr>").join("");
-  const miss=[]; if(!Object.keys(STATE.vocab).length)miss.push("лексика"); if(!(STATE.listening&&Object.keys(STATE.listening).length===LTASKS.length))miss.push("Listening"); if(!STATE.reading)miss.push("Reading");
+  const miss=[]; if(curIdx()<STEPS.length)miss.push("лексика (шаг "+(curIdx()+1)+" из "+STEPS.length+")");
+  if(!(STATE.listening&&Object.keys(STATE.listening).length===LTASKS.length) || !(STATE.textbook&&STATE.textbook[11]&&STATE.textbook[12]))miss.push("Listening");
+  if(!STATE.reading||!STATE.reading2)miss.push("Reading");
   $("resNote").textContent=miss.length?"Ещё не сделано: "+miss.join(", ")+". Можно отправить и так, но лучше сначала закончить.":"Всё сделано! 🎉";
 }
 function buildReport(){
   const mins=Math.max(1,Math.round((Date.now()-STATE.started)/60000));
-  let t="📝 <b>IELTS · Places + Listening Part 1</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+" · ≈"+mins+" мин\n";
-  rows().forEach(([k,v])=>{ t+="\n<b>"+esc(k)+"</b>: "+(v?(v.total?v.score+"/"+v.total:"сдано"):"не сделано"); if(v&&v.mistakes.length) t+="\n   ✗ "+v.mistakes.map(esc).join("\n   ✗ "); if(v&&v.full&&v.answers) t+="\n   ✎ "+v.answers.map(esc).join("\n   ✎ "); });
-  return t.length>4000?t.slice(0,3990)+"…":t;
+  let t="📝 <b>IELTS · Places + Listening Part 1</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+" · ≈"+mins+" мин\n📚 Лексика: шаг "+Math.min(curIdx(),STEPS.length)+" из "+STEPS.length+" пройден\n";
+  rows().forEach(([k,v])=>{
+    t+="\n<b>"+esc(k)+"</b>: "+(v?(v.total?v.score+"/"+v.total:"сдано"):"не сделано");
+    if(v&&v.detail) t+="\n   "+esc(v.detail);
+    if(v&&v.mistakes&&v.mistakes.length) t+="\n   ✗ "+v.mistakes.map(esc).join("\n   ✗ ");
+    if(v&&v.full&&v.answers) t+="\n   ✎ "+v.answers.map(esc).join("\n   ✎ ");
+  });
+  return t;
 }
+function chunks(text){ const out=[]; let cur=""; text.split("\n").forEach(l=>{ if((cur+"\n"+l).length>3800){ out.push(cur); cur=l; } else cur=cur?cur+"\n"+l:l; }); if(cur)out.push(cur); return out; }
 async function sendResults(){
   const text=buildReport();
   if(!TG_TOKEN||!TG_CHAT_ID){ showCopy(text,"Бот ещё не подключён. Скопируй текст и отправь учителю вручную:"); return; }
   $("sendBtn").disabled=true; $("sendFb").textContent="Отправляю…";
   try{
-    const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text,parse_mode:"HTML"})});
-    const j=await r.json(); if(!j.ok) throw new Error(j.description);
-    $("sendFb").textContent="✅ Отправлено! Молодец!";
+    for(const part of chunks(text)){
+      const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text:part,parse_mode:"HTML"})});
+      const j=await r.json(); if(!j.ok) throw new Error(j.description);
+    }
+    $("sendFb").textContent="✅ Отправлено! Молодец!"; $("sendBtn").disabled=false;
   }catch(e){ $("sendBtn").disabled=false; showCopy(text,"Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"); }
 }
 function showCopy(text,msg){ $("sendFb").textContent=msg; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
 
 /* запуск */
-renderSets(); flashShow(); tbRender(); lRender(); rRender(); load();
+tbRender(); lRender(); rRender(); r2Render(); load();
 if(STATE.name) $("nameInput").value=STATE.name;
 </script>
 </body>
