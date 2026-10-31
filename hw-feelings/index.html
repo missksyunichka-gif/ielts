@@ -87,7 +87,7 @@
 <div class="wrap">
 <div id="login" class="card">
   <h2>📒 Домашнее задание</h2>
-  <p class="muted">Тема: <b>Work, people &amp; feelings</b>. Сначала учим слова, потом делаем упражнения из учебника.</p>
+  <p class="muted">Тема: <b>Work, people &amp; feelings</b>. Короткое повторение слов, потом упражнения из учебника.</p>
   <p>Как тебя зовут?</p>
   <input type="text" id="nameInput" placeholder="Имя" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
   <p><button class="primary" onclick="start()">Начать →</button></p>
@@ -265,7 +265,7 @@ const BOOK = {
 /* ============ ЛОГИКА ============ */
 let STATE={name:"",started:null,vocab:{}};
 const $=id=>document.getElementById(id);
-const KEY="hw_feelings_state_v1";
+const KEY="hw_feelings_state_v2";
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){} }
 function load(){ try{const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.name) STATE=s;}catch(e){} }
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -307,7 +307,8 @@ const STEP_TYPES=[
 ];
 const STEPS=[];
 const ORDER=["W","b5a","b6a","F1","b1b","b1c","F2","b1a"];
-ORDER.forEach(o=>{ const st=SETS.find(x=>x.id===o); if(st) STEP_TYPES.forEach(x=>STEPS.push({key:st.id+":"+x.t,set:st,t:x.t,name:x.name})); else STEPS.push({key:"book:"+o,t:"book",book:o,name:"📘 "+BOOK[o].name}); });
+const HW_TYPES=STEP_TYPES.filter(x=>["tr","wr"].includes(x.t)).map(x=>x.t==="tr"?{t:"tr",name:"Повтори слова: выбери перевод"}:{t:"wr",name:"✍️ Напиши по переводу"});
+ORDER.forEach(o=>{ const st=SETS.find(x=>x.id===o); if(st) HW_TYPES.forEach(x=>STEPS.push({key:st.id+":"+x.t,set:st,t:x.t,name:x.name})); else STEPS.push({key:"book:"+o,t:"book",book:o,name:"📘 "+BOOK[o].name}); });
 
 function base(en){ return en.replace(/^the /,""); }
 function curIdx(){ const i=STEPS.findIndex(s=>!STATE.vocab[s.key]); return i<0?STEPS.length:i; }
