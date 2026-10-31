@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Домашнее задание · Work, people &amp; feelings</title>
+<title>Homework · Work, people &amp; feelings</title>
 <style>
   :root{--ink:#1d2433;--muted:#667085;--line:#e4e7ec;--bg:#f5f6fa;--card:#fff;--accent:#2f5bea;--ok:#1f9d55;--okbg:#e9f8ef;--bad:#d64545;--badbg:#fdeeee}
   *{box-sizing:border-box}
@@ -86,20 +86,20 @@
 <body>
 <div class="wrap">
 <div id="login" class="card">
-  <h2>📒 Домашнее задание</h2>
-  <p class="muted">Тема: <b>Work, people &amp; feelings</b>. Короткое повторение слов, потом упражнения из учебника.</p>
-  <p>Как тебя зовут?</p>
-  <input type="text" id="nameInput" placeholder="Имя" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
-  <p><button class="primary" onclick="start()">Начать →</button></p>
+  <h2>📒 Homework</h2>
+  <p class="muted">Topic: <b>Work, people &amp; feelings</b>. A quick vocabulary review, then exercises from your coursebook.</p>
+  <p>What's your name?</p>
+  <input type="text" id="nameInput" placeholder="Your name" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
+  <p><button class="primary" onclick="start()">Start →</button></p>
 </div>
 <div id="app" class="hidden">
-  <header><h1>ДЗ · Work &amp; feelings</h1><div class="who">👤 <span id="who"></span></div></header>
+  <header><h1>Homework · Work &amp; feelings</h1><div class="who">👤 <span id="who"></span></div></header>
 <section id="tab-vocab">
   <div class="card">
-    <p class="muted" style="margin-top:0">Иди строго по шагам: следующий откроется, когда закончишь текущий. Ошибки возвращаются в конце шага. Если ошибёшься в написании, слово нужно один раз перепечатать правильно.</p>
+    <p class="muted" style="margin-top:0">Go step by step: the next step opens when you finish this one. Mistakes come back at the end of each step. If you misspell a word, you need to type it correctly once.</p>
     <div class="bar"><div id="vBar"></div></div>
     <div id="vProg" class="muted"></div>
-    <div class="speed">🔊 Скорость голоса <input type="range" id="rate" min="0.6" max="1.1" step="0.05" value="0.85"> <span id="rateVal">0.85</span></div>
+    <div class="speed">🔊 Voice speed <input type="range" id="rate" min="0.6" max="1.1" step="0.05" value="0.85"> <span id="rateVal">0.85</span></div>
   </div>
   <div class="card" id="stage">
     <div class="muted" id="sStep"></div>
@@ -114,7 +114,7 @@
       </div>
       <button onclick="flashMove(-1)">←</button><button class="dark" onclick="say(CW[fi].en)">🔊</button><button onclick="flashMove(1)">→</button>
       <span class="muted" id="fCount"></span>
-      <p><button class="primary" id="cardsDone" onclick="finishCards()" disabled>Посмотрел(а) все карточки — дальше →</button></p>
+      <p><button class="primary" id="cardsDone" onclick="finishCards()" disabled>I've seen all the cards — next →</button></p>
     </div>
     <div id="drillBox" class="hidden">
       <div class="bar"><div id="dBar"></div></div>
@@ -122,22 +122,22 @@
       <div class="opts" id="dOpts"></div>
       <div id="dWrite" class="hidden">
         <input type="text" id="dIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')dCheck()">
-        <button class="primary" onclick="dCheck()">Проверить</button>
+        <button class="primary" onclick="dCheck()">Check</button>
       </div>
       <div class="feedback" id="dFb"></div>
     </div>
-    <div id="nextBox" class="hidden"><button class="primary" onclick="goCurrent()">Дальше →</button></div>
+    <div id="nextBox" class="hidden"><button class="primary" onclick="goCurrent()">Next →</button></div>
   </div>
   <div class="card">
-    <h3>📨 Отправить учителю</h3>
-    <p class="muted">Можно отправлять после каждого занятия: прогресс сохраняется в браузере.</p>
-    <button class="primary" id="sendBtn" onclick="sendResults()">Отправить результаты</button>
+    <h3>📨 Send to your teacher</h3>
+    <p class="muted">You can send your results after each session — your progress is saved in this browser.</p>
+    <button class="primary" id="sendBtn" onclick="sendResults()">Send results</button>
     <div class="feedback" id="sendFb"></div>
     <textarea id="copyBox" class="hidden" style="width:100%;height:180px;font:13px monospace;margin-top:8px"></textarea>
   </div>
   <div class="card">
-    <h3>Весь путь</h3>
-    <p class="muted">✓ — сделано (можно нажать и повторить), ▶ — сейчас, 🔒 — пока закрыто.</p>
+    <h3>Your progress</h3>
+    <p class="muted">✓ — done (click to do it again), ▶ — now, 🔒 — locked for now.</p>
     <div id="path"></div>
   </div>
 </section>
@@ -202,7 +202,7 @@ const SETS = [
 
 /* Упражнения из учебника. type: write — вписать слово, mc — выбрать. */
 const BOOK = {
- b5a:{name:"Учебник 5A · Вставь гласные", type:"write", hint:"Напиши слово целиком, добавив пропущенные гласные (a, e, i, o, u).",
+ b5a:{name:"Coursebook 5A · Add the missing vowels", type:"write", hint:"Write the whole word with the missing vowels (a, e, i, o, u).",
   items:[
    {p:"1. It's important to <b>g_t</b> on well with your colleagues.", a:["get"]},
    {p:"1. It's important to get on <b>w_ll</b> with your colleagues.", a:["well"]},
@@ -219,7 +219,7 @@ const BOOK = {
    {p:"6. A <b>f_n_nc__l</b> consultant must be reliable.", a:["financial"]},
    {p:"6. A financial <b>c_ns_lt_nt</b> must be reliable.", a:["consultant"]},
    {p:"6. A financial consultant must be <b>r_l__bl_</b>.", a:["reliable"]}]},
- b6a:{name:"Учебник 6A · VSO (выбери слово)", type:"mc", hint:"Текст про VSO по предложениям. Выбери правильный вариант A, B или C.",
+ b6a:{name:"Coursebook 6A · VSO (choose the word)", type:"mc", hint:"The VSO text, sentence by sentence. Choose the correct option: A, B or C.",
   items:[
    {p:"VSO (Voluntary Service Overseas) is an organisation that sends people to foreign countries to work as <b>(1) ____</b>.", o:["volunteers","part time","salaries"], a:"volunteers"},
    {p:"They work on community projects and spend time <b>(2) ____</b> about the culture and language of the host country.", o:["to learn","learn","learning"], a:"learning"},
@@ -231,7 +231,7 @@ const BOOK = {
    {p:"The skills they have learnt can help in many different <b>(8) ____</b>.", o:["work","employment","careers"], a:"careers"},
    {p:"An employee who has been <b>(9) ____</b> for organising a project in another country often has an open mind and good problem-solving skills.", o:["responsible","in charge","managing"], a:"responsible"},
    {p:"‘A lot of what I <b>(10) ____</b> about the world comes from my time living in Mozambique. It was amazing.’", o:["am knowing","knew","know"], a:"know"}]},
- b1a:{name:"Учебник 1A · -ed или -ing?", type:"mc", hint:"Выбери правильное прилагательное. -ed — что чувствует человек, -ing — какая ситуация/вещь.",
+ b1a:{name:"Coursebook 1A · Choose the correct adjective", type:"mc", hint:"Choose the correct adjective. -ed = how a person feels; -ing = what a thing or situation is like.",
   items:[
    {p:"As you can see from this really <b>(1) ____</b> photo…", o:["embarrassed","embarrassing"], a:"embarrassing"},
    {p:"…my surprise birthday party was very <b>(2) ____</b>!", o:["surprised","surprising"], a:"surprising"},
@@ -241,7 +241,7 @@ const BOOK = {
    {p:"It was a really quiet and <b>(6) ____</b> night of work, too.", o:["boring","bored"], a:"boring"},
    {p:"Inna said she was <b>(7) ____</b> for weeks that she was going to say something.", o:["frightened","frightening"], a:"frightened"},
    {p:"It's <b>(8) ____</b> that she didn't because she can't usually keep a secret!", o:["amazed","amazing"], a:"amazing"}]},
- b1b:{name:"Учебник B · Допиши прилагательные", type:"write", hint:"Допиши прилагательное целиком. Первые буквы даны.",
+ b1b:{name:"Coursebook B · Complete the adjectives", type:"write", hint:"Write the whole adjective. Some letters are given.",
   items:[
    {p:"1. I was <b>w________</b> that I'd give a bad presentation, but I didn't.", a:["worried"]},
    {p:"2. Your home is so nice. I'm <b>j___l___</b>.", a:["jealous"]},
@@ -253,7 +253,7 @@ const BOOK = {
    {p:"8. I'm not just scared. I'm <b>t__r_____</b>!", a:["terrified"]},
    {p:"9. Lola's worked so hard on her singing. You must be really <b>p_ou_</b> of her.", a:["proud"]},
    {p:"10. I didn't sleep well. I'm <b>e__h_____</b>.", a:["exhausted"]}]},
- b1c:{name:"Учебник C · Диалог (слова из рамки)", type:"mc", hint:"Выбери слово из рамки: angry, bored, calm, exhausted, nervous, proud, silly, terrified.",
+ b1c:{name:"Coursebook C · Complete the conversation", type:"mc", hint:"Choose a word from the box: angry, bored, calm, exhausted, nervous, proud, silly, terrified.",
   items:[
    {p:"Mari: How was your drama competition?<br>Adi: Good. I was scared at first – <b>(1) ____</b> in fact!", o:["terrified","calm","bored"], a:"terrified"},
    {p:"Adi: But once we started, I wasn't <b>(2) ____</b>. I felt relaxed.", o:["proud","nervous","silly"], a:"nervous"},
@@ -284,7 +284,7 @@ if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=l
 function pickVoice(n){ const gb=voices.filter(v=>/en-GB/i.test(v.lang)); const pool=gb.length>1?gb:voices; return pool.length?pool[n%pool.length]:null; }
 function rate(){ return parseFloat($("rate").value); }
 function utter(text,vi,pitch){ const u=new SpeechSynthesisUtterance(text); const v=pickVoice(vi||0); if(v){u.voice=v;u.lang=v.lang;}else u.lang="en-GB"; u.rate=rate(); u.pitch=pitch||1; return u; }
-function noTTS(){ if("speechSynthesis" in window) return false; alert("Браузер не поддерживает озвучку. Открой сайт в Chrome или Safari."); return true; }
+function noTTS(){ if("speechSynthesis" in window) return false; alert("Your browser can't read words aloud. Please open this site in Chrome or Safari."); return true; }
 function say(text,slow){ if(noTTS())return; speechSynthesis.cancel(); const u=utter(text,0,1); if(slow)u.rate=Math.min(rate(),0.8); speechSynthesis.speak(u); }
 
 
@@ -307,17 +307,17 @@ const STEP_TYPES=[
 ];
 const STEPS=[];
 const ORDER=["W","b5a","b6a","F1","b1b","b1c","F2","b1a"];
-const HW_TYPES=STEP_TYPES.filter(x=>["tr","wr"].includes(x.t)).map(x=>x.t==="tr"?{t:"tr",name:"Повтори слова: выбери перевод"}:{t:"wr",name:"✍️ Напиши по переводу"});
+const HW_TYPES=STEP_TYPES.filter(x=>["tr","wr"].includes(x.t)).map(x=>x.t==="tr"?{t:"tr",name:"Review: match the meaning"}:{t:"wr",name:"✍️ Write the word"});
 ORDER.forEach(o=>{ const st=SETS.find(x=>x.id===o); if(st) HW_TYPES.forEach(x=>STEPS.push({key:st.id+":"+x.t,set:st,t:x.t,name:x.name})); else STEPS.push({key:"book:"+o,t:"book",book:o,name:"📘 "+BOOK[o].name}); });
 
 function base(en){ return en.replace(/^the /,""); }
 function curIdx(){ const i=STEPS.findIndex(s=>!STATE.vocab[s.key]); return i<0?STEPS.length:i; }
 function renderPath(){
   const ci=curIdx(), done=STEPS.filter(s=>STATE.vocab[s.key]).length;
-  $("vBar").style.width=(100*done/STEPS.length)+"%"; $("vProg").textContent="Пройдено шагов: "+done+" из "+STEPS.length;
+  $("vBar").style.width=(100*done/STEPS.length)+"%"; $("vProg").textContent="Steps completed: "+done+" of "+STEPS.length;
   let h="",last=null;
   STEPS.forEach((s,i)=>{
-    const g=s.set?s.set.name:"Итоговые задания";
+    const g=s.set?s.set.name:"Final tasks";
     if(g!==last){ if(last!==null)h+="</div>"; h+='<div style="margin:10px 0 4px;font-weight:700">'+esc(g)+'</div><div class="ex">'; last=g; }
     const st=STATE.vocab[s.key]?"done":i===ci?"cur":"lock";
     h+='<button class="sm '+(st==="done"?"done":"")+'" '+(st==="lock"?"disabled":"")+' onclick="openStep('+i+')">'+(st==="done"?"✓ ":st==="cur"?"▶ ":"🔒 ")+esc(s.name)+'</button>';
@@ -328,9 +328,9 @@ function goCurrent(){ openStep(curIdx()); }
 function openStep(i){
   speechSynthesis.cancel();
   ["cardsBox","drillBox","nextBox"].forEach(x=>$(x).classList.add("hidden"));
-  if(i>=STEPS.length){ $("sStep").textContent=""; $("sTitle").textContent="🎉 Всё пройдено!"; $("sHint").innerHTML="Нажми «Отправить учителю» внизу страницы."; renderPath(); return; }
+  if(i>=STEPS.length){ $("sStep").textContent=""; $("sTitle").textContent="🎉 All done!"; $("sHint").innerHTML="Now click «Send results» below."; renderPath(); return; }
   const s=STEPS[i];
-  $("sStep").textContent="Шаг "+(i+1)+" из "+STEPS.length+(s.set?" · "+s.set.name:"");
+  $("sStep").textContent="Step "+(i+1)+" of "+STEPS.length+(s.set?" · "+s.set.name:"");
   $("sTitle").textContent=s.name;
   if(s.t==="cards") startCards(s); else runDrill(s);
   renderPath(); $("stage").scrollIntoView({behavior:"smooth",block:"start"});
@@ -363,12 +363,12 @@ function buildItems(s){
   const others=(w,f)=>shuffle(W.filter(x=>x!==w)).slice(0,3).map(f);
   const ru=w=>esc(w.ru)+" <span class='muted' style='font-size:15px'>("+w.pos+")</span>";
   switch(s.t){
-  case "tr": return {type:"mc",hint:"Послушай и выбери перевод.",items:W.map(w=>({prompt:esc(w.en),sayText:w.en,opts:shuffle([w.ru,...others(w,x=>x.ru)]),ans:w.ru,after:w.en+" — "+w.ru,word:w.en}))};
+  case "tr": return {type:"mc",hint:"Listen to the word and choose its meaning.",items:W.map(w=>({prompt:esc(w.en),sayText:w.en,opts:shuffle([w.def,...others(w,x=>x.def)]),ans:w.def,after:w.en+" = "+w.def,word:w.en}))};
   case "def": return {type:"mc",hint:"Прочитай определение и выбери слово. Именно так IELTS перефразирует лексику в Reading и Listening.",items:W.map(w=>({prompt:"<span style='font-size:19px'>"+esc(w.def)+"</span>",opts:shuffle([w.en,...others(w,x=>x.en)]),ans:w.en,after:w.en+" = "+w.def,word:w.en}))};
   case "ctx": return {type:"write",hint:"Вставь слово/фразу в предложение. Даны первые буквы, каждая черточка = одна буква.",items:W.filter(w=>ctxPrompt(w)).map(w=>({prompt:"<span style='font-size:19px;font-weight:500'>"+ctxPrompt(w)+"</span>",ans:[w.en],word:w.en,sayText:w.ex,after:w.ru}))};
   case "gaps": return {type:"write",hint:"Напиши слово целиком, вставив пропущенные буквы.",items:W.map(w=>({prompt:ru(w)+"<div style='font-family:monospace;font-size:24px;margin-top:8px'>"+mask(w.en)+"</div>",ans:[w.en],word:w.en,sayText:w.en}))};
   case "lis": return {type:"write",autoSay:true,hint:"Послушай и напиши. 🔊 — ещё раз.",items:W.map(w=>({prompt:"🎧 <span class='muted' style='font-size:15px'>("+w.en.length+" знаков)</span>",ans:[w.en],word:w.en,sayText:w.en,after:w.ru}))};
-  case "wr": return {type:"write",hint:"Итог набора: перевод → слово по-английски, без подсказок.",items:W.map(w=>({prompt:ru(w),ans:[w.en],word:w.en,sayText:w.en}))};
+  case "wr": return {type:"write",hint:"Read the meaning and write the word. Spelling matters!",items:W.map(w=>({prompt:"<span style='font-size:19px'>"+esc(w.def)+"</span> <span class='muted' style='font-size:15px'>("+w.pos+", starts with «"+w.en[0]+"», "+w.en.length+" characters)</span>",ans:[w.en],word:w.en,sayText:w.en}))};
   case "book": { const B=BOOK[s.book]; return {type:B.type,hint:B.hint,ordered:true,items:B.items.map(it=>B.type==="mc"?{prompt:"<span style='font-size:19px;font-weight:500'>"+it.p+"</span>",opts:it.o,ans:it.a,after:it.a,word:it.a}:{prompt:"<span style='font-size:19px;font-weight:500'>"+it.p+"</span>",ans:it.a,word:it.a[0]})}; }
   }
 }
@@ -379,7 +379,7 @@ function runDrill(s){ const b=buildItems(s);
 function dNext(){
   D.lock=false; D.retype=null; $("dBar").style.width=(100*D.done/D.total)+"%"; $("dFb").innerHTML=""; $("dOpts").innerHTML="";
   if(!D.queue.length){
-    $("dPrompt").innerHTML="✅ Готово! С первого раза: "+D.first+" / "+D.total+(D.mistakes.length?"<div class='muted' style='font-size:15px;font-weight:400'>Повтори: "+D.mistakes.map(m=>esc(m.split(" (")[0])).join(", ")+"</div>":"");
+    $("dPrompt").innerHTML="✅ Done! Correct first time: "+D.first+" / "+D.total+(D.mistakes.length?"<div class='muted' style='font-size:15px;font-weight:400'>Review these: "+D.mistakes.map(m=>esc(m.split(" (")[0])).join(", ")+"</div>":"");
     $("dWrite").classList.add("hidden");
     STATE.vocab[D.step.key]={name:D.step.name,score:D.first,total:D.total,mistakes:D.mistakes}; save(); renderPath(); $("nextBox").classList.remove("hidden"); return;
   }
@@ -391,41 +391,41 @@ function dNext(){
 }
 function dResult(ok,given){ const it=D.items[D.cur];
   if(ok){ if(!D.wrong.has(D.cur)) D.first++; D.done++; }
-  else{ if(!D.wrong.has(D.cur)){ D.wrong.add(D.cur); D.mistakes.push(it.word+" (написал(а): "+(given||"—")+")"); } D.queue.push(D.cur); } }
+  else{ if(!D.wrong.has(D.cur)){ D.wrong.add(D.cur); D.mistakes.push(it.word+" (student wrote: "+(given||"—")+")"); } D.queue.push(D.cur); } }
 function dPick(btn,o){ if(D.lock)return; D.lock=true; const it=D.items[D.cur]; const ok=o===it.ans;
   [...$("dOpts").children].forEach(b=>{b.disabled=true; if(b.textContent===it.ans) b.classList.add("ok");}); if(!ok) btn.classList.add("bad");
-  dResult(ok,o); $("dFb").innerHTML=(ok?"👍 ":"✗ ")+esc(it.after||"")+(ok?"":"<br><span class='muted'>Будет ещё раз.</span>");
+  dResult(ok,o); $("dFb").innerHTML=(ok?"👍 ":"✗ ")+esc(it.after||"")+(ok?"":"<br><span class='muted'>You'll see this again.</span>");
   if(it.sayText&&!ok) say(it.sayText); setTimeout(dNext, ok?900:2600); }
 function dCheck(){
   if(D.lock)return; const it=D.items[D.cur]; const v=$("dIn").value; if(!v.trim())return;
-  if(D.retype){ if(isRight(v,it.ans)){ D.lock=true; $("dIn").className="ok"; $("dFb").innerHTML="👍 Теперь правильно. Будет ещё раз в конце."; setTimeout(dNext,1100); }
-    else{ $("dIn").className="bad"; $("dFb").innerHTML="Ещё не так. Напиши точно: <b>"+esc(it.word)+"</b>"; } return; }
+  if(D.retype){ if(isRight(v,it.ans)){ D.lock=true; $("dIn").className="ok"; $("dFb").innerHTML="👍 That's right now. You'll see it again at the end."; setTimeout(dNext,1100); }
+    else{ $("dIn").className="bad"; $("dFb").innerHTML="Not quite. Type exactly: <b>"+esc(it.word)+"</b>"; } return; }
   const ok=isRight(v,it.ans); $("dIn").className=ok?"ok":"bad"; dResult(ok,v); say(it.word);
   if(ok){ D.lock=true; $("dFb").innerHTML="👍 "+esc(it.word)+(it.after?" — "+esc(it.after):""); setTimeout(dNext,1000); }
-  else{ D.retype=true; $("dFb").innerHTML="Правильно: <b style='font-size:20px'>"+esc(it.word)+"</b><br>Перепечатай правильно и нажми «Проверить»."; $("dIn").value=""; $("dIn").focus(); }
+  else{ D.retype=true; $("dFb").innerHTML="Correct answer: <b style='font-size:20px'>"+esc(it.word)+"</b><br>Type it correctly and click «Check»."; $("dIn").value=""; $("dIn").focus(); }
 }
 
 /* отчёт */
-const SHORT={tr:"перевод",def:"определение",ctx:"в предложении",gaps:"буквы",lis:"на слух",wr:"по переводу"};
+const SHORT={tr:"meaning",def:"definition",ctx:"in context",gaps:"letters",lis:"listening",wr:"spelling"};
 function buildReport(){
   const mins=Math.max(1,Math.round((Date.now()-STATE.started)/60000));
-  let t="📝 <b>ДЗ · Work, people &amp; feelings</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+" · ≈"+mins+" мин\n📚 Шагов пройдено: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" из "+STEPS.length+"\n";
+  let t="📝 <b>Homework · Work, people &amp; feelings</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("en-GB")+" · ≈"+mins+" min\n📚 Steps completed: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" of "+STEPS.length+"\n";
   SETS.forEach(st=>{
     const got=STEPS.filter(x=>x.set===st&&x.t!=="cards"&&STATE.vocab[x.key]);
-    if(!got.length){ t+="\n<b>"+esc(st.name)+"</b>: не начато"; return; }
+    if(!got.length){ t+="\n<b>"+esc(st.name)+"</b>: not started"; return; }
     const sc=got.reduce((a,x)=>a+STATE.vocab[x.key].score,0), tt=got.reduce((a,x)=>a+STATE.vocab[x.key].total,0);
     t+="\n<b>"+esc(st.name)+"</b>: "+sc+"/"+tt+"\n   "+esc(got.map(x=>SHORT[x.t]+" "+STATE.vocab[x.key].score+"/"+STATE.vocab[x.key].total).join(" · "));
     got.forEach(x=>STATE.vocab[x.key].mistakes.forEach(m=>t+="\n   ✗ "+esc(SHORT[x.t]+": "+m)));
   });
-  STEPS.filter(x=>x.t==="book").forEach(x=>{ const v=STATE.vocab[x.key]; t+="\n\n<b>"+esc(BOOK[x.book].name)+"</b>: "+(v?v.score+"/"+v.total:"не сделано"); if(v) v.mistakes.forEach(m=>t+="\n   ✗ "+esc(m)); });
+  STEPS.filter(x=>x.t==="book").forEach(x=>{ const v=STATE.vocab[x.key]; t+="\n\n<b>"+esc(BOOK[x.book].name)+"</b>: "+(v?v.score+"/"+v.total:"not done"); if(v) v.mistakes.forEach(m=>t+="\n   ✗ "+esc(m)); });
   return t;
 }
 function chunks(text){ const out=[]; let cur=""; text.split("\n").forEach(l=>{ if((cur+"\n"+l).length>3800){ out.push(cur); cur=l; } else cur=cur?cur+"\n"+l:l; }); if(cur)out.push(cur); return out; }
 async function sendResults(){
-  const text=buildReport(); $("sendBtn").disabled=true; $("sendFb").textContent="Отправляю…";
+  const text=buildReport(); $("sendBtn").disabled=true; $("sendFb").textContent="Sending…";
   try{ for(const part of chunks(text)){ const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text:part,parse_mode:"HTML"})}); const j=await r.json(); if(!j.ok) throw new Error(j.description); }
-    $("sendFb").textContent="✅ Отправлено! Молодец!"; $("sendBtn").disabled=false; }
-  catch(e){ $("sendBtn").disabled=false; $("sendFb").textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
+    $("sendFb").textContent="✅ Sent! Well done!"; $("sendBtn").disabled=false; }
+  catch(e){ $("sendBtn").disabled=false; $("sendFb").textContent="Couldn't send ("+e.message+"). Copy the text and send it to your teacher:"; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
 }
 
 load(); if(STATE.name) $("nameInput").value=STATE.name;
