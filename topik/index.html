@@ -410,11 +410,11 @@ function buildItems(s){
   const W=s.set.words;
   const others=(w,f)=>shuffle(W.filter(x=>x!==w&&!related(x,w))).slice(0,3).map(f);
   switch(s.t){
-  case "tr": return {type:"mc",hint:"Послушай слово и выбери перевод.",items:W.map(w=>({prompt:'<span class="ko">'+esc(w.ko)+'</span>',sayText:w.ko,opts:shuffle([w.ru,...others(w,x=>x.ru)]),ans:w.ru,after:w.ko+" — "+w.ru,word:w.ko}))};
+  case "tr": return {type:"mc",hint:"Послушай слово и выбери перевод.",items:W.map(w=>({prompt:'<span class="ko">'+esc(w.ko)+'</span>',sayText:w.ko,opts:shuffle([w.ru,...others(w,x=>x.ru)]),ans:w.ru,after:w.ko+" — "+w.ru,word:w.ko,w}))};
   case "ctx": return {type:"mc",hint:"Какое слово пропущено? Варианты даны в словарной форме, в предложении слово может стоять в другой форме. Как в заданиях TOPIK 읽기.",items:W.map(w=>{ const f=form(w), i=w.ex.indexOf(f);
       return {prompt:'<span class="ko" style="font-size:21px;font-weight:500">'+esc(w.ex.slice(0,i))+'<b style="color:var(--accent)">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</b>'+esc(w.ex.slice(i+f.length))+'</span><div class="muted" style="font-size:15px;font-weight:400;margin-top:6px">'+esc(w.exRu)+'</div>',
-        opts:shuffle([w.ko,...others(w,x=>x.ko)]),ans:w.ko,sayText:null,afterSay:w.ex,after:w.ex,word:w.ko}; })};
-  case "wr": return {type:"write",hint:"Перевод → слово по-корейски (в словарной форме). Пробелы не важны.",items:W.map(w=>({prompt:esc(w.ru)+' <span class="muted" style="font-size:15px;font-weight:400">('+syl(w.ko.replace(/\s/g,"").length)+')</span>',ans:[w.ko],word:w.ko,after:w.ru}))};
+        opts:shuffle([w.ko,...others(w,x=>x.ko)]),ans:w.ko,sayText:null,afterSay:w.ex,after:w.ex,word:w.ko,w}; })};
+  case "wr": return {type:"write",hint:"Перевод → слово по-корейски (в словарной форме). Пробелы не важны.",items:W.map(w=>({prompt:esc(w.ru)+' <span class="muted" style="font-size:15px;font-weight:400">('+syl(w.ko.replace(/\s/g,"").length)+')</span>',ans:[w.ko],word:w.ko,after:w.ru,w}))};
   }
 }
 let D=null;
@@ -422,7 +422,7 @@ function runDrill(s){ const b=buildItems(s);
   D={step:s,type:b.type,items:b.items,queue:shuffle(b.items.map((_,i)=>i)),total:b.items.length,first:0,done:0,wrong:new Set(),mistakes:[],cur:null,lock:false,retype:null};
   $("sHint").textContent=b.hint; $("drillBox").classList.remove("hidden"); dNext(); }
 function dNext(){
-  D.lock=false; D.retype=null; $("dBar").style.width=(100*D.done/D.total)+"%"; $("dFb").innerHTML=""; $("dOpts").innerHTML="";
+  clearTimeout(D.timer); D.lock=false; D.retype=null; $("dBar").style.width=(100*D.done/D.total)+"%"; $("dFb").innerHTML=""; $("dOpts").innerHTML="";
   if(!D.queue.length){
     $("dPrompt").innerHTML="✅ Готово! С первого раза: "+D.first+" / "+D.total+(D.mistakes.length?"<div class='muted ko' style='font-size:15px;font-weight:400'>Повтори: "+D.mistakes.map(m=>esc(m.split(" (")[0])).join(", ")+"</div>":"");
     $("dWrite").classList.add("hidden");
@@ -441,14 +441,23 @@ function dPick(btn,o){ if(D.lock)return; D.lock=true; const it=D.items[D.cur]; c
   [...$("dOpts").children].forEach(b=>{b.disabled=true; if(b.textContent===it.ans) b.classList.add("ok");}); if(!ok) btn.classList.add("bad");
   dResult(ok,o); $("dFb").innerHTML=(ok?"👍 ":"✗ ")+'<span class="ko">'+esc(it.after||"")+'</span>'+(ok?"":"<br><span class='muted'>Будет ещё раз.</span>");
   if(it.afterSay) say(it.afterSay); else if(!ok&&it.sayText) say(it.sayText);
-  setTimeout(dNext, ok?(it.afterSay?1800:900):3000); }
+  later(ok?(it.afterSay?2000:1200):3000); }
+/* пример после ответа: автопереход, но можно остановиться и прочитать */
+function later(ms){ const it=D.items[D.cur];
+  $("dFb").insertAdjacentHTML("beforeend",'<div style="margin-top:8px"><button class="sm" id="exBtn" onclick="showEx()">📖 Пример</button></div>');
+  clearTimeout(D.timer); D.timer=setTimeout(dNext,ms); }
+function showEx(){ clearTimeout(D.timer); const w=D.items[D.cur].w; const b=$("exBtn"); if(b) b.parentNode.remove();
+  $("dFb").insertAdjacentHTML("beforeend",'<div class="transcript" style="font-weight:400"><div class="ko" style="font-size:19px">'+esc(w.ex).replace(esc(form(w)),'<mark>'+esc(form(w))+'</mark>')+
+   ' <button class="dark sm" onclick="say('+esc(JSON.stringify(w.ex))+')">🔊</button></div><div class="muted">'+esc(w.exRu)+'</div></div><button class="primary" id="exNext" onclick="dNext()">Дальше →</button>');
+  $("exNext").focus(); }
+document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&$("exNext")&&document.activeElement!==$("exNext")&&!$("drillBox").classList.contains("hidden")){ e.preventDefault(); dNext(); } });
 function dHint(){ if(!D||D.lock) return; const it=D.items[D.cur]; D.hinted=D.hinted||new Set(); D.hinted.add(D.cur); $("dFb").innerHTML='Начинается на: <b class="ko" style="font-size:20px">'+esc(it.word[0])+'…</b>'; $("dIn").focus(); }
 function dCheck(){
   if(D.lock)return; const it=D.items[D.cur]; const v=$("dIn").value; if(!v.trim())return;
-  if(D.retype){ if(isRight(v,it.ans)){ D.lock=true; $("dIn").className="ko ok"; $("dFb").innerHTML="👍 Теперь правильно. Будет ещё раз в конце."; setTimeout(dNext,1100); }
+  if(D.retype){ if(isRight(v,it.ans)){ D.lock=true; $("dIn").className="ko ok"; $("dFb").innerHTML="👍 Теперь правильно. Будет ещё раз в конце."; later(1400); }
     else{ $("dIn").className="ko bad"; $("dFb").innerHTML='Ещё не так. Напиши точно: <b class="ko">'+esc(it.word)+'</b>'; } return; }
   const ok=isRight(v,it.ans); $("dIn").className="ko "+(ok?"ok":"bad"); dResult(ok,v); say(it.word);
-  if(ok){ D.lock=true; $("dFb").innerHTML='👍 <span class="ko">'+esc(it.word)+'</span> — '+esc(it.after); setTimeout(dNext,1100); }
+  if(ok){ D.lock=true; $("dFb").innerHTML='👍 <span class="ko">'+esc(it.word)+'</span> — '+esc(it.after); later(1400); }
   else{ D.retype=true; $("dFb").innerHTML='Правильно: <b class="ko" style="font-size:22px">'+esc(it.word)+'</b><br>Перепечатай правильно и нажми «Проверить».'; $("dIn").value=""; $("dIn").focus(); }
 }
 
