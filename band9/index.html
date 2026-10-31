@@ -47,6 +47,8 @@
   .pk button.ok{background:var(--okbg);outline:2px solid var(--ok)}
   .pk button.bad{background:var(--badbg);outline:2px solid var(--bad)}
   label{display:block;margin-top:6px}
+  details{margin:6px 0} summary{cursor:pointer;padding:4px 0}
+  ul.pb{margin:4px 0 8px;padding-left:20px} ul.pb li{margin:3px 0}
   .score{font-size:18px;font-weight:700;margin-top:12px}
   .hidden{display:none!important}
   .transcript{background:#f3f6ff;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:15px}
@@ -162,6 +164,57 @@
     </div>
   </div>
 
+  <div class="card">
+    <h3>💎 Фразы для band 9</h3>
+    <p class="muted">Экзаменатор оценивает не «умные слова», а естественность: гибкость, оттенки мнения, связность. Выбери 2–3 фразы из каждой группы и используй их в ответах.</p>
+    <details open><summary><b>Начать мнение (вместо «I think»)</b></summary><ul class="pb">
+      <li>From my perspective, … / As far as I'm concerned, …</li>
+      <li>I'd argue that … / I'm firmly convinced that …</li>
+      <li>I'm inclined to think that … <span class="muted">(мягко)</span></li>
+      <li>To my mind, there's no doubt that …</li></ul></details>
+    <details><summary><b>Смягчить / показать нюанс (hedging)</b></summary><ul class="pb">
+      <li>It largely depends on … / To a certain extent, …</li>
+      <li>It's not quite as simple as that, though.</li>
+      <li>Generally speaking, … but there are exceptions.</li>
+      <li>I'd say it's more a question of … than …</li></ul></details>
+    <details><summary><b>Причина и следствие</b></summary><ul class="pb">
+      <li>The main reason for this is that …</li>
+      <li>This stems from the fact that …</li>
+      <li>As a result, … / Consequently, …</li>
+      <li>This, in turn, leads to …</li></ul></details>
+    <details><summary><b>Пример</b></summary><ul class="pb">
+      <li>A case in point is … / Take … for instance.</li>
+      <li>To give you a concrete example, …</li>
+      <li>I can speak from personal experience here: …</li></ul></details>
+    <details><summary><b>Сравнить и возразить</b></summary><ul class="pb">
+      <li>On the flip side, … / Having said that, …</li>
+      <li>While it's true that …, I'd still say …</li>
+      <li>Admittedly, … , but …</li>
+      <li>Conversely, …</li></ul></details>
+    <details><summary><b>Говорить о будущем и гипотезах</b></summary><ul class="pb">
+      <li>I wouldn't be surprised if … / It's highly likely that …</li>
+      <li>In all likelihood, … / There's every chance that …</li>
+      <li>If that were the case, …</li></ul></details>
+    <details><summary><b>Выиграть время (естественно, без пауз)</b></summary><ul class="pb">
+      <li>That's an interesting question — I've never really thought about it, but …</li>
+      <li>Let me think … well, …</li>
+      <li>That's a tricky one, but I suppose …</li></ul></details>
+    <details><summary><b>Перефразировать / исправить себя</b></summary><ul class="pb">
+      <li>I mean, … / In other words, … / What I'm trying to say is …</li>
+      <li>Or rather, … / Well, actually, …</li>
+      <li>What's the word … / How shall I put it …</li></ul></details>
+    <details><summary><b>Part 2: структура рассказа</b></summary><ul class="pb">
+      <li>I'd like to talk about … which I came across …</li>
+      <li>What really struck me was …</li>
+      <li>The thing that made it so persuasive was …</li>
+      <li>Looking back, I think it worked because …</li>
+      <li>All in all, … / So that's why it really stuck in my mind.</li></ul></details>
+    <details><summary><b>Подвести итог в Part 3</b></summary><ul class="pb">
+      <li>So, all things considered, …</li>
+      <li>On balance, I'd say …</li>
+      <li>At the end of the day, …</li></ul></details>
+    <p class="muted" style="margin-bottom:0">Формула ответа Part 3: <b>мнение → причина → пример → (оговорка) → итог</b>. 4–6 предложений.</p>
+  </div>
   <div class="card">
     <h3>Part 2 · Cue card</h3>
     <div class="form">
@@ -506,6 +559,7 @@ const P3 = [
   {g:"Regulation and the future", q:"Do you think public spaces in cities should be free from advertising?"},
   {g:"Regulation and the future", q:"How do you think advertising will change in the next twenty years?"}
 ];
+const HINTS = [["Companies cannot afford not to advertise in such a saturated market.", "It's vital for raising brand awareness, especially for start-ups.", "Admittedly, word of mouth can be just as powerful."], ["Adverts appeal to our emotions rather than our logic.", "They create a sense of need we didn't have before.", "Celebrity endorsements make products seem aspirational."], ["It largely depends on the target audience.", "A catchy slogan can boost sales dramatically.", "Having said that, many people have become immune to adverts."], ["Peer pressure and recommendations from friends.", "Price — everyone loves a bargain.", "Online reviews and the reputation of the brand."], ["It fuels consumerism and makes society more materialistic.", "Misleading or deceptive advertising can exploit vulnerable people.", "It can encourage people to go into overdraft or debt."], ["Some commercials are made by talented film directors.", "A case in point is … (iconic advert you remember).", "Good adverts are creative, compelling and memorable."], ["There's a strong case for a ban, since children are so gullible.", "On the flip side, a total ban might be too extreme.", "Many countries already impose a ban on junk food adverts."], ["Children can't distinguish between adverts and entertainment.", "They are easily manipulated by bright colours and cartoon characters.", "This stems from the fact that their critical thinking is still developing."], ["Parents should explain how advertising works.", "Setting limits on screen time is one way to …", "At the end of the day, education matters more than bans."], ["Adverts have become ubiquitous and highly personalised.", "We are bombarded with pop-ups and unsolicited emails.", "Campaigns can go viral overnight."], ["Influencers feel more authentic, like a friend's recommendation.", "Having said that, people are becoming sceptical of paid promotion.", "Product placement is often subtle and pervasive."], ["It's a double-edged sword: relevant adverts vs. loss of privacy.", "I'm inclined to think it's acceptable only with clear consent.", "Data collection has reached unprecedented levels."], ["I'm firmly convinced that stricter rules are needed for online ads.", "For instance, false claims should be heavily fined.", "Influencers should clearly label paid content."], ["Billboards can be intrusive and spoil the city's appearance.", "São Paulo is a case in point — it banned outdoor advertising.", "Conversely, ads bring revenue that funds public transport."], ["In all likelihood, AI will create personalised adverts in real time.", "I wouldn't be surprised if …", "The inexorable rise of online shopping will …"]];
 const REC = {}; // id -> {blob, mime, dur}
 function fmt(t){ t=Math.max(0,Math.round(t)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); }
 function recUI(id,max){
@@ -539,7 +593,7 @@ function spRender(){
   $("rec-p2").innerHTML=recUI("p2",120);
   let h="",last=null;
   P3.forEach((x,i)=>{ if(x.g!==last){ h+='<h4 style="margin:16px 0 4px">'+esc(x.g)+'</h4>'; last=x.g; }
-    h+='<div class="form" style="margin:8px 0"><b>'+(i+1)+'. '+esc(x.q)+'</b><input type="text" id="p3n'+i+'" placeholder="План: идея → причина → пример" autocomplete="off" style="margin:8px 0">'+recUI("p3-"+i,120)+'</div>'; });
+    h+='<div class="form" style="margin:8px 0"><b>'+(i+1)+'. '+esc(x.q)+'</b>'+(HINTS[i]?'<details style="margin-top:6px"><summary class="muted">💡 Подсказка: идеи и фразы</summary><ul class="pb">'+HINTS[i].map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></details>':'')+'<input type="text" id="p3n'+i+'" placeholder="План: идея → причина → пример" autocomplete="off" style="margin:8px 0">'+recUI("p3-"+i,120)+'</div>'; });
   $("p3").innerHTML=h;
 }
 function ext(m){ return /ogg/.test(m)?"ogg":/mp4|aac|m4a/.test(m)?"m4a":"webm"; }
