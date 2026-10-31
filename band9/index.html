@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IELTS Vocabulary · Advertising (Band 9)</title>
+<title>IELTS Band 9 · Advertising: vocabulary &amp; speaking</title>
 <style>
   :root{--ink:#1d2433;--muted:#667085;--line:#e4e7ec;--bg:#f5f6fa;--card:#fff;--accent:#2f5bea;--ok:#1f9d55;--okbg:#e9f8ef;--bad:#d64545;--badbg:#fdeeee}
   *{box-sizing:border-box}
@@ -46,6 +46,7 @@
   .pk button.sel{background:#dfe6ff;outline:2px solid var(--accent)}
   .pk button.ok{background:var(--okbg);outline:2px solid var(--ok)}
   .pk button.bad{background:var(--badbg);outline:2px solid var(--bad)}
+  label{display:block;margin-top:6px}
   .score{font-size:18px;font-weight:700;margin-top:12px}
   .hidden{display:none!important}
   .transcript{background:#f3f6ff;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:15px}
@@ -91,6 +92,11 @@
 </div>
 <div id="app" class="hidden">
   <header><h1>Advertising · Band 9</h1><div class="who">👤 <span id="who"></span></div></header>
+  <nav id="nav">
+    <button data-tab="vocab" class="active">📚 Лексика</button>
+    <button data-tab="speak">🎤 Speaking</button>
+  </nav>
+<section id="tab-vocab">
   <div class="card">
     <p class="muted" style="margin-top:0">Иди строго по шагам: следующий откроется, когда закончишь текущий. Ошибки возвращаются в конце шага. Если ошибёшься в написании, слово нужно один раз перепечатать правильно.</p>
     <div class="bar"><div id="vBar"></div></div>
@@ -143,6 +149,53 @@
     <p class="muted">✓ — сделано (можно нажать и повторить), ▶ — сейчас, 🔒 — пока закрыто.</p>
     <div id="path"></div>
   </div>
+</section>
+<section id="tab-speak" class="hidden">
+  <div class="card">
+    <h2>🎤 Speaking Parts 2 and 3</h2>
+    <p class="muted">Для записи нужен микрофон: браузер спросит разрешение, нажми «Разрешить». Записи уходят учителю в Telegram.</p>
+    <div class="reading" style="font-family:inherit;font-size:15px">
+      <b>Useful phrases.</b> Если сказал(а) непонятно — повтори мысль другими словами; если ошибся(лась) — исправься сам(а):<br>
+      • <b>I mean…</b> / <b>In other words…</b> — сказать то же самое понятнее или поправить себя<br>
+      • <b>How do you say…</b> / <b>What's the word…</b> — когда ищешь нужное слово<br>
+      <span class="muted">Экзаменатор не снижает балл за самоисправление, а наоборот видит контроль над языком.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Part 2 · Cue card</h3>
+    <div class="form">
+      <b>Describe an advertisement which you found very persuasive.</b><br>You should say:
+      <div style="padding-left:18px">what the advertisement was for<br>where you saw or read it<br>what the advertisement consisted of</div>
+      and why you found it so persuasive.
+    </div>
+    <h3 style="margin-top:16px">Шаг 1. План (1 минута)</h3>
+    <p class="muted">Нажми «Старт» и за 1 минуту запиши ключевые слова по каждому пункту, а не целые предложения. Постарайся использовать слова из урока: <i>persuasive, catchy, compelling, target audience, appeal to, endorsement, slogan, aspirational, boost sales…</i></p>
+    <button class="dark" id="p2Start" onclick="p2Prep()">⏱ Старт: 1 минута на план</button> <b id="p2Timer" style="font-size:20px"></b>
+    <div id="p2PlanBox" style="margin-top:8px">
+      <label class="muted">What was it for?</label><input type="text" id="p2n1" autocomplete="off">
+      <label class="muted">Where did you see it?</label><input type="text" id="p2n2" autocomplete="off">
+      <label class="muted">What did it consist of?</label><input type="text" id="p2n3" autocomplete="off">
+      <label class="muted">Why was it so persuasive?</label><input type="text" id="p2n4" autocomplete="off">
+    </div>
+    <h3 style="margin-top:16px">Шаг 2. Ответ (1–2 минуты)</h3>
+    <p class="muted">Говори по плану. Запись остановится сама через 2 минуты. Ориентир — не меньше 1:30.</p>
+    <div id="rec-p2"></div>
+  </div>
+
+  <div class="card">
+    <h3>Part 3 · Discussion</h3>
+    <p class="muted">На каждый вопрос: короткий план (идея → причина → пример), затем запись ответа 40–90 секунд. Давай развёрнутый ответ с причинами и примерами.</p>
+    <div id="p3"></div>
+  </div>
+
+  <div class="card">
+    <h3>📨 Отправить Speaking учителю</h3>
+    <p class="muted">Отправятся план и все записанные ответы. Неотвеченные вопросы можно пропустить.</p>
+    <button class="primary" id="spSend" onclick="sendSpeaking()">Отправить записи</button>
+    <div class="feedback" id="spFb"></div>
+  </div>
+</section>
 </div>
 </div>
 <script>
@@ -154,7 +207,36 @@ const TG_CHAT_ID = "347625701";
    Каждое слово: en, pos, ru, def (определение по-английски), ex (пример — слово en должно стоять в нём точно в такой форме).
    Наборы учителя ставятся ПЕРВЫМИ (пока пусто — ждём материалы). */
 const SETS = [
- {id:"A", name:"A · Persuasion & psychology", words:[
+ {id:"T1", name:"1 · Nature & environment", words:[
+  {en:"devastating", pos:"adj", ru:"разрушительный, опустошительный", def:"causing great damage or destruction", ex:"The flood had a devastating effect on local farms."},
+  {en:"precipitation", pos:"n", ru:"осадки", def:"rain, snow or hail that falls to the ground", ex:"Annual precipitation in the desert is less than 25 mm."},
+  {en:"malleable", pos:"adj", ru:"податливый, пластичный", def:"easy to bend or press into a new shape; easily influenced", ex:"Gold is a soft, malleable metal."},
+  {en:"erosion", pos:"n", ru:"эрозия, размывание", def:"the process by which rock, sand and soil are broken down and carried away by wind, water or ice", ex:"Coastal erosion is destroying the cliffs year by year."},
+  {en:"fossil", pos:"n", ru:"окаменелость, ископаемое", def:"a trace of an ancient plant or animal that has been preserved in rock", ex:"Scientists found a dinosaur fossil in the desert."},
+  {en:"latitude", pos:"n", ru:"широта (географическая)", def:"the distance north or south of the equator", ex:"Countries at a high latitude have long winter nights."},
+  {en:"mild", pos:"adj", ru:"мягкий, умеренный", def:"not too cold or too hot; not strong or severe", ex:"The region has a mild climate all year round."},
+  {en:"smelt", pos:"v", ru:"плавить, выплавлять (металл)", def:"to heat rock in order to get the metal out of it", ex:"Ancient people learned to smelt copper about 7,000 years ago."},
+  {en:"damp", pos:"adj", ru:"сырой, влажный", def:"slightly wet, often in an unpleasant way; humid", ex:"The house was cold and damp in winter."},
+  {en:"pristine", pos:"adj", ru:"нетронутый, первозданный, безупречно чистый", def:"fresh and clean; not spoiled or corrupted", ex:"The island still has pristine beaches."},
+  {en:"algae", pos:"n", ru:"водоросли", def:"very simple plants that grow in or near water", ex:"Warm water causes algae to grow quickly in the lake."},
+  {en:"pervasive", pos:"adj", ru:"всепроникающий, повсеместный", def:"spreading through every part of something", ex:"Plastic pollution has become pervasive in the oceans."}
+ ]},
+ {id:"T2", name:"2 · Shopping, work & abstract", words:[
+  {en:"notoriously", pos:"adv", ru:"как известно (в плохом смысле), печально известно", def:"in a way that is famous for something bad", ex:"The city is notoriously expensive for tourists."},
+  {en:"inevitable", pos:"adj", ru:"неизбежный", def:"certain to happen; impossible to avoid", ex:"Price rises are inevitable when energy costs go up."},
+  {en:"inexorable", pos:"adj", ru:"неумолимый, неотвратимый", def:"impossible to stop or change; unrelenting", ex:"We are witnessing the inexorable rise of online shopping."},
+  {en:"vital", pos:"adj", ru:"жизненно важный", def:"necessary or essential; extremely important", ex:"Advertising is vital for a new business."},
+  {en:"laden", pos:"adj", ru:"нагруженный, обременённый", def:"heavily loaded or weighed down with something", ex:"Shoppers left the mall laden with bags."},
+  {en:"unprecedented", pos:"adj", ru:"беспрецедентный", def:"never done or known before", ex:"Online sales reached an unprecedented level last year."},
+  {en:"bargain", pos:"n", ru:"выгодная покупка", def:"something bought for less than its usual price", ex:"This coat was a real bargain at half price."},
+  {en:"own-label products", pos:"n", ru:"продукты собственной марки (магазина)", def:"goods sold under the shop's own name, usually cheaper", ex:"Supermarkets sell own-label products at lower prices."},
+  {en:"retail", pos:"n", ru:"розничная торговля", def:"the business of selling goods to the public in shops", ex:"She has worked in retail for ten years."},
+  {en:"made redundant", pos:"phr", ru:"попасть под сокращение, быть уволенным по сокращению", def:"lost your job because your employer no longer needs you", ex:"Hundreds of workers were made redundant when the factory closed."},
+  {en:"buggy", pos:"n", ru:"детская коляска (прогулочная)", def:"a light folding chair on wheels for pushing a small child", ex:"The shop has wide aisles for parents with a buggy."},
+  {en:"affiliate", pos:"n", ru:"филиал, дочерняя компания; партнёр", def:"a company or organisation connected to a larger one", ex:"The bank opened an affiliate in Dubai."},
+  {en:"overdraft", pos:"n", ru:"овердрафт (уход в минус по счёту)", def:"money you spend from your bank account that is more than you have in it", ex:"He had to pay interest on his overdraft."}
+ ]},
+ {id:"A", name:"3 · Persuasion & psychology", words:[
   {en:"persuasive", pos:"adj", ru:"убедительный", def:"able to make people believe or do something", ex:"The commercial was so persuasive that sales doubled in a month."},
   {en:"manipulate", pos:"v", ru:"манипулировать", def:"to control or influence people in a clever and often unfair way", ex:"Some adverts manipulate children into wanting expensive toys."},
   {en:"appeal to", pos:"v", ru:"взывать к, привлекать", def:"to attract or interest a particular group of people", ex:"Luxury brands appeal to our desire for status."},
@@ -170,7 +252,7 @@ const SETS = [
   {en:"consumerism", pos:"n", ru:"потребительство, культ потребления", def:"the idea that buying more and more things is good", ex:"Black Friday is a symbol of modern consumerism."},
   {en:"subliminal", pos:"adj", ru:"подсознательный, скрытый", def:"affecting your mind without you noticing it", ex:"Subliminal messages in adverts are banned in many countries."}
  ]},
- {id:"B", name:"B · Media & industry", words:[
+ {id:"B", name:"4 · Media & industry", words:[
   {en:"ubiquitous", pos:"adj", ru:"вездесущий, повсеместный", def:"seeming to be everywhere", ex:"Advertising has become ubiquitous in modern cities."},
   {en:"bombard", pos:"v", ru:"засыпать, бомбардировать", def:"to give someone too much of something, again and again", ex:"We are bombarded with adverts every time we go online."},
   {en:"intrusive", pos:"adj", ru:"навязчивый", def:"annoying because it comes into your private life", ex:"Many people find pop-up adverts extremely intrusive."},
@@ -186,7 +268,7 @@ const SETS = [
   {en:"billboard", pos:"n", ru:"рекламный щит", def:"a very large board for adverts beside a road", ex:"A huge billboard was put up next to the motorway."},
   {en:"saturated", pos:"adj", ru:"перенасыщенный", def:"so full of something that no more can be added", ex:"The market is saturated with similar smartphones."}
  ]},
- {id:"C", name:"C · Band 9 collocations", words:[
+ {id:"C", name:"5 · Band 9 collocations", words:[
   {en:"raise awareness", pos:"phr", ru:"повышать осведомлённость", def:"to make more people know about something", ex:"The campaign aims to raise awareness of healthy eating."},
   {en:"boost sales", pos:"phr", ru:"резко увеличить продажи", def:"to make a company sell more", ex:"A clever slogan can boost sales dramatically."},
   {en:"household name", pos:"phr", ru:"известный всем бренд/человек", def:"a brand or person that almost everyone knows", ex:"Within ten years the company became a household name."},
@@ -215,7 +297,15 @@ const UPGRADE = [
   {plain:"has good and bad sides", up:"a double-edged sword", o:["a double-edged sword","a household name","word of mouth"]},
   {plain:"make the rules stricter", up:"tighten regulations", o:["impose a ban","tighten regulations","raise awareness"]},
   {plain:"show us too many adverts", up:"bombard", o:["bombard","appeal to","exaggerate"]},
-  {plain:"spread very fast online", up:"go viral", o:["go viral","boost sales","run a campaign"]}
+  {plain:"spread very fast online", up:"go viral", o:["go viral","boost sales","run a campaign"]},
+  {plain:"impossible to avoid", up:"inevitable", o:["inevitable","vital","malleable"]},
+  {plain:"has never happened before", up:"unprecedented", o:["unprecedented","inexorable","notoriously"]},
+  {plain:"clean and untouched (nature)", up:"pristine", o:["pristine","damp","mild"]},
+  {plain:"found everywhere, in every part", up:"pervasive", o:["pervasive","laden","devastating"]},
+  {plain:"very, very harmful", up:"devastating", o:["devastating","persuasive","compelling"]},
+  {plain:"very important, necessary", up:"vital", o:["vital","retail","gullible"]},
+  {plain:"rain and snow", up:"precipitation", o:["precipitation","erosion","algae"]},
+  {plain:"lost his job (company cut staff)", up:"made redundant", o:["made redundant","impose a ban","run a campaign"]}
 ];
 
 /* ============ ЛОГИКА ============ */
@@ -397,6 +487,78 @@ async function sendResults(){
     $("sendFb").textContent="✅ Отправлено! Молодец!"; $("sendBtn").disabled=false; }
   catch(e){ $("sendBtn").disabled=false; $("sendFb").textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
 }
+
+/* ============ SPEAKING ============ */
+const P3 = [
+  {g:"Company advertising", q:"How important do you think it is for companies to advertise their products?"},
+  {g:"Company advertising", q:"How do advertisements influence people to buy things?"},
+  {g:"Company advertising", q:"How effective is advertising as a way of persuading people to buy things?"},
+  {g:"The wider implications of advertising", q:"Apart from advertising, what other factors influence people's decisions to buy things?"},
+  {g:"The wider implications of advertising", q:"In what ways can advertising be bad or harmful to society?"},
+  {g:"The wider implications of advertising", q:"Why do you think that some people say advertising is a form of art?"}
+];
+const REC = {}; // id -> {blob, mime, dur}
+function fmt(t){ t=Math.max(0,Math.round(t)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); }
+function recUI(id,max){
+  return '<div class="recbox" id="rb-'+id+'"><button class="primary" id="rbtn-'+id+'" onclick="recToggle(\''+id+'\','+max+')">🔴 Записать</button> <b id="rtime-'+id+'"></b><div id="rplay-'+id+'" style="margin-top:6px"></div></div>';
+}
+let active=null;
+async function recToggle(id,max){
+  if(active && active.id===id){ active.stop(); return; }
+  if(active){ alert("Сначала останови текущую запись."); return; }
+  if(!navigator.mediaDevices||!window.MediaRecorder){ alert("Этот браузер не умеет записывать звук. Открой сайт в Chrome или Safari (iPhone: iOS 14.3+)."); return; }
+  let stream; try{ stream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ alert("Нет доступа к микрофону. Разреши доступ в настройках браузера."); return; }
+  const types=["audio/ogg;codecs=opus","audio/webm;codecs=opus","audio/mp4","audio/webm"]; const mime=types.find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||"";
+  const mr=new MediaRecorder(stream, mime?{mimeType:mime}:undefined); const parts=[]; const t0=Date.now();
+  mr.ondataavailable=e=>{ if(e.data.size) parts.push(e.data); };
+  const tick=setInterval(()=>{ const s=(Date.now()-t0)/1000; $("rtime-"+id).textContent="● "+fmt(s)+" / "+fmt(max); if(s>=max) stop(); },250);
+  function stop(){ if(mr.state!=="inactive") mr.stop(); }
+  mr.onstop=()=>{ clearInterval(tick); stream.getTracks().forEach(t=>t.stop()); active=null;
+    const type=mr.mimeType||mime||"audio/webm"; const blob=new Blob(parts,{type}); const dur=(Date.now()-t0)/1000;
+    REC[id]={blob,mime:type,dur}; $("rbtn-"+id).textContent="🔁 Перезаписать"; $("rtime-"+id).textContent="✓ "+fmt(dur);
+    $("rplay-"+id).innerHTML='<audio controls src="'+URL.createObjectURL(blob)+'" style="width:100%"></audio>';
+  };
+  mr.start(1000); active={id,stop}; $("rbtn-"+id).textContent="⏹ Остановить"; $("rplay-"+id).innerHTML="";
+}
+let p2t=null;
+function p2Prep(){
+  if(p2t) return; let left=60; $("p2Start").disabled=true; $("p2n1").focus();
+  const show=()=>$("p2Timer").textContent=left>0?fmt(left):"⏰ Время! Переходи к записи.";
+  show(); p2t=setInterval(()=>{ left--; show(); if(left<=0){ clearInterval(p2t); p2t=null; $("p2Start").disabled=false; $("p2Start").textContent="⏱ Ещё минута"; try{navigator.vibrate&&navigator.vibrate(300)}catch(e){} } },1000);
+}
+function spRender(){
+  $("rec-p2").innerHTML=recUI("p2",120);
+  let h="",last=null;
+  P3.forEach((x,i)=>{ if(x.g!==last){ h+='<h4 style="margin:16px 0 4px">'+esc(x.g)+'</h4>'; last=x.g; }
+    h+='<div class="form" style="margin:8px 0"><b>'+(i+1)+'. '+esc(x.q)+'</b><input type="text" id="p3n'+i+'" placeholder="План: идея → причина → пример" autocomplete="off" style="margin:8px 0">'+recUI("p3-"+i,120)+'</div>'; });
+  $("p3").innerHTML=h;
+}
+function ext(m){ return /ogg/.test(m)?"ogg":/mp4|aac|m4a/.test(m)?"m4a":"webm"; }
+async function tg(method, body){ const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/"+method,{method:"POST",body}); const j=await r.json(); if(!j.ok) throw new Error(j.description); }
+async function sendFile(id, caption){
+  const R=REC[id]; const fd=new FormData(); fd.append("chat_id",TG_CHAT_ID); fd.append("caption",caption.slice(0,1000));
+  if(/ogg/.test(R.mime)){ fd.append("voice",R.blob,id+".ogg"); return tg("sendVoice",fd); }
+  fd.append("document",R.blob,(STATE.name||"student")+"_"+id+"."+ext(R.mime)); return tg("sendDocument",fd);
+}
+async function sendSpeaking(){
+  if(active){ alert("Сначала останови запись."); return; }
+  const ids=Object.keys(REC); if(!ids.length){ $("spFb").textContent="Пока нет ни одной записи."; return; }
+  $("spSend").disabled=true; $("spFb").textContent="Отправляю…";
+  const plan=[1,2,3,4].map(i=>$("p2n"+i).value.trim());
+  let t="🎤 <b>Speaking · Advertising</b>\n👤 "+esc(STATE.name||"—")+"\n🕒 "+new Date().toLocaleString("ru-RU")+"\n\n<b>Part 2 — план:</b>\n• for: "+esc(plan[0]||"—")+"\n• where: "+esc(plan[1]||"—")+"\n• consisted of: "+esc(plan[2]||"—")+"\n• why persuasive: "+esc(plan[3]||"—")+"\n"+(REC.p2?"запись: "+fmt(REC.p2.dur):"запись: нет")+"\n\n<b>Part 3:</b>";
+  P3.forEach((x,i)=>{ const r=REC["p3-"+i]; t+="\n"+(i+1)+". "+esc(x.q)+"\n   план: "+esc($("p3n"+i).value.trim()||"—")+"\n   запись: "+(r?fmt(r.dur):"нет"); });
+  try{
+    await tg("sendMessage",new URLSearchParams({chat_id:TG_CHAT_ID,text:t,parse_mode:"HTML"}));
+    if(REC.p2) await sendFile("p2", (STATE.name||"")+" · Part 2 · "+fmt(REC.p2.dur));
+    for(let i=0;i<P3.length;i++){ const id="p3-"+i; if(REC[id]){ $("spFb").textContent="Отправляю запись "+(i+1)+"…"; await sendFile(id,(STATE.name||"")+" · Part 3 · Q"+(i+1)+": "+P3[i].q); } }
+    $("spFb").textContent="✅ Отправлено! Молодец!";
+  }catch(e){ $("spFb").textContent="Не получилось отправить: "+e.message+". Попробуй ещё раз."; }
+  $("spSend").disabled=false;
+}
+$("nav").addEventListener("click",e=>{ const t=e.target.dataset.tab; if(!t)return; speechSynthesis.cancel();
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));
+  ["vocab","speak"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); window.scrollTo(0,0); });
+spRender();
 
 load(); if(STATE.name) $("nameInput").value=STATE.name;
 </script>
