@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Vocabulary · Advertising (Band 9)</title>
+<style>
+  :root{--ink:#1d2433;--muted:#667085;--line:#e4e7ec;--bg:#f5f6fa;--card:#fff;--accent:#2f5bea;--ok:#1f9d55;--okbg:#e9f8ef;--bad:#d64545;--badbg:#fdeeee}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  .wrap{max-width:820px;margin:0 auto;padding:18px 14px 80px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+  header h1{font-size:20px;margin:0}
+  .who{font-size:14px;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 2px 10px #0000000d}
+  h2{margin:0 0 6px;font-size:20px}
+  h3{margin:4px 0 6px;font-size:17px}
+  .muted{color:var(--muted);font-size:14px}
+  .ielts{font-weight:700}
+  button{font:inherit;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;background:#eef0f4;color:var(--ink);margin:4px 4px 4px 0}
+  button.primary{background:var(--accent);color:#fff}
+  button.dark{background:var(--ink);color:#fff}
+  button.sm{font-size:14px;padding:6px 12px}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input[type=text]{font:inherit;padding:9px 11px;border:1.5px solid #c9ced8;border-radius:9px;width:100%}
+  input.gap{width:140px;padding:4px 8px;border:0;border-bottom:2px solid #8a93a6;border-radius:0;background:#fafbfc;text-align:center}
+  input.ok{border-color:var(--ok)!important;background:var(--okbg)!important}
+  input.bad{border-color:var(--bad)!important;background:var(--badbg)!important}
+  .fix{color:var(--ok);font-weight:700;font-size:14px;margin-left:6px}
+  nav{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+  nav button{margin:0;font-size:15px}
+  nav button.active{background:var(--ink);color:#fff}
+  nav .done::after{content:" ✓";color:var(--ok)}
+  nav button.active.done::after{color:#8ff0b5}
+  .sets{display:flex;flex-wrap:wrap;gap:6px}
+  .sets button.active{background:var(--accent);color:#fff}
+  .ex{display:flex;flex-wrap:wrap;gap:6px}
+  .ex button{margin:0}
+  .ex button.done{background:var(--okbg);outline:1.5px solid var(--ok)}
+  .form{border:2px solid var(--ink);border-radius:6px;padding:14px 16px;background:#fff}
+  .form .title{text-align:center;font-weight:700;font-size:17px;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px}
+  .row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .row .lab{min-width:210px;color:#344054}
+  .qn{display:inline-block;min-width:24px;height:24px;line-height:24px;text-align:center;border:1.5px solid var(--ink);border-radius:5px;font-size:13px;font-weight:700;margin-right:4px}
+  .example{color:var(--muted);font-style:italic}
+  .pk button.sel{background:#dfe6ff;outline:2px solid var(--accent)}
+  .pk button.ok{background:var(--okbg);outline:2px solid var(--ok)}
+  .pk button.bad{background:var(--badbg);outline:2px solid var(--bad)}
+  .score{font-size:18px;font-weight:700;margin-top:12px}
+  .hidden{display:none!important}
+  .transcript{background:#f3f6ff;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:15px}
+  .transcript p{margin:4px 0}
+  mark{background:#ffe58a;padding:0 2px;border-radius:3px}
+  .reading{background:#fffdf5;border:1px solid #efe6c4;border-radius:10px;padding:14px 16px;font-family:Georgia,serif;font-size:16.5px}
+  .reading h4{margin:0 0 6px;text-align:center;font-family:inherit;font-size:19px}
+  .reading h5{margin:12px 0 2px;font-size:16px}
+  .reading p{margin:4px 0}
+  table.tbl{width:100%;border-collapse:collapse;font-size:15px}
+  table.tbl th,table.tbl td{border:1px solid #9aa2b1;padding:7px;vertical-align:top;text-align:left}
+  table.tbl th{background:#f1f3f7}
+  table.tbl td div{margin:3px 0}
+  .flash{perspective:900px;height:180px;margin:12px 0;cursor:pointer;user-select:none}
+  .flash .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+  .flash.flip .in{transform:rotateY(180deg)}
+  .flash .side{position:absolute;inset:0;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;font-size:26px;font-weight:700;padding:12px;text-align:center}
+  .flash .front{background:#eef3ff}
+  .flash .back{background:#effaf3;transform:rotateY(180deg)}
+  .flash small{font-size:14px;font-weight:400;color:var(--muted);margin-top:6px}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .opts button{margin:0;padding:12px;text-align:left;background:#f1f3f7}
+  .opts button.ok{background:var(--okbg);outline:2px solid var(--ok)}
+  .opts button.bad{background:var(--badbg);outline:2px solid var(--bad)}
+  .bar{height:8px;background:#e7e9ef;border-radius:5px;overflow:hidden;margin:8px 0}
+  .bar div{height:100%;background:var(--accent);width:0;transition:width .3s}
+  .big{font-size:22px;font-weight:700;margin:10px 0}
+  .feedback{min-height:24px;margin-top:8px;font-weight:600}
+  table.res{width:100%;border-collapse:collapse;font-size:15px}
+  table.res td{padding:6px 4px;border-bottom:1px solid var(--line)}
+  .speed{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-top:6px}
+  @media(max-width:560px){.opts{grid-template-columns:1fr}.row .lab{min-width:100%}table.tbl{font-size:14px}input.gap{width:110px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div id="login" class="card">
+  <h2>💎 IELTS Vocabulary · Band 9</h2>
+  <p class="muted">Тема: <b>Commercials &amp; advertisements</b>. Карточки, упражнения на значение и много упражнений на написание.</p>
+  <p>Как тебя зовут?</p>
+  <input type="text" id="nameInput" placeholder="Имя" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
+  <p><button class="primary" onclick="start()">Начать →</button></p>
+</div>
+<div id="app" class="hidden">
+  <header><h1>Advertising · Band 9</h1><div class="who">👤 <span id="who"></span></div></header>
+  <div class="card">
+    <p class="muted" style="margin-top:0">Иди строго по шагам: следующий откроется, когда закончишь текущий. Ошибки возвращаются в конце шага. Если ошибёшься в написании, слово нужно один раз перепечатать правильно.</p>
+    <div class="bar"><div id="vBar"></div></div>
+    <div id="vProg" class="muted"></div>
+    <div class="speed">🔊 Скорость голоса <input type="range" id="rate" min="0.6" max="1.1" step="0.05" value="0.9"> <span id="rateVal">0.9</span></div>
+  </div>
+  <div class="card" id="stage">
+    <div class="muted" id="sStep"></div>
+    <h3 id="sTitle"></h3>
+    <p class="muted" id="sHint"></p>
+    <div id="cardsBox" class="hidden">
+      <div class="flash" id="flash" style="height:220px" onclick="this.classList.toggle('flip')">
+        <div class="in">
+          <div class="side front"><span id="fFront"></span><small id="fPos"></small></div>
+          <div class="side back"><span id="fBack"></span><small id="fEx" style="font-style:italic"></small></div>
+        </div>
+      </div>
+      <button onclick="flashMove(-1)">←</button><button class="dark" onclick="say(CW[fi].en)">🔊</button><button onclick="flashMove(1)">→</button>
+      <span class="muted" id="fCount"></span>
+      <p><button class="primary" id="cardsDone" onclick="finishCards()" disabled>Посмотрел(а) все карточки — дальше →</button></p>
+    </div>
+    <div id="drillBox" class="hidden">
+      <div class="bar"><div id="dBar"></div></div>
+      <div class="big" id="dPrompt"></div>
+      <div class="opts" id="dOpts"></div>
+      <div id="dWrite" class="hidden">
+        <input type="text" id="dIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')dCheck()">
+        <button class="primary" onclick="dCheck()">Проверить</button>
+      </div>
+      <div class="feedback" id="dFb"></div>
+    </div>
+    <div id="essayBox" class="hidden">
+      <div class="reading" style="font-family:inherit"><b>Some people believe that advertising does more harm than good. To what extent do you agree or disagree?</b></div>
+      <textarea id="essayIn" oninput="essayCount()" style="width:100%;height:220px;font:inherit;padding:10px;border:1.5px solid #c9ced8;border-radius:9px;margin-top:10px"></textarea>
+      <div id="essayInfo" class="muted" style="margin:6px 0"></div>
+      <button class="primary" id="essayDone" onclick="finishEssay()" disabled>Готово →</button>
+      <span class="muted">Минимум 50 слов и 4 слова из урока.</span>
+    </div>
+    <div id="nextBox" class="hidden"><button class="primary" onclick="goCurrent()">Дальше →</button></div>
+  </div>
+  <div class="card">
+    <h3>📨 Отправить учителю</h3>
+    <p class="muted">Можно отправлять после каждого занятия: прогресс сохраняется в браузере.</p>
+    <button class="primary" id="sendBtn" onclick="sendResults()">Отправить результаты</button>
+    <div class="feedback" id="sendFb"></div>
+    <textarea id="copyBox" class="hidden" style="width:100%;height:180px;font:13px monospace;margin-top:8px"></textarea>
+  </div>
+  <div class="card">
+    <h3>Весь путь</h3>
+    <p class="muted">✓ — сделано (можно нажать и повторить), ▶ — сейчас, 🔒 — пока закрыто.</p>
+    <div id="path"></div>
+  </div>
+</div>
+</div>
+<script>
+/* ============ НАСТРОЙКИ TELEGRAM ============ */
+const TG_TOKEN   = "9252730022:AAGhfn1DzR05foOHV6zFiTirJlRqSoUCgTU";
+const TG_CHAT_ID = "347625701";
+
+/* ============ ЛЕКСИКА ============
+   Каждое слово: en, pos, ru, def (определение по-английски), ex (пример — слово en должно стоять в нём точно в такой форме).
+   Наборы учителя ставятся ПЕРВЫМИ (пока пусто — ждём материалы). */
+const SETS = [
+ {id:"A", name:"A · Persuasion & psychology", words:[
+  {en:"persuasive", pos:"adj", ru:"убедительный", def:"able to make people believe or do something", ex:"The commercial was so persuasive that sales doubled in a month."},
+  {en:"manipulate", pos:"v", ru:"манипулировать", def:"to control or influence people in a clever and often unfair way", ex:"Some adverts manipulate children into wanting expensive toys."},
+  {en:"appeal to", pos:"v", ru:"взывать к, привлекать", def:"to attract or interest a particular group of people", ex:"Luxury brands appeal to our desire for status."},
+  {en:"catchy", pos:"adj", ru:"запоминающийся, цепляющий", def:"(of a tune or slogan) easy to remember and pleasant", ex:"A catchy jingle can stay in your head for days."},
+  {en:"compelling", pos:"adj", ru:"убедительный, неотразимый", def:"so interesting or strong that you have to pay attention", ex:"The campaign told a compelling story about a family farm."},
+  {en:"misleading", pos:"adj", ru:"вводящий в заблуждение", def:"giving the wrong idea or impression", ex:"The claim that the drink was healthy turned out to be misleading."},
+  {en:"exaggerate", pos:"v", ru:"преувеличивать", def:"to describe something as bigger or better than it really is", ex:"Advertisers often exaggerate the benefits of their products."},
+  {en:"gullible", pos:"adj", ru:"доверчивый, легковерный", def:"easily tricked because you believe what people tell you", ex:"Gullible consumers believe every promise on the packaging."},
+  {en:"vulnerable", pos:"adj", ru:"уязвимый", def:"easily harmed or influenced", ex:"Children are particularly vulnerable to junk food advertising."},
+  {en:"impulse buying", pos:"n", ru:"импульсивные покупки", def:"buying something suddenly without planning to", ex:"Supermarkets place sweets near the tills to encourage impulse buying."},
+  {en:"aspirational", pos:"adj", ru:"(о товаре) символ успеха, «к которому стремятся»", def:"showing a lifestyle that people would like to have", ex:"Car adverts are full of aspirational images of successful people."},
+  {en:"materialistic", pos:"adj", ru:"материалистичный", def:"caring too much about money and possessions", ex:"Critics argue that advertising makes society more materialistic."},
+  {en:"consumerism", pos:"n", ru:"потребительство, культ потребления", def:"the idea that buying more and more things is good", ex:"Black Friday is a symbol of modern consumerism."},
+  {en:"subliminal", pos:"adj", ru:"подсознательный, скрытый", def:"affecting your mind without you noticing it", ex:"Subliminal messages in adverts are banned in many countries."}
+ ]},
+ {id:"B", name:"B · Media & industry", words:[
+  {en:"ubiquitous", pos:"adj", ru:"вездесущий, повсеместный", def:"seeming to be everywhere", ex:"Advertising has become ubiquitous in modern cities."},
+  {en:"bombard", pos:"v", ru:"засыпать, бомбардировать", def:"to give someone too much of something, again and again", ex:"We are bombarded with adverts every time we go online."},
+  {en:"intrusive", pos:"adj", ru:"навязчивый", def:"annoying because it comes into your private life", ex:"Many people find pop-up adverts extremely intrusive."},
+  {en:"unsolicited", pos:"adj", ru:"незапрошенный (о рассылке)", def:"not asked for", ex:"I receive dozens of unsolicited emails every day."},
+  {en:"product placement", pos:"n", ru:"продакт-плейсмент, скрытая реклама", def:"when a company pays for its product to appear in a film or TV show", ex:"Product placement in films is a subtle form of marketing."},
+  {en:"endorsement", pos:"n", ru:"рекомендация (знаменитости), одобрение", def:"a famous person's public support for a product", ex:"A celebrity endorsement can make a small brand famous overnight."},
+  {en:"sponsorship", pos:"n", ru:"спонсорство", def:"paying for an event or team in return for advertising", ex:"Sports sponsorship is worth billions of dollars."},
+  {en:"influencer", pos:"n", ru:"инфлюенсер, блогер", def:"a person who is paid to promote products on social media", ex:"The brand hired an influencer with two million followers."},
+  {en:"prime time", pos:"n", ru:"прайм-тайм", def:"the evening hours when most people watch TV", ex:"Adverts shown during prime time are the most expensive."},
+  {en:"viral", pos:"adj", ru:"вирусный", def:"spreading very quickly on the internet", ex:"The funny video went viral and was watched by millions."},
+  {en:"revenue", pos:"n", ru:"доход, выручка", def:"the money that a company receives", ex:"Social media sites earn most of their revenue from advertising."},
+  {en:"target audience", pos:"n", ru:"целевая аудитория", def:"the group of people an advert is made for", ex:"The target audience for this campaign is teenagers."},
+  {en:"billboard", pos:"n", ru:"рекламный щит", def:"a very large board for adverts beside a road", ex:"A huge billboard was put up next to the motorway."},
+  {en:"saturated", pos:"adj", ru:"перенасыщенный", def:"so full of something that no more can be added", ex:"The market is saturated with similar smartphones."}
+ ]},
+ {id:"C", name:"C · Band 9 collocations", words:[
+  {en:"raise awareness", pos:"phr", ru:"повышать осведомлённость", def:"to make more people know about something", ex:"The campaign aims to raise awareness of healthy eating."},
+  {en:"boost sales", pos:"phr", ru:"резко увеличить продажи", def:"to make a company sell more", ex:"A clever slogan can boost sales dramatically."},
+  {en:"household name", pos:"phr", ru:"известный всем бренд/человек", def:"a brand or person that almost everyone knows", ex:"Within ten years the company became a household name."},
+  {en:"word of mouth", pos:"phr", ru:"сарафанное радио", def:"when people tell their friends about something", ex:"The restaurant became popular through word of mouth."},
+  {en:"cut-throat competition", pos:"phr", ru:"жёсткая конкуренция", def:"very strong and unfair rivalry between companies", ex:"There is cut-throat competition between mobile phone companies."},
+  {en:"false claims", pos:"phr", ru:"ложные заявления", def:"statements about a product that are not true", ex:"The company was fined for making false claims about its cream."},
+  {en:"impose a ban", pos:"phr", ru:"ввести запрет", def:"to officially stop something from happening", ex:"Many countries impose a ban on tobacco advertising."},
+  {en:"tighten regulations", pos:"phr", ru:"ужесточить правила", def:"to make rules stricter", ex:"The government plans to tighten regulations on online adverts."},
+  {en:"run a campaign", pos:"phr", ru:"проводить кампанию", def:"to organise a series of adverts with one aim", ex:"The charity will run a campaign on social media."},
+  {en:"brand loyalty", pos:"phr", ru:"лояльность к бренду", def:"when customers keep buying the same brand", ex:"Free gifts help companies build brand loyalty."},
+  {en:"deceptive advertising", pos:"phr", ru:"обманная реклама", def:"adverts that trick people with untrue information", ex:"Deceptive advertising should be punished with heavy fines."},
+  {en:"a double-edged sword", pos:"phr", ru:"палка о двух концах", def:"something that has both good and bad effects", ex:"Advertising is a double-edged sword: it informs, but it also manipulates."}
+ ]}
+];
+
+/* «Апгрейд»: простое слово → слово уровня band 9 */
+const UPGRADE = [
+  {plain:"very common, seen everywhere", up:"ubiquitous", o:["ubiquitous","catchy","viral"]},
+  {plain:"annoying adverts that disturb you", up:"intrusive", o:["persuasive","intrusive","aspirational"]},
+  {plain:"make sales go up", up:"boost sales", o:["boost sales","run a campaign","raise awareness"]},
+  {plain:"a very famous brand", up:"household name", o:["target audience","household name","brand loyalty"]},
+  {plain:"say it is better than it is", up:"exaggerate", o:["manipulate","exaggerate","bombard"]},
+  {plain:"lies about a product", up:"false claims", o:["false claims","word of mouth","endorsement"]},
+  {plain:"easily tricked", up:"gullible", o:["vulnerable","gullible","materialistic"]},
+  {plain:"very strong competition", up:"cut-throat competition", o:["cut-throat competition","prime time","saturated"]},
+  {plain:"has good and bad sides", up:"a double-edged sword", o:["a double-edged sword","a household name","word of mouth"]},
+  {plain:"make the rules stricter", up:"tighten regulations", o:["impose a ban","tighten regulations","raise awareness"]},
+  {plain:"show us too many adverts", up:"bombard", o:["bombard","appeal to","exaggerate"]},
+  {plain:"spread very fast online", up:"go viral", o:["go viral","boost sales","run a campaign"]}
+];
+
+/* ============ ЛОГИКА ============ */
+let STATE={name:"",started:null,vocab:{}};
+const $=id=>document.getElementById(id);
+const KEY="ielts_ads_state_v1";
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){} }
+function load(){ try{const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.name) STATE=s;}catch(e){} }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function norm(s){ return (s||"").toLowerCase().replace(/[’']/g,"").replace(/[£$!?,]/g,"").replace(/\s+/g," ").replace(/\.$/,"").trim(); }
+function isRight(val, answers, mode){
+  if(mode==="num"){ const v=(val||"").replace(/[^0-9]/g,""); return v!=="" && answers.some(a=>a.replace(/[^0-9]/g,"")===v); }
+  if(mode==="code"){ const c=x=>(x||"").toLowerCase().replace(/[^a-z0-9]/g,""); const v=c(val); return v!=="" && answers.some(a=>c(a)===v); }
+  const v=norm(val); return v!=="" && answers.some(a=>norm(a)===v);
+}
+
+/* голос */
+let voices=[];
+function loadVoices(){ voices=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)); }
+if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function pickVoice(n){ const gb=voices.filter(v=>/en-GB/i.test(v.lang)); const pool=gb.length>1?gb:voices; return pool.length?pool[n%pool.length]:null; }
+function rate(){ return parseFloat($("rate").value); }
+function utter(text,vi,pitch){ const u=new SpeechSynthesisUtterance(text); const v=pickVoice(vi||0); if(v){u.voice=v;u.lang=v.lang;}else u.lang="en-GB"; u.rate=rate(); u.pitch=pitch||1; return u; }
+function noTTS(){ if("speechSynthesis" in window) return false; alert("Браузер не поддерживает озвучку. Открой сайт в Chrome или Safari."); return true; }
+function say(text,slow){ if(noTTS())return; speechSynthesis.cancel(); const u=utter(text,0,1); if(slow)u.rate=Math.min(rate(),0.8); speechSynthesis.speak(u); }
+
+
+function start(){
+  const n=$("nameInput").value.trim(); if(!n){$("nameInput").focus();return;}
+  if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{}};
+  save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent();
+}
+$("rate").oninput=()=>$("rateVal").textContent=$("rate").value;
+
+/* шаги */
+const STEP_TYPES=[
+  {t:"cards", name:"Карточки"},
+  {t:"tr",    name:"Выбери перевод"},
+  {t:"def",   name:"Слово по определению"},
+  {t:"ctx",   name:"✍️ Вставь в предложение"},
+  {t:"gaps",  name:"✍️ Вставь пропущенные буквы"},
+  {t:"lis",   name:"✍️ Послушай и напиши"},
+  {t:"wr",    name:"✍️ Напиши по переводу (без подсказок)"}
+];
+const STEPS=[];
+SETS.forEach(s=>STEP_TYPES.forEach(x=>STEPS.push({key:s.id+":"+x.t,set:s,t:x.t,name:x.name})));
+STEPS.push({key:"all:up", t:"up", name:"Апгрейд: простое слово → band 9"});
+STEPS.push({key:"all:essay", t:"essay", name:"✍️ Мини-эссе (Writing Task 2)"});
+
+function base(en){ return en.replace(/^the /,""); }
+function curIdx(){ const i=STEPS.findIndex(s=>!STATE.vocab[s.key]); return i<0?STEPS.length:i; }
+function renderPath(){
+  const ci=curIdx(), done=STEPS.filter(s=>STATE.vocab[s.key]).length;
+  $("vBar").style.width=(100*done/STEPS.length)+"%"; $("vProg").textContent="Пройдено шагов: "+done+" из "+STEPS.length;
+  let h="",last=null;
+  STEPS.forEach((s,i)=>{
+    const g=s.set?s.set.name:"Итоговые задания";
+    if(g!==last){ if(last!==null)h+="</div>"; h+='<div style="margin:10px 0 4px;font-weight:700">'+esc(g)+'</div><div class="ex">'; last=g; }
+    const st=STATE.vocab[s.key]?"done":i===ci?"cur":"lock";
+    h+='<button class="sm '+(st==="done"?"done":"")+'" '+(st==="lock"?"disabled":"")+' onclick="openStep('+i+')">'+(st==="done"?"✓ ":st==="cur"?"▶ ":"🔒 ")+esc(s.name)+'</button>';
+  });
+  $("path").innerHTML=h+"</div>";
+}
+function goCurrent(){ openStep(curIdx()); }
+function openStep(i){
+  speechSynthesis.cancel();
+  ["cardsBox","drillBox","nextBox","essayBox"].forEach(x=>$(x).classList.add("hidden"));
+  if(i>=STEPS.length){ $("sStep").textContent=""; $("sTitle").textContent="🎉 Всё пройдено!"; $("sHint").innerHTML="Нажми «Отправить учителю» внизу страницы."; renderPath(); return; }
+  const s=STEPS[i];
+  $("sStep").textContent="Шаг "+(i+1)+" из "+STEPS.length+(s.set?" · "+s.set.name:"");
+  $("sTitle").textContent=s.name;
+  if(s.t==="cards") startCards(s); else if(s.t==="essay") startEssay(s); else runDrill(s);
+  renderPath(); $("stage").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* карточки */
+let CW=[],fi=0,seen=new Set(),cardsStep=null;
+function startCards(s){ cardsStep=s; CW=s.set.words; fi=0; seen=new Set();
+  $("sHint").textContent="Нажми на карточку, чтобы увидеть перевод и пример. Послушай каждое слово 🔊 и произнеси вслух. Пролистай все карточки.";
+  $("cardsBox").classList.remove("hidden"); flashShow(); }
+function flashShow(){ const w=CW[fi]; seen.add(fi); $("flash").classList.remove("flip");
+  $("fFront").textContent=w.en; $("fPos").textContent=w.pos+" · "+w.def; $("fBack").textContent=w.ru; $("fEx").textContent=w.ex;
+  $("fCount").textContent=(fi+1)+" / "+CW.length+"  (просмотрено "+seen.size+")"; $("cardsDone").disabled=seen.size<CW.length; }
+function flashMove(d){ fi=(fi+d+CW.length)%CW.length; flashShow(); }
+function finishCards(){ STATE.vocab[cardsStep.key]={name:cardsStep.name,seen:true}; save(); goCurrent(); }
+
+/* мини-эссе */
+let essayStep=null;
+function startEssay(s){ essayStep=s;
+  $("sHint").textContent="Напиши абзац (80–120 слов) на тему ниже. Используй минимум 6 слов из наборов — они подсветятся зелёным.";
+  $("essayBox").classList.remove("hidden"); essayCount(); }
+function essayCount(){
+  const t=$("essayIn").value, low=t.toLowerCase(), words=t.trim()?t.trim().split(/\s+/).length:0;
+  const used=SETS.flatMap(s=>s.words).map(w=>w.en).filter(w=>low.includes(w.toLowerCase().replace(/^a /,"")));
+  $("essayInfo").innerHTML="Слов: <b>"+words+"</b> · Слова из урока: <b>"+used.length+"</b>"+(used.length?" — "+used.map(u=>'<span style="background:var(--okbg);padding:1px 6px;border-radius:6px;margin:2px;display:inline-block">'+esc(u)+'</span>').join(""):"");
+  $("essayDone").disabled=words<50||used.length<4; return used;
+}
+function finishEssay(){ const used=essayCount(); STATE.vocab[essayStep.key]={name:essayStep.name,essay:$("essayIn").value.trim(),used}; save(); goCurrent(); }
+
+/* задания */
+function mask(word){
+  const idx=[]; [...word].forEach((c,i)=>{ if(/[a-z]/i.test(c)&&i>0&&!/[ -]/.test(word[i-1])) idx.push(i); });
+  const k=Math.max(1,Math.round(idx.length*0.5)); const hide=new Set(shuffle(idx).slice(0,k));
+  return [...word].map((c,i)=>c===" "?"&nbsp;&nbsp;":hide.has(i)?"_":esc(c)).join(" ");
+}
+function ctxPrompt(w){
+  const re=new RegExp(w.en.replace(/[-]/g,"\\-"),"i"); const m=w.ex.match(re); if(!m) return null;
+  const blank=w.en.split(" ").map(p=>[...p].map((c,i)=>i===0?c:c==="-"?"-":"_").join(" ")).join("   ");
+  return esc(w.ex.slice(0,m.index))+'<b style="white-space:pre-wrap;font-family:monospace">'+esc(blank)+'</b>'+esc(w.ex.slice(m.index+m[0].length));
+}
+function buildItems(s){
+  const W=s.set?s.set.words:null;
+  const others=(w,f)=>shuffle(W.filter(x=>x!==w)).slice(0,3).map(f);
+  const ru=w=>esc(w.ru)+" <span class='muted' style='font-size:15px'>("+w.pos+")</span>";
+  switch(s.t){
+  case "tr": return {type:"mc",hint:"Послушай и выбери перевод.",items:W.map(w=>({prompt:esc(w.en),sayText:w.en,opts:shuffle([w.ru,...others(w,x=>x.ru)]),ans:w.ru,after:w.en+" — "+w.ru,word:w.en}))};
+  case "def": return {type:"mc",hint:"Прочитай определение и выбери слово. Именно так IELTS перефразирует лексику в Reading и Listening.",items:W.map(w=>({prompt:"<span style='font-size:19px'>"+esc(w.def)+"</span>",opts:shuffle([w.en,...others(w,x=>x.en)]),ans:w.en,after:w.en+" = "+w.def,word:w.en}))};
+  case "ctx": return {type:"write",hint:"Вставь слово/фразу в предложение. Даны первые буквы, каждая черточка = одна буква.",items:W.filter(w=>ctxPrompt(w)).map(w=>({prompt:"<span style='font-size:19px;font-weight:500'>"+ctxPrompt(w)+"</span>",ans:[w.en],word:w.en,sayText:w.ex,after:w.ru}))};
+  case "gaps": return {type:"write",hint:"Напиши слово целиком, вставив пропущенные буквы.",items:W.map(w=>({prompt:ru(w)+"<div style='font-family:monospace;font-size:24px;margin-top:8px'>"+mask(w.en)+"</div>",ans:[w.en],word:w.en,sayText:w.en}))};
+  case "lis": return {type:"write",autoSay:true,hint:"Послушай и напиши. 🔊 — ещё раз.",items:W.map(w=>({prompt:"🎧 <span class='muted' style='font-size:15px'>("+w.en.length+" знаков)</span>",ans:[w.en],word:w.en,sayText:w.en,after:w.ru}))};
+  case "wr": return {type:"write",hint:"Итог набора: перевод → слово по-английски, без подсказок.",items:W.map(w=>({prompt:ru(w),ans:[w.en],word:w.en,sayText:w.en}))};
+  case "up": return {type:"mc",hint:"Как сказать это на уровне band 9? Выбери вариант.",items:UPGRADE.map(u=>({prompt:"«"+esc(u.plain)+"» →",opts:shuffle(u.o),ans:u.up,after:u.plain+" → "+u.up,word:u.up}))};
+  }
+}
+let D=null;
+function runDrill(s){ const b=buildItems(s);
+  D={step:s,type:b.type,autoSay:b.autoSay,items:b.items,queue:shuffle(b.items.map((_,i)=>i)),total:b.items.length,first:0,done:0,wrong:new Set(),mistakes:[],cur:null,lock:false,retype:null};
+  $("sHint").textContent=b.hint; $("drillBox").classList.remove("hidden"); dNext(); }
+function dNext(){
+  D.lock=false; D.retype=null; $("dBar").style.width=(100*D.done/D.total)+"%"; $("dFb").innerHTML=""; $("dOpts").innerHTML="";
+  if(!D.queue.length){
+    $("dPrompt").innerHTML="✅ Готово! С первого раза: "+D.first+" / "+D.total+(D.mistakes.length?"<div class='muted' style='font-size:15px;font-weight:400'>Повтори: "+D.mistakes.map(m=>esc(m.split(" (")[0])).join(", ")+"</div>":"");
+    $("dWrite").classList.add("hidden");
+    STATE.vocab[D.step.key]={name:D.step.name,score:D.first,total:D.total,mistakes:D.mistakes}; save(); renderPath(); $("nextBox").classList.remove("hidden"); return;
+  }
+  D.cur=D.queue.shift(); const it=D.items[D.cur];
+  const sayBtn=it.sayText&&(D.type==="mc"||D.autoSay)?` <button class="dark sm" onclick="say(${esc(JSON.stringify(it.sayText))})">🔊</button>`:"";
+  $("dPrompt").innerHTML=it.prompt+sayBtn;
+  if(D.type==="mc"){ $("dWrite").classList.add("hidden"); it.opts.forEach(o=>{const b=document.createElement("button"); b.textContent=o; b.onclick=()=>dPick(b,o); $("dOpts").appendChild(b);}); }
+  else{ $("dWrite").classList.remove("hidden"); $("dIn").value=""; $("dIn").className=""; $("dIn").focus(); if(D.autoSay) say(it.sayText); }
+}
+function dResult(ok,given){ const it=D.items[D.cur];
+  if(ok){ if(!D.wrong.has(D.cur)) D.first++; D.done++; }
+  else{ if(!D.wrong.has(D.cur)){ D.wrong.add(D.cur); D.mistakes.push(it.word+" (написал(а): "+(given||"—")+")"); } D.queue.push(D.cur); } }
+function dPick(btn,o){ if(D.lock)return; D.lock=true; const it=D.items[D.cur]; const ok=o===it.ans;
+  [...$("dOpts").children].forEach(b=>{b.disabled=true; if(b.textContent===it.ans) b.classList.add("ok");}); if(!ok) btn.classList.add("bad");
+  dResult(ok,o); $("dFb").innerHTML=(ok?"👍 ":"✗ ")+esc(it.after||"")+(ok?"":"<br><span class='muted'>Будет ещё раз.</span>");
+  if(it.sayText&&!ok) say(it.sayText); setTimeout(dNext, ok?900:2600); }
+function dCheck(){
+  if(D.lock)return; const it=D.items[D.cur]; const v=$("dIn").value; if(!v.trim())return;
+  if(D.retype){ if(isRight(v,it.ans)){ D.lock=true; $("dIn").className="ok"; $("dFb").innerHTML="👍 Теперь правильно. Будет ещё раз в конце."; setTimeout(dNext,1100); }
+    else{ $("dIn").className="bad"; $("dFb").innerHTML="Ещё не так. Напиши точно: <b>"+esc(it.word)+"</b>"; } return; }
+  const ok=isRight(v,it.ans); $("dIn").className=ok?"ok":"bad"; dResult(ok,v); say(it.word);
+  if(ok){ D.lock=true; $("dFb").innerHTML="👍 "+esc(it.word)+(it.after?" — "+esc(it.after):""); setTimeout(dNext,1000); }
+  else{ D.retype=true; $("dFb").innerHTML="Правильно: <b style='font-size:20px'>"+esc(it.word)+"</b><br>Перепечатай правильно и нажми «Проверить»."; $("dIn").value=""; $("dIn").focus(); }
+}
+
+/* отчёт */
+const SHORT={tr:"перевод",def:"определение",ctx:"в предложении",gaps:"буквы",lis:"на слух",wr:"по переводу"};
+function buildReport(){
+  const mins=Math.max(1,Math.round((Date.now()-STATE.started)/60000));
+  let t="📝 <b>IELTS Vocabulary · Advertising (band 9)</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+" · ≈"+mins+" мин\n📚 Шагов пройдено: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" из "+STEPS.length+"\n";
+  SETS.forEach(st=>{
+    const got=STEPS.filter(x=>x.set===st&&x.t!=="cards"&&STATE.vocab[x.key]);
+    if(!got.length){ t+="\n<b>"+esc(st.name)+"</b>: не начато"; return; }
+    const sc=got.reduce((a,x)=>a+STATE.vocab[x.key].score,0), tt=got.reduce((a,x)=>a+STATE.vocab[x.key].total,0);
+    t+="\n<b>"+esc(st.name)+"</b>: "+sc+"/"+tt+"\n   "+esc(got.map(x=>SHORT[x.t]+" "+STATE.vocab[x.key].score+"/"+STATE.vocab[x.key].total).join(" · "));
+    got.forEach(x=>STATE.vocab[x.key].mistakes.forEach(m=>t+="\n   ✗ "+esc(SHORT[x.t]+": "+m)));
+  });
+  const up=STATE.vocab["all:up"]; t+="\n\n<b>Апгрейд</b>: "+(up?up.score+"/"+up.total:"не сделано"); if(up) up.mistakes.forEach(m=>t+="\n   ✗ "+esc(m));
+  const es=STATE.vocab["all:essay"]; t+="\n\n<b>Мини-эссе</b>: "+(es?"слов из урока: "+es.used.length+" ("+esc(es.used.join(", "))+")\n\n"+esc(es.essay):"не сделано");
+  return t;
+}
+function chunks(text){ const out=[]; let cur=""; text.split("\n").forEach(l=>{ if((cur+"\n"+l).length>3800){ out.push(cur); cur=l; } else cur=cur?cur+"\n"+l:l; }); if(cur)out.push(cur); return out; }
+async function sendResults(){
+  const text=buildReport(); $("sendBtn").disabled=true; $("sendFb").textContent="Отправляю…";
+  try{ for(const part of chunks(text)){ const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text:part,parse_mode:"HTML"})}); const j=await r.json(); if(!j.ok) throw new Error(j.description); }
+    $("sendFb").textContent="✅ Отправлено! Молодец!"; $("sendBtn").disabled=false; }
+  catch(e){ $("sendBtn").disabled=false; $("sendFb").textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
+}
+
+load(); if(STATE.name) $("nameInput").value=STATE.name;
+</script>
+</body>
+</html>
