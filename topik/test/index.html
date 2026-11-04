@@ -95,14 +95,14 @@
 <div class="wrap">
 <div id="login" class="card">
   <h2>📝 어휘 테스트 · проверочная</h2>
-  <p class="muted">20 вопросов, 5 минут. Ответы не исправляются, назад вернуться нельзя. Когда закончишь, нажми «Отправить».</p>
+  <p class="muted">Все слова урока, 10 минут. Отвечай быстро: если не знаешь — выбери наугад и иди дальше. Ответы не исправляются, назад вернуться нельзя. Когда закончишь, нажми «Отправить».</p>
   <p class="muted">⌨️ Для последних вопросов нужна корейская раскладка.</p>
   <p>Как тебя зовут?</p>
   <input type="text" id="nameInput" placeholder="Имя и фамилия" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
   <p><button class="primary" onclick="start()">Начать тест →</button></p>
 </div>
 <div id="app" class="hidden">
-  <header><h1>어휘 테스트</h1><div class="who">👤 <span id="who"></span> · <span class="timer" id="timer">5:00</span></div></header>
+  <header><h1>어휘 테스트</h1><div class="who">👤 <span id="who"></span> · <span class="timer" id="timer">10:00</span></div></header>
   <div class="card" id="qCard">
     <div class="bar"><div id="bar"></div></div>
     <div class="muted" id="qNum"></div>
@@ -128,8 +128,8 @@
 /* ============ НАСТРОЙКИ ============ */
 const TG_TOKEN   = "9252730022:AAGhfn1DzR05foOHV6zFiTirJlRqSoUCgTU";
 const TG_CHAT_ID = "347625701";
-const MINUTES = 5;
-const PLAN = {tr:8, ctx:6, wr:6};   // сколько вопросов каждого типа
+const MINUTES = 10;
+const PLAN = {ctx:10, wr:10};   // все остальные слова — «выбери перевод»
 
 /* ============ ЛЕКСИКА ============
    Каждое слово: ko, ru, ex (пример), exRu (перевод примера), f (форма слова в примере, если отличается от ko).
@@ -310,7 +310,7 @@ const SETS = [
 
 /* ============ ЛОГИКА ============ */
 const $=id=>document.getElementById(id);
-const KEY="topik_test1_state_v1";
+const KEY="topik_test1_state_v2";
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 function norm(s){ return (s||"").normalize("NFC").replace(/[\s.,!?·~]/g,""); }
@@ -323,13 +323,15 @@ function save(){ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} }
 function load(){ try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null} }
 
 function makeTest(){
-  const words=[]; shuffle(POOL).forEach(w=>{ if(!words.some(x=>related(x,w))) words.push(w); });  // без пар вроде 지진 / 지진이 나다
-  let k=0; const qs=[];
+  // каждое слово ровно один раз; пары вроде 지진 / 지진이 나다 — только в «выбери перевод», чтобы не подсказывали друг другу
+  const all=shuffle(POOL), free=all.filter(w=>!POOL.some(x=>x!==w&&related(x,w)));
+  const ctxW=free.slice(0,PLAN.ctx), wrW=free.slice(PLAN.ctx,PLAN.ctx+PLAN.wr), trW=all.filter(w=>!ctxW.includes(w)&&!wrW.includes(w));
+  const qs=[];
   const distract=(w,f)=>shuffle(POOL.filter(x=>x!==w&&!related(x,w)&&f(x)!==f(w))).slice(0,3).map(f);
-  for(let n=0;n<PLAN.tr;n++){ const w=words[k++]; qs.push({t:"tr",ko:w.ko,ans:w.ru,opts:shuffle([w.ru,...distract(w,x=>x.ru)])}); }
-  for(let n=0;n<PLAN.ctx;n++){ const w=words[k++], f=form(w), i=w.ex.indexOf(f);
-    qs.push({t:"ctx",ko:w.ko,ans:w.ko,before:w.ex.slice(0,i),after:w.ex.slice(i+f.length),exRu:w.exRu,opts:shuffle([w.ko,...distract(w,x=>x.ko)])}); }
-  for(let n=0;n<PLAN.wr;n++){ const w=words[k++]; qs.push({t:"wr",ko:w.ko,ans:w.ko,ru:w.ru}); }
+  trW.forEach(w=>{ qs.push({t:"tr",ko:w.ko,ans:w.ru,opts:shuffle([w.ru,...distract(w,x=>x.ru)])}); });
+  ctxW.forEach(w=>{ const f=form(w), i=w.ex.indexOf(f);
+    qs.push({t:"ctx",ko:w.ko,ans:w.ko,before:w.ex.slice(0,i),after:w.ex.slice(i+f.length),exRu:w.exRu,opts:shuffle([w.ko,...distract(w,x=>x.ko)])}); });
+  wrW.forEach(w=>qs.push({t:"wr",ko:w.ko,ans:w.ko,ru:w.ru}));
   return qs;
 }
 
