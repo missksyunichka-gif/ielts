@@ -81,6 +81,11 @@
   table.res td{padding:6px 4px;border-bottom:1px solid var(--line)}
   .speed{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-top:6px}
   @media(max-width:560px){.opts{grid-template-columns:1fr}.row .lab{min-width:100%}table.tbl{font-size:14px}input.gap{width:110px}}
+  select.sel{font:inherit;padding:4px 8px;border:1.5px solid #c9ced8;border-radius:8px;background:#fafbfc;margin:0 2px}
+  select.sel.ok{border-color:var(--ok);background:var(--okbg)}
+  select.sel.bad{border-color:var(--bad);background:var(--badbg)}
+  .urow{padding:8px 0;border-bottom:1px dashed var(--line);line-height:2.1}
+  .chip{display:inline-block;background:#eef3ff;border-radius:20px;padding:3px 11px;margin:3px;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -96,6 +101,8 @@
   <header><h1>Advertising · Band 9</h1><div class="who">👤 <span id="who"></span></div></header>
   <nav id="nav">
     <button data-tab="vocab" class="active">📚 Лексика</button>
+    <button data-tab="units">📝 Проверка юнитов</button>
+    <button data-tab="essay">✍️ Essay</button>
     <button data-tab="speak">🎤 Speaking</button>
   </nav>
 <section id="tab-vocab">
@@ -151,6 +158,29 @@
     <p class="muted">✓ — сделано (можно нажать и повторить), ▶ — сейчас, 🔒 — пока закрыто.</p>
     <div id="path"></div>
   </div>
+</section>
+<section id="tab-units" class="hidden">
+  <div class="card">
+    <h2>📝 Проверка по юнитам</h2>
+    <p class="muted">Упражнения из учебника: environment, gerund/infinitive, active/passive, word formation, banking, relative pronouns. Каждый блок проверяется отдельно, можно пройти заново. Пока не заполнишь все пропуски, блок не проверится.</p>
+    <div class="bar"><div id="uBar"></div></div>
+    <div id="uProg" class="muted"></div>
+  </div>
+  <div id="uList"></div>
+  <div class="card">
+    <h3>📨 Отправить учителю</h3>
+    <button class="primary" id="uSend" onclick="sendUnits()">Отправить результаты</button>
+    <div class="feedback" id="uFb"></div>
+    <textarea id="uCopy" class="hidden" style="width:100%;height:180px;font:13px monospace;margin-top:8px"></textarea>
+  </div>
+</section>
+<section id="tab-essay" class="hidden">
+  <div class="card">
+    <h2>✍️ Advantages &amp; disadvantages essay</h2>
+    <p class="muted">Выбери тему. Дальше три шага: составь план, посмотри слова и выражения, напиши эссе. Образец открывается после того, как напишешь сама.</p>
+    <div id="eTopics"></div>
+  </div>
+  <div id="eBody"></div>
 </section>
 <section id="tab-speak" class="hidden">
   <div class="card">
@@ -289,7 +319,35 @@ const SETS = [
   {en:"affiliate", pos:"n", ru:"филиал, дочерняя компания; партнёр", def:"a company or organisation connected to a larger one", ex:"The bank opened an affiliate in Dubai."},
   {en:"overdraft", pos:"n", ru:"овердрафт (уход в минус по счёту)", def:"money you spend from your bank account that is more than you have in it", ex:"He had to pay interest on his overdraft."}
  ]},
- {id:"A", name:"3 · Persuasion & psychology", words:[
+ {id:"T3", name:"3 · Advertising: список учителя", words:[
+  {en:"go viral", pos:"phr", ru:"стать вирусным, мгновенно разлететься по сети", def:"to spread very quickly to a huge number of people online", ex:"It is impossible to predict which videos will go viral."},
+  {en:"run a campaign", pos:"phr", ru:"проводить (рекламную) кампанию", def:"to organise a planned series of activities to reach a goal", ex:"The charity decided to run a campaign against plastic waste."},
+  {en:"affiliate", pos:"n", ru:"партнёр, аффилиат (получает комиссию за продвижение)", def:"a person or company that earns a commission by promoting another company's products", ex:"Many bloggers earn money as an affiliate for online shops."},
+  {en:"vulnerable", pos:"adj", ru:"уязвимый, незащищённый", def:"easily harmed, tricked or influenced", ex:"Children are especially vulnerable to advertising."},
+  {en:"bombard", pos:"v", ru:"засыпать, забрасывать (рекламой)", def:"to attack or overwhelm someone with a lot of things at once", ex:"Companies bombard us with adverts every time we go online."},
+  {en:"unsolicited", pos:"adj", ru:"незапрошенный, непрошеный", def:"not asked for and not wanted", ex:"I receive dozens of unsolicited emails every day."},
+  {en:"solicited", pos:"adj", ru:"запрошенный (то, о чём просили)", def:"asked for or requested by the person who receives it", ex:"We only send solicited emails to customers who have subscribed."},
+  {en:"intrusive", pos:"adj", ru:"навязчивый, вторгающийся", def:"disturbing your privacy or attention in an unwelcome way", ex:"Pop-up adverts are annoying and intrusive."},
+  {en:"ubiquitous", pos:"adj", ru:"вездесущий, повсеместный", def:"seeming to be everywhere at the same time", ex:"Smartphones have become ubiquitous in modern life."},
+  {en:"impulse buying", pos:"n", ru:"импульсивные покупки", def:"buying something suddenly without planning or thinking", ex:"Sweets near the till encourage impulse buying."},
+  {en:"retail", pos:"n", ru:"розничная торговля", def:"the business of selling goods to the public in shops", ex:"She has worked in retail for ten years."},
+  {en:"billboard", pos:"n", ru:"рекламный щит", def:"a very large board next to a road, used for advertisements", ex:"A giant billboard advertised the new film."},
+  {en:"inexorable", pos:"adj", ru:"неумолимый, неотвратимый", def:"impossible to stop or change", ex:"The inexorable growth of online shopping is changing our high streets."},
+  {en:"inevitable", pos:"adj", ru:"неизбежный", def:"certain to happen; impossible to avoid", ex:"With so many adverts online, some irritation is inevitable."},
+  {en:"prime time", pos:"n", ru:"прайм-тайм (лучшее телевизионное время)", def:"the evening hours when most people watch TV", ex:"Adverts during prime time cost a fortune."},
+  {en:"saturated", pos:"adj", ru:"перенасыщенный (о рынке)", def:"so full of something that no more can be added", ex:"The smartphone market is saturated, so firms must advertise heavily."},
+  {en:"household name", pos:"n", ru:"широко известный бренд, имя на слуху", def:"a person or brand that almost everyone knows", ex:"After the campaign, the brand became a household name."},
+  {en:"a double-edged sword", pos:"n", ru:"палка о двух концах, обоюдоострый меч", def:"something that has both good and bad effects", ex:"Social media advertising is a double-edged sword."},
+  {en:"appeal to", pos:"v", ru:"привлекать, апеллировать к", def:"to attract or interest a particular group of people", ex:"Adverts often appeal to our emotions rather than our logic."},
+  {en:"pervasive", pos:"adj", ru:"всепроникающий, повсеместный", def:"spreading through every part of something", ex:"Online advertising has become pervasive."},
+  {en:"compile", pos:"v", ru:"составлять, собирать (данные, список)", def:"to collect information and put it together in a list or report", ex:"Marketers compile data about what customers search for."},
+  {en:"catchy", pos:"adj", ru:"запоминающийся, цепляющий", def:"(of a tune or slogan) easy to remember and pleasant", ex:"A catchy slogan stays in your head for years."},
+  {en:"boost", pos:"v", ru:"повышать, стимулировать", def:"to make something increase or improve", ex:"A celebrity endorsement can boost sales overnight."},
+  {en:"endorsement", pos:"n", ru:"рекомендация, одобрение (знаменитостью)", def:"public support of a product, often by a famous person", ex:"The sportsman's endorsement made the trainers hugely popular."},
+  {en:"gullible", pos:"adj", ru:"доверчивый, легковерный", def:"easily tricked because you believe what people tell you", ex:"Gullible shoppers believe every miracle claim."},
+  {en:"stand out", pos:"phr v", ru:"выделяться", def:"to be easy to notice because of being different", ex:"In a crowded market, brands need to stand out."}
+ ]},
+ {id:"A", name:"4 · Persuasion & psychology", words:[
   {en:"persuasive", pos:"adj", ru:"убедительный", def:"able to make people believe or do something", ex:"The commercial was so persuasive that sales doubled in a month."},
   {en:"manipulate", pos:"v", ru:"манипулировать", def:"to control or influence people in a clever and often unfair way", ex:"Some adverts manipulate children into wanting expensive toys."},
   {en:"appeal to", pos:"v", ru:"взывать к, привлекать", def:"to attract or interest a particular group of people", ex:"Luxury brands appeal to our desire for status."},
@@ -305,7 +363,7 @@ const SETS = [
   {en:"consumerism", pos:"n", ru:"потребительство, культ потребления", def:"the idea that buying more and more things is good", ex:"Black Friday is a symbol of modern consumerism."},
   {en:"subliminal", pos:"adj", ru:"подсознательный, скрытый", def:"affecting your mind without you noticing it", ex:"Subliminal messages in adverts are banned in many countries."}
  ]},
- {id:"B", name:"4 · Media & industry", words:[
+ {id:"B", name:"5 · Media & industry", words:[
   {en:"ubiquitous", pos:"adj", ru:"вездесущий, повсеместный", def:"seeming to be everywhere", ex:"Advertising has become ubiquitous in modern cities."},
   {en:"bombard", pos:"v", ru:"засыпать, бомбардировать", def:"to give someone too much of something, again and again", ex:"We are bombarded with adverts every time we go online."},
   {en:"intrusive", pos:"adj", ru:"навязчивый", def:"annoying because it comes into your private life", ex:"Many people find pop-up adverts extremely intrusive."},
@@ -321,7 +379,7 @@ const SETS = [
   {en:"billboard", pos:"n", ru:"рекламный щит", def:"a very large board for adverts beside a road", ex:"A huge billboard was put up next to the motorway."},
   {en:"saturated", pos:"adj", ru:"перенасыщенный", def:"so full of something that no more can be added", ex:"The market is saturated with similar smartphones."}
  ]},
- {id:"C", name:"5 · Band 9 collocations", words:[
+ {id:"C", name:"6 · Band 9 collocations", words:[
   {en:"raise awareness", pos:"phr", ru:"повышать осведомлённость", def:"to make more people know about something", ex:"The campaign aims to raise awareness of healthy eating."},
   {en:"boost sales", pos:"phr", ru:"резко увеличить продажи", def:"to make a company sell more", ex:"A clever slogan can boost sales dramatically."},
   {en:"household name", pos:"phr", ru:"известный всем бренд/человек", def:"a brand or person that almost everyone knows", ex:"Within ten years the company became a household name."},
@@ -389,8 +447,8 @@ function say(text,slow){ if(noTTS())return; speechSynthesis.cancel(); const u=ut
 
 function start(){
   const n=$("nameInput").value.trim(); if(!n){$("nameInput").focus();return;}
-  if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{}};
-  save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent();
+  if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{},units:{},essays:{}};
+  save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent(); uRenderAll();
 }
 $("rate").oninput=()=>$("rateVal").textContent=$("rate").value;
 
@@ -453,7 +511,7 @@ function startEssay(s){ essayStep=s;
   $("essayBox").classList.remove("hidden"); essayCount(); }
 function essayCount(){
   const t=$("essayIn").value, low=t.toLowerCase(), words=t.trim()?t.trim().split(/\s+/).length:0;
-  const used=SETS.flatMap(s=>s.words).map(w=>w.en).filter(w=>low.includes(w.toLowerCase().replace(/^a /,"")));
+  const used=[...new Set(SETS.flatMap(s=>s.words).map(w=>w.en))].filter(w=>low.includes(w.toLowerCase().replace(/^a /,"")));
   $("essayInfo").innerHTML="Слов: <b>"+words+"</b> · Слова из урока: <b>"+used.length+"</b>"+(used.length?" — "+used.map(u=>'<span style="background:var(--okbg);padding:1px 6px;border-radius:6px;margin:2px;display:inline-block">'+esc(u)+'</span>').join(""):"");
   $("essayDone").disabled=words<50||used.length<4; return used;
 }
@@ -541,6 +599,243 @@ async function sendResults(){
   catch(e){ $("sendBtn").disabled=false; $("sendFb").textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
 }
 
+
+/* ============ ПРОВЕРКА ПО ЮНИТАМ (без кроссвордов и word search) ============ */
+const UNITS = [
+ {id:"u1", title:"1 · Environment vocabulary (1)", ins:"Complete the sentences with words connected with the environment. Дано: первая буква и число букв.", hint:true,
+  ex:"Example: Many animals are now protected as a result of wildlife conservation programmes.",
+  items:[
+   {t:"We need to reduce the quantity of {} gases we release into the atmosphere.", b:[{a:["greenhouse"]}]},
+   {t:"Politicians talk a lot about {} change, but don't do enough to prevent it.", b:[{a:["climate"]}]},
+   {t:"Rising sea {} may mean that some islands will disappear.", b:[{a:["levels"]}]},
+   {t:"I believe it's time to reduce our dependence on {} fuels.", b:[{a:["fossil"]}]},
+   {t:"Solar power and wind power are two forms of {} energy.", b:[{a:["renewable"]}]},
+   {t:"The ideal situation would be to drive cars with zero {}.", b:[{a:["emissions"]}]},
+   {t:"Tigers and pandas are {} species.", b:[{a:["endangered"]}]}
+  ]},
+ {id:"u2", title:"2 · Environment vocabulary (2)", ins:"Complete the sentences by writing a word in each space.", hint:true,
+  ex:"Example: Someone who does not eat meat is a vegetarian.",
+  items:[
+   {t:"Scientists have created {} power by capturing heat from the sun.", b:[{a:["solar"]}]},
+   {t:"Burning fossil fuels, such as oil and gas, pollutes the {}.", b:[{a:["atmosphere","environment","air"]}]},
+   {t:"As a result of hunting, some animal species have now become {}.", b:[{a:["extinct","endangered"]}]},
+   {t:"Cutting down forests not only adds to global warming but also destroys animal {}.", b:[{a:["habitats","habitat"]}]}
+  ]},
+ {id:"u3", title:"3 · nature, the environment, the countryside, tourist, tourism", ins:"Complete each sentence with the correct form of: nature, the environment, the countryside, tourist or tourism. Каждое слово нужно один раз.", hint:true,
+  ex:"Example: The town I live in is surrounded by beautiful unspoilt countryside.",
+  items:[
+   {t:"Governments should do more to protect {} by limiting pollution, especially in big cities.", b:[{a:["the environment","environment"]}]},
+   {t:"{} is a big industry in my country, and people come here from all over the world. On the other hand, when our holidays come along, we local people become {} ourselves and go off to visit other parts of the world.", b:[{a:["tourism"]},{a:["tourists"]}]},
+   {t:"I love to go walking in the country; it makes me feel in harmony with {} and the natural world.", b:[{a:["nature"]}]}
+  ]},
+ {id:"u4", title:"4 · Gerund or infinitive?", ins:"Choose the correct option in each sentence.",
+  ex:"Example: The majority of people choose to go shopping in large shopping centres.",
+  items:[
+   {t:"Many employers will avoid {} someone who has never had a job, but they will consider {} work to someone with a little work experience.", b:[{o:["to employ","employing"],a:["employing"]},{o:["to offer","offering"],a:["offering"]}]},
+   {t:"For people who want {} clothes, I would recommend them {} so online.", b:[{o:["to buy","buying"],a:["to buy"]},{o:["not to do","not doing"],a:["not to do"]}]},
+   {t:"Governments should encourage people {} money rather than spending it.", b:[{o:["to save","saving"],a:["to save"]}]},
+   {t:"I believe that every young person should consider {} for a year before going to university.", b:[{o:["to work","working"],a:["working"]}]},
+   {t:"Many young people waste a lot of time {} online games instead of studying.", b:[{o:["to play","playing"],a:["playing"]}]},
+   {t:"Some students fail {} enough money, so they are forced {} out a loan from the bank.", b:[{o:["to save","saving"],a:["to save"]},{o:["to take","taking"],a:["to take"]}]},
+   {t:"The number of shoppers paying by credit card seems {} rising.", b:[{o:["to be","being"],a:["to be"]}]}
+  ]},
+ {id:"u5", title:"5 · Active or passive?", ins:"Write the verb in brackets in the correct form: active or passive.",
+  ex:"Example: Generally, about 5,000 wind turbines are needed (need) to replace one coal-fired power station.",
+  items:[
+   {t:"During the world's worst tropical storm, wind speeds {} (reach) over 310 kilometres per hour.", b:[{a:["reached"]}]},
+   {t:"The Internet {} (can use) to find out about the weather.", b:[{a:["can be used"]}]},
+   {t:"In the past, most wildfires {} (cause) by lightning strikes.", b:[{a:["were caused"]}]},
+   {t:"Basically, this solar panel {} (consist) of black water pipes inside a glass box.", b:[{a:["consists"]}]},
+   {t:"When the storm hit the area, hot air {} (blow) across the desert by the strong winds.", b:[{a:["was blown"]}]},
+   {t:"Energy resources {} (fit) into two broad types: renewable and non-renewable.", b:[{a:["fit"]}]}
+  ]},
+ {id:"u6", title:"6 · Best alternative (A, B or C)", ins:"Choose the best word for each sentence.",
+  ex:"Example: Petrol-driven vehicles emit dangerous quantities of greenhouse gases.",
+  items:[
+   {t:"Conservationists agree that we need to do more to {} rare animal species.", b:[{o:["guard","protect","defend"],a:["protect"]}]},
+   {t:"If more people {} to alternative power sources, the air would become cleaner.", b:[{o:["moved","exchanged","switched"],a:["switched"]}]},
+   {t:"Some factories {} toxic fumes into the atmosphere.", b:[{o:["release","put","deliver"],a:["release"]}]},
+   {t:"Most pollution problems were {} by human beings.", b:[{o:["formed","shaped","created"],a:["created"]}]},
+   {t:"The area where I live is surrounded {} forest.", b:[{o:["of","by","over"],a:["by"]}]},
+   {t:"It can be very expensive to {} electricity using wind or tidal power.", b:[{o:["raise","make","produce"],a:["produce"]}]}
+  ]},
+ {id:"u7", title:"7 · Word formation", ins:"Complete the sentences with the correct form of the word in brackets.",
+  ex:"Example: Many supermarkets now have a bakery (bake) in the store.",
+  items:[
+   {t:"Unfortunately, small {} (retail) have to charge more for their products than large superstores.", b:[{a:["retailers"]}]},
+   {t:"If you cannot find what you are looking for, you should ask an {} (assist) for help.", b:[{a:["assistant"]}]},
+   {t:"Some customers believe that there is too much {} (choose) in shops today.", b:[{a:["choice"]}]},
+   {t:"Psychologists have many ideas that can help shopkeepers increase their {} (sell).", b:[{a:["sales"]}]},
+   {t:"During the bad weather, the supermarket {} (shelf) were empty.", b:[{a:["shelves"]}]}
+  ]},
+ {id:"u8", title:"8 · Banking vocabulary", ins:"Choose the correct option in each sentence.",
+  ex:"Example: When I moved to Paris, I opened a new bank account.",
+  items:[
+   {t:"Most large banks have {} in other countries.", b:[{o:["branches","departments"],a:["branches"]}]},
+   {t:"As my course was expensive, I had to {} a loan from my father.", b:[{o:["get","borrow"],a:["get"]}]},
+   {t:"When you choose a bank, it is important to make sure they offer a good {} rate.", b:[{o:["interest","savings"],a:["interest"]}]},
+   {t:"It can be very worrying to find that your bank {} is empty.", b:[{o:["balance","credit"],a:["balance"]}]},
+   {t:"Unfortunately, some banks are not willing to {} their customers an overdraft.", b:[{o:["give","pay"],a:["give"]}]},
+   {t:"It is easy to get into {} if you spend too much money.", b:[{o:["debt","debit"],a:["debt"]}]}
+  ]},
+ {id:"u9", title:"9 · Relative pronouns and question words", ins:"Complete the paragraph with words from the box: who, what, where, which, when, why, who. (Запятые в проверке не учитываются, но подумай, где они нужны.)",
+  ex:"Example: Everyone knows that retailers, who rely on their sales, have to use advertising to promote their products.",
+  items:[
+   {t:"Unfortunately, as consumers, we have no choice over {} we see these advertisements or {} they are placed. No matter {} we are doing, there seem to be advertisements everywhere.", b:[{o:["who","what","where","which","when","why"],a:["when"]},{o:["who","what","where","which","when","why"],a:["where"]},{o:["who","what","where","which","when","why"],a:["what"]}]},
+   {t:"Suddenly, your concentration is interrupted by someone {} is trying to sell you car insurance.", b:[{o:["who","what","where","which","when","why"],a:["who"]}]},
+   {t:"When this happens on my television, the volume also increases, {} really annoys me. I cannot understand {} this happens!", b:[{o:["who","what","where","which","when","why"],a:["which"]},{o:["who","what","where","which","when","why"],a:["why"]}]}
+  ]},
+ {id:"u10", title:"10 · How an avalanche happens: put in order", ins:"Put statements a–f in the correct order. Выбери букву для каждой позиции.",
+  intro:"<div class='reading' style='font-family:inherit;font-size:15px;margin:8px 0'>a. When the wind blows, the top layer moves slightly forward and hangs over the edge of the mountain.<br>b. In the first stage, a very cold layer of snow falls on the mountain.<br>c. An avalanche happens when a lot of snow falls down a mountainside.<br>d. As a consequence, when someone makes a loud noise or skis over the snow, the layer can become loose.<br>e. Next, a top layer of snow forms that is wetter and heavier.<br>f. Then it breaks away from the bottom layer and slides down the mountainside.</div>",
+  items:[
+   {t:"Order: 1 {} → 2 {} → 3 {} → 4 {} → 5 {} → 6 {}", b:["c","b","e","a","d","f"].map(x=>({o:["a","b","c","d","e","f"],a:[x]}))}
+  ]}
+];
+
+function hintOf(a){ return a.split(" ").map(p=>p[0]+"_".repeat(Math.max(0,p.length-1))).join(" "); }
+function uBlank(u,i,j,b){
+  const id="u_"+u.id+"_"+i+"_"+j;
+  if(b.o) return '<select class="sel" id="'+id+'"><option value="">…</option>'+b.o.map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join("")+'</select>';
+  const ph=u.hint?hintOf(b.a[0]):"";
+  return '<input class="gap" id="'+id+'" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="'+esc(ph)+'" style="width:'+Math.max(110,b.a[0].length*12+40)+'px">';
+}
+function uRender(u){
+  let h='<div class="card" id="uc_'+u.id+'"><h3>'+esc(u.title)+'</h3><p class="muted">'+esc(u.ins)+'</p>'+(u.intro||"")+(u.ex?'<p class="muted" style="font-style:italic">'+esc(u.ex)+'</p>':"");
+  u.items.forEach((it,i)=>{
+    const parts=it.t.split("{}"); let body="";
+    parts.forEach((p,k)=>{ body+=esc(p)+(k<it.b.length?uBlank(u,i,k,it.b[k]):""); });
+    h+='<div class="urow"><span class="qn">'+(i+1)+'</span> '+body+'<div class="fix" id="uf_'+u.id+'_'+i+'"></div></div>';
+  });
+  const prev=STATE.units&&STATE.units[u.id];
+  h+='<button class="primary" onclick="uCheck(\''+u.id+'\')">Проверить</button><button onclick="uReset(\''+u.id+'\')">Заново</button> <span class="score" id="us_'+u.id+'" style="font-size:16px">'+(prev?"Прошлый результат: "+prev.score+" / "+prev.total:"")+'</span></div>';
+  return h;
+}
+function uRenderAll(){ $("uList").innerHTML=UNITS.map(uRender).join(""); uProgress(); }
+function uReset(id){ const u=UNITS.find(x=>x.id===id); const el=$("uc_"+id); const tmp=document.createElement("div"); tmp.innerHTML=uRender(u); el.replaceWith(tmp.firstChild); }
+function uCheck(id){
+  const u=UNITS.find(x=>x.id===id); let score=0,total=0,mistakes=[],empty=false;
+  u.items.forEach((it,i)=>it.b.forEach((b,j)=>{ if(!$("u_"+id+"_"+i+"_"+j).value.trim()) empty=true; }));
+  if(empty){ $("us_"+id).textContent="Заполни все пропуски, потом проверим."; return; }
+  u.items.forEach((it,i)=>{
+    const fixes=[];
+    it.b.forEach((b,j)=>{
+      const el=$("u_"+id+"_"+i+"_"+j), v=el.value.trim(); total++;
+      const ok=b.o?v===b.a[0]:isRight(v,b.a);
+      el.classList.toggle("ok",ok); el.classList.toggle("bad",!ok);
+      if(ok) score++; else { fixes.push(b.a[0]); mistakes.push((i+1)+(it.b.length>1?"."+(j+1):"")+": "+v+" → "+b.a[0]); }
+    });
+    $("uf_"+id+"_"+i).textContent=fixes.length?"→ "+fixes.join(", "):"";
+  });
+  $("us_"+id).textContent="Результат: "+score+" / "+total;
+  STATE.units=STATE.units||{}; STATE.units[id]={title:u.title,score,total,mistakes}; save(); uProgress();
+}
+function uProgress(){
+  const done=UNITS.filter(u=>STATE.units&&STATE.units[u.id]);
+  const s=done.reduce((a,u)=>a+STATE.units[u.id].score,0), t=done.reduce((a,u)=>a+STATE.units[u.id].total,0);
+  $("uBar").style.width=(100*done.length/UNITS.length)+"%";
+  $("uProg").textContent="Проверено блоков: "+done.length+" из "+UNITS.length+(t?" · баллы: "+s+" / "+t:"");
+}
+async function sendTG(text,btnId,fbId,copyId){
+  const btn=$(btnId); btn.disabled=true; $(fbId).textContent="Отправляю…";
+  try{ for(const part of chunks(text)){ const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text:part,parse_mode:"HTML"})}); const j=await r.json(); if(!j.ok) throw new Error(j.description); }
+    $(fbId).textContent="✅ Отправлено! Молодец!"; }
+  catch(e){ $(fbId).textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"; const b=$(copyId); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
+  btn.disabled=false;
+}
+function sendUnits(){
+  const done=UNITS.filter(u=>STATE.units&&STATE.units[u.id]);
+  if(!done.length){ $("uFb").textContent="Пока нет ни одного проверенного блока."; return; }
+  let t="📝 <b>Проверка по юнитам</b>\n👤 "+esc(STATE.name||"—")+"\n🕒 "+new Date().toLocaleString("ru-RU")+"\n";
+  let s=0,tt=0; done.forEach(u=>{ const r=STATE.units[u.id]; s+=r.score; tt+=r.total; t+="\n<b>"+esc(r.title)+"</b>: "+r.score+"/"+r.total; r.mistakes.forEach(m=>t+="\n   ✗ "+esc(m)); });
+  t+="\n\n<b>Итого</b>: "+s+"/"+tt+" · блоков: "+done.length+" из "+UNITS.length;
+  sendTG(t,"uSend","uFb","uCopy");
+}
+
+/* ============ ESSAY: advantages / disadvantages ============ */
+const ESS_LINKERS=["firstly","secondly","in addition","moreover","what is more","furthermore","on the other hand","however","nevertheless","admittedly","that said","for instance","for example","a case in point","to illustrate","as a result","consequently","this means that","in turn","in conclusion","all things considered","on balance","to sum up","one major advantage","a key benefit","a significant drawback","the downside","one potential risk","whereas","although","despite","provided that","as long as"];
+const ESS_PHRASES=[
+ {h:"Введение (intro)", l:["It is often argued that …","In recent years, it has become increasingly common for … to …","This essay will consider both the advantages and the disadvantages of …","Although … has some clear benefits, it also carries certain risks.","I believe that the advantages outweigh the disadvantages. (если вопрос «outweigh?»)"]},
+ {h:"Преимущества (advantages)", l:["There are two main advantages to … ","One major advantage is that …","A key benefit of … is that …","Firstly, … Secondly, …","What is more, … / Moreover, … / In addition, …","This allows people to … / This enables people to …"]},
+ {h:"Недостатки (disadvantages)", l:["On the other hand, there are also significant drawbacks.","A significant drawback is that …","The downside of this is that …","One potential risk is that …","However, many people prefer not to …, and they give two reasons for this.","This may lead to … / This can result in …"]},
+ {h:"Примеры (examples)", l:["For instance, …","A case in point is …","Take …, for example. / Consider …","To illustrate this, imagine someone who …"]},
+ {h:"Причина и результат", l:["As a result, … / Consequently, …","This means that …","which, in turn, can …","This is largely because …"]},
+ {h:"Уступка и контраст", l:["Admittedly, … / It is true that …","That said, … / Nevertheless, …","Although … / Despite the fact that …","… whereas … / … while …","provided that … / as long as …"]},
+ {h:"Заключение (conclusion)", l:["In conclusion, … / To sum up, …","All things considered, …","On balance, I believe that the advantages outweigh the disadvantages, provided that …","Therefore, it is up to each individual to weigh the benefits against the risks."]},
+ {h:"Осторожные формулировки (hedging)", l:["tend to / may well / could potentially","it could be argued that …","in many cases / to some extent / in the long run"]}
+];
+const ESSAYS=[
+ {id:"gap", title:"Тема 1 · Работа между школой и университетом",
+  prompt:"Some suggest that young people should take a job for a few years between school and university.",
+  task:"Discuss what the advantages and disadvantages might be for people who do this.",
+  kind:"Advantages and disadvantages: обсуждаем плюсы и минусы, своё мнение можно дать в конце.",
+  ph:["Перефразируй: school leavers work before studying → что обсудишь","Advantage 1: зарабатывают деньги → меньше долгов → пример","Advantage 2: опыт и soft skills → сильнее резюме → пример","Disadvantage 1: теряют учебный настрой → трудно вернуться","Disadvantage 2: привыкают к зарплате → не идут в вуз","Вывод: что перевешивает и при каком условии"],
+  vocab:[["earn money","зарабатывать деньги"],["save up for tuition fees","копить на оплату обучения"],["avoid student debt","избежать студенческих долгов"],["gain work experience","получить опыт работы"],["develop soft skills","развивать гибкие навыки"],["build a CV","укрепить резюме"],["become more mature and independent","стать взрослее и самостоятельнее"],["get a taste of the real world","почувствовать реальную жизнь"],["lose academic momentum","потерять учебный настрой"],["struggle to readjust to studying","с трудом вернуться к учёбе"],["get used to a regular salary","привыкнуть к зарплате"],["put off higher education","отложить высшее образование"],["a school leaver","выпускник школы"],["a career path","карьерный путь"]],
+  model:[
+   "<b>Intro.</b> In recent years, it has become increasingly common for school leavers to work for a few years before starting university. While this path offers some clear benefits, it also carries certain risks.",
+   "<b>Advantages.</b> There are two main advantages to taking a job before university. Firstly, young people can earn money, which reduces the need for student loans and helps them avoid falling into debt. A graduate who has saved up part of their tuition fees starts a career with far less financial pressure. Secondly, working gives teenagers valuable work experience and soft skills such as teamwork and time management. For instance, a school leaver who spends two years in retail learns how to deal with customers, which makes them a stronger candidate for graduate jobs. Moreover, a year or two in employment helps young people decide what they actually want to study, so they are less likely to drop out of university later.",
+   "<b>Disadvantages.</b> On the other hand, there are also significant drawbacks. The most obvious one is that people may lose their academic momentum. After several years away from the classroom, returning to study can be daunting, and some never go back at all. In addition, those who work for a long time may find it hard to give up a regular salary, particularly if they have become accustomed to a comfortable lifestyle. As a result, they may abandon their plans for higher education altogether, which could limit their career prospects in the long run.",
+   "<b>Conclusion.</b> In conclusion, I believe that the advantages outweigh the disadvantages, provided that the job is relevant and the person remains committed to studying afterwards."]},
+ {id:"biz", title:"Тема 2 · Свой бизнес вместо работы в компании",
+  prompt:"Some people decide to start their own business instead of working for a company or organisation.",
+  task:"Do the advantages for people working for their own business outweigh the disadvantages?",
+  kind:"Outweigh-вопрос: нужна чёткая позиция уже во введении и в заключении. Из учебника: «There are two main advantages to starting your own business instead of being employed by another organisation.» и «On the other hand, many people prefer not to be self-employed or to start their own company, and they give two reasons for this.»",
+  ph:["Перефразируй + твоя позиция (outweigh или нет)","Advantage 1: сам себе начальник → гибкий график → пример","Advantage 2: высокий доход → нет потолка зарплаты → пример","Disadvantage 1: финансовая нестабильность → долги, нет больничных","Disadvantage 2: тяжёлая нагрузка → стресс, выгорание","Вывод: твоя позиция + условие"],
+  vocab:[["be your own boss","быть сам себе начальником"],["flexible working hours","гибкий график"],["work-life balance","баланс работы и жизни"],["earning potential","потенциал заработка"],["be self-employed","работать на себя"],["an entrepreneur","предприниматель"],["start-up capital","стартовый капитал"],["take out a loan","взять кредит"],["financial insecurity","финансовая нестабильность"],["sick pay","оплата больничных"],["job security","стабильность работы"],["go bankrupt","обанкротиться"],["work long hours","работать много часов"],["burn out","выгореть"],["red tape","бюрократия"],["take a risk","рискнуть"]],
+  model:[
+   "<b>Intro + position.</b> Increasingly, people are choosing to start their own business rather than work for an established organisation. Although being self-employed involves real risks, I believe that the advantages generally outweigh the disadvantages.",
+   "<b>Advantages.</b> There are two main advantages to starting your own business. Firstly, entrepreneurs are their own boss, so they control their working hours and the direction of the company. This flexibility can lead to a better work-life balance, especially for parents with young children. Secondly, a successful business has far greater earning potential than a salaried job, where income is usually fixed. A small online shop that grows into a household name, for instance, can generate more money than any employee could earn. In addition, owners take pride in building something of their own, which is a powerful source of motivation.",
+   "<b>Disadvantages.</b> On the other hand, many people prefer not to be self-employed, and they give two reasons for this. The first is financial insecurity: a new company may fail, leaving the owner with debts and no income. Unlike employees, the self-employed receive no sick pay or paid holidays, so a period of illness can be devastating. The second reason is the heavy workload. Business owners often work long hours, particularly in the early stages, which can lead to stress and burnout, and leaves little time for family and friends.",
+   "<b>Conclusion.</b> Admittedly, these risks should not be underestimated. Nevertheless, with careful planning and some savings, most of them can be managed. All things considered, the benefits of running your own business outweigh the drawbacks for those who are prepared to work hard."]}
+];
+let ESS_CUR=null;
+function essState(id){ STATE.essays=STATE.essays||{}; return STATE.essays[id]=STATE.essays[id]||{plan:["","","","","",""],text:""}; }
+function eTopics(){
+  $("eTopics").innerHTML=ESSAYS.map(e=>'<button class="'+(ESS_CUR===e.id?"dark":"")+'" onclick="eOpen(\''+e.id+'\')">'+esc(e.title)+'</button>').join("");
+}
+function eOpen(id){
+  ESS_CUR=id; eTopics(); const e=ESSAYS.find(x=>x.id===id), st=essState(id);
+  let h='<div class="card"><h3>Задание</h3><div class="reading" style="font-family:inherit"><b>Write about the following topic.</b><br><i>'+esc(e.prompt)+'</i><br><i>'+esc(e.task)+'</i><br><span class="muted">Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.</span></div><p class="muted">'+esc(e.kind)+'</p></div>';
+  h+='<div class="card"><h3>1. План</h3><p class="muted">Структура из 4 абзацев: введение → преимущества (2 идеи + пример) → недостатки (2 идеи + пример) → заключение. В плане пиши только заметки, не целые предложения.</p>';
+  const labels=["Intro","Advantage 1","Advantage 2","Disadvantage 1","Disadvantage 2","Conclusion"];
+  labels.forEach((l,i)=>{ h+='<div style="margin:6px 0"><b>'+l+'</b><input type="text" id="ep'+i+'" value="'+esc(st.plan[i])+'" placeholder="'+esc(e.ph[i])+'" oninput="eSave()" autocomplete="off"></div>'; });
+  h+='</div>';
+  h+='<div class="card"><h3>2. Слова и выражения</h3><p class="muted">Слова по теме (нажми, чтобы послушать):</p><div>'+e.vocab.map(v=>'<span class="chip" onclick="say('+esc(JSON.stringify(v[0]))+')" title="'+esc(v[1])+'"><b>'+esc(v[0])+'</b> · '+esc(v[1])+'</span>').join("")+'</div>';
+  h+='<p class="muted" style="margin-top:12px">Выражения по функциям:</p>';
+  ESS_PHRASES.forEach(g=>{ h+='<details style="margin:4px 0"><summary><b>'+esc(g.h)+'</b></summary><ul class="pb">'+g.l.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></details>'; });
+  h+='<div class="reading" style="font-family:inherit;font-size:15px;margin-top:10px"><b>Что даёт Band 9:</b><br>• перефразируй тему в введении, не копируй её;<br>• один абзац — одна главная мысль + пример;<br>• точная лексика вместо good / bad / big;<br>• разные структуры предложений: придаточные, пассив, условные;<br>• в конце проверь артикли, множественное число и запятые.</div></div>';
+  h+='<div class="card"><h3>3. Напиши эссе</h3><textarea id="eText" oninput="eSave()" style="width:100%;height:340px;font:inherit;padding:10px;border:1.5px solid #c9ced8;border-radius:9px" placeholder="Начни с введения…">'+esc(st.text)+'</textarea><div id="eInfo" class="muted" style="margin:6px 0"></div></div>';
+  h+='<div class="card"><h3>4. Образец</h3><p class="muted">Открой после того, как написал(а) свой вариант. Сравни структуру и выражения.</p><details><summary><b>Показать образец (≈270 слов)</b></summary><div class="reading" style="font-family:inherit;font-size:15px;margin-top:8px">'+e.model.map(p=>'<p>'+p+'</p>').join("")+'</div></details></div>';
+  h+='<div class="card"><h3>📨 Отправить учителю</h3><button class="primary" id="eSend" onclick="sendEssay()">Отправить план и эссе</button><div class="feedback" id="eFb"></div><textarea id="eCopy" class="hidden" style="width:100%;height:180px;font:13px monospace;margin-top:8px"></textarea></div>';
+  $("eBody").innerHTML=h; eInfo();
+}
+function eStats(text){
+  const low=text.toLowerCase(), words=text.trim()?text.trim().split(/\s+/).length:0;
+  const e=ESSAYS.find(x=>x.id===ESS_CUR);
+  const link=ESS_LINKERS.filter(l=>low.includes(l));
+  const topic=e.vocab.map(v=>v[0]).filter(w=>low.includes(w.toLowerCase().replace(/^(be|an|a) /,"")));
+  const site=[...new Set(SETS.flatMap(s=>s.words).map(w=>w.en))].filter(w=>low.includes(w.toLowerCase().replace(/^a /,"")));
+  return {words,link,topic,site};
+}
+function eInfo(){
+  const t=$("eText").value, s=eStats(t);
+  const chips=a=>a.map(x=>'<span style="background:var(--okbg);padding:1px 6px;border-radius:6px;margin:2px;display:inline-block">'+esc(x)+'</span>').join("");
+  $("eInfo").innerHTML="Слов: <b>"+s.words+"</b> "+(s.words<250?"(нужно хотя бы 250)":"✓")+"<br>Связки и выражения: <b>"+s.link.length+"</b> "+chips(s.link)+"<br>Слова по теме: <b>"+s.topic.length+"</b> "+chips(s.topic)+"<br>Слова с сайта (реклама, band 9): <b>"+s.site.length+"</b> "+chips(s.site);
+}
+function eSave(){
+  const st=essState(ESS_CUR); st.plan=[0,1,2,3,4,5].map(i=>$("ep"+i).value); st.text=$("eText").value; save(); eInfo();
+}
+function sendEssay(){
+  const e=ESSAYS.find(x=>x.id===ESS_CUR), st=essState(ESS_CUR), s=eStats(st.text);
+  if(s.words<50){ $("eFb").textContent="Сначала напиши эссе (хотя бы 50 слов)."; return; }
+  const labels=["Intro","Advantage 1","Advantage 2","Disadvantage 1","Disadvantage 2","Conclusion"];
+  let t="✍️ <b>Essay · "+esc(e.title)+"</b>\n👤 "+esc(STATE.name||"—")+"\n🕒 "+new Date().toLocaleString("ru-RU")+"\n\n<b>План:</b>";
+  labels.forEach((l,i)=>t+="\n• "+l+": "+esc(st.plan[i]||"—"));
+  t+="\n\n<b>Слов: "+s.words+"</b> · связок: "+s.link.length+" · слов по теме: "+s.topic.length+" · слов с сайта: "+s.site.length;
+  if(s.site.length) t+="\n("+esc(s.site.join(", "))+")";
+  t+="\n\n"+esc(st.text);
+  sendTG(t,"eSend","eFb","eCopy");
+}
+
 /* ============ SPEAKING ============ */
 const P3 = [
   {g:"Company advertising", q:"How important do you think it is for companies to advertise their products?"},
@@ -620,10 +915,11 @@ async function sendSpeaking(){
 }
 $("nav").addEventListener("click",e=>{ const t=e.target.dataset.tab; if(!t)return; speechSynthesis.cancel();
   document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));
-  ["vocab","speak"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); window.scrollTo(0,0); });
+  ["vocab","units","essay","speak"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==t)); window.scrollTo(0,0); });
 spRender();
 
 load(); if(STATE.name) $("nameInput").value=STATE.name;
+uRenderAll(); eTopics();
 </script>
 </body>
 </html>
