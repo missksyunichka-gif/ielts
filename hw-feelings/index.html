@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homework · Work, people &amp; feelings</title>
+<title>Homework · Feelings</title>
 <style>
   :root{--ink:#1d2433;--muted:#667085;--line:#e4e7ec;--bg:#f5f6fa;--card:#fff;--accent:#2f5bea;--ok:#1f9d55;--okbg:#e9f8ef;--bad:#d64545;--badbg:#fdeeee}
   *{box-sizing:border-box}
@@ -87,13 +87,13 @@
 <div class="wrap">
 <div id="login" class="card">
   <h2>📒 Homework</h2>
-  <p class="muted">Topic: <b>Work, people &amp; feelings</b>. A quick vocabulary review, then exercises from your coursebook.</p>
+  <p class="muted">Topic: <b>Feelings</b>. A quick vocabulary review, then exercises from your coursebook.</p>
   <p>What's your name?</p>
   <input type="text" id="nameInput" placeholder="Your name" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
   <p><button class="primary" onclick="start()">Start →</button></p>
 </div>
 <div id="app" class="hidden">
-  <header><h1>Homework · Work &amp; feelings</h1><div class="who">👤 <span id="who"></span></div></header>
+  <header><h1>Homework · Feelings</h1><div class="who">👤 <span id="who"></span></div></header>
 <section id="tab-vocab">
   <div class="card">
     <p class="muted" style="margin-top:0">Go step by step: the next step opens when you finish this one. Mistakes come back at the end of each step. If you misspell a word, you need to type it correctly once.</p>
@@ -152,25 +152,7 @@ const TG_CHAT_ID = "347625701";
    Каждое слово: en, pos, ru, def (определение по-английски), ex (пример — слово en должно стоять в нём точно в такой форме).
    Наборы учителя ставятся ПЕРВЫМИ (пока пусто — ждём материалы). */
 const SETS = [
- {id:"W", name:"1 · Work & people", words:[
-  {en:"colleague", pos:"n", ru:"коллега", def:"a person you work with", ex:"I have lunch with my colleague every day."},
-  {en:"get on well with", pos:"phr", ru:"ладить, быть в хороших отношениях с", def:"to have a friendly relationship with someone", ex:"I get on well with my sister."},
-  {en:"look up to", pos:"phr", ru:"уважать, равняться на", def:"to admire and respect someone", ex:"Many young players look up to him."},
-  {en:"profession", pos:"n", ru:"профессия", def:"a job that needs special training, e.g. doctor or teacher", ex:"Teaching is a difficult profession."},
-  {en:"patient", pos:"adj", ru:"терпеливый", def:"able to wait or stay calm without getting angry", ex:"You need to be patient with small children."},
-  {en:"reliable", pos:"adj", ru:"надёжный", def:"you can trust this person to do what they say", ex:"She is very reliable — she's never late."},
-  {en:"partner", pos:"n", ru:"партнёр, спутник жизни", def:"the person you live with or are married to", ex:"My partner and I like cooking together."},
-  {en:"full-time", pos:"adj", ru:"на полный рабочий день", def:"working all the normal hours of a week", ex:"He has a full-time job in a bank."},
-  {en:"part-time", pos:"adj", ru:"на неполный рабочий день", def:"working only some of the hours in a week", ex:"Many students have part-time jobs."},
-  {en:"volunteer", pos:"n", ru:"волонтёр", def:"a person who works without being paid", ex:"She works as a volunteer at the hospital."},
-  {en:"wage", pos:"n", ru:"заработная плата (обычно за час/неделю)", def:"money you get every week or hour for your work", ex:"The wage is low, but the job is interesting."},
-  {en:"salary", pos:"n", ru:"оклад, зарплата (в год/месяц)", def:"money you get every month or year for your job", ex:"Doctors usually have a high salary."},
-  {en:"qualification", pos:"n", ru:"квалификация, диплом", def:"an official document that shows you passed a course or exam", ex:"You need a qualification to work as a nurse."},
-  {en:"career", pos:"n", ru:"карьера", def:"the jobs you do during your working life", ex:"She had a long career in music."},
-  {en:"responsible for", pos:"phr", ru:"ответственный за", def:"having the job of doing or looking after something", ex:"I am responsible for the budget."},
-  {en:"in charge of", pos:"phr", ru:"во главе, руководит", def:"being the boss of a group or activity", ex:"Who is in charge of this project?"}
- ]},
- {id:"F1", name:"2 · Feelings (1)", words:[
+ {id:"F1", name:"1 · Feelings (1)", words:[
   {en:"worried", pos:"adj", ru:"обеспокоенный", def:"thinking that something bad might happen", ex:"I was worried about my exam."},
   {en:"jealous", pos:"adj", ru:"завидующий, ревнивый", def:"unhappy because someone has something you want", ex:"I'm jealous of your new house!"},
   {en:"sleepy", pos:"adj", ru:"сонный", def:"tired and wanting to sleep", ex:"I always feel sleepy after lunch."},
@@ -184,7 +166,7 @@ const SETS = [
   {en:"angry", pos:"adj", ru:"злой, сердитый", def:"feeling strong emotion when something is wrong or unfair", ex:"My boss was angry because I was late."},
   {en:"bored", pos:"adj", ru:"скучающий", def:"not interested because nothing is happening", ex:"The children were bored at the museum."}
  ]},
- {id:"F2", name:"3 · -ed / -ing adjectives", words:[
+ {id:"F2", name:"2 · -ed / -ing adjectives", words:[
   {en:"embarrassed", pos:"adj", ru:"смущённый (о человеке)", def:"how you feel when you look silly in front of people", ex:"I was embarrassed when I fell over."},
   {en:"embarrassing", pos:"adj", ru:"неловкий, постыдный (о ситуации)", def:"making you feel silly in front of people", ex:"It was an embarrassing photo."},
   {en:"surprised", pos:"adj", ru:"удивлённый", def:"how you feel when something unexpected happens", ex:"I was surprised to see him there."},
@@ -306,7 +288,7 @@ const STEP_TYPES=[
   {t:"wr",    name:"✍️ Напиши по переводу (без подсказок)"}
 ];
 const STEPS=[];
-const ORDER=["W","b5a","b6a","F1","b1b","b1c","F2","b1a"];
+const ORDER=["F1","b1b","b1c","F2","b1a"];
 const HW_TYPES=STEP_TYPES.filter(x=>["tr","wr"].includes(x.t)).map(x=>x.t==="tr"?{t:"tr",name:"Review: match the meaning"}:{t:"wr",name:"✍️ Write the word"});
 ORDER.forEach(o=>{ const st=SETS.find(x=>x.id===o); if(st) HW_TYPES.forEach(x=>STEPS.push({key:st.id+":"+x.t,set:st,t:x.t,name:x.name})); else STEPS.push({key:"book:"+o,t:"book",book:o,name:"📘 "+BOOK[o].name}); });
 
@@ -409,7 +391,7 @@ function dCheck(){
 const SHORT={tr:"meaning",def:"definition",ctx:"in context",gaps:"letters",lis:"listening",wr:"spelling"};
 function buildReport(){
   const mins=Math.max(1,Math.round((Date.now()-STATE.started)/60000));
-  let t="📝 <b>Homework · Work, people &amp; feelings</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("en-GB")+" · ≈"+mins+" min\n📚 Steps completed: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" of "+STEPS.length+"\n";
+  let t="📝 <b>Homework · Feelings</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("en-GB")+" · ≈"+mins+" min\n📚 Steps completed: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" of "+STEPS.length+"\n";
   SETS.forEach(st=>{
     const got=STEPS.filter(x=>x.set===st&&x.t!=="cards"&&STATE.vocab[x.key]);
     if(!got.length){ t+="\n<b>"+esc(st.name)+"</b>: not started"; return; }
