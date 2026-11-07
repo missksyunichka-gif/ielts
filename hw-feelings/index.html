@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homework · Feelings</title>
+<title>Homework · Work, people &amp; feelings</title>
 <style>
   :root{--ink:#1d2433;--muted:#667085;--line:#e4e7ec;--bg:#f5f6fa;--card:#fff;--accent:#2f5bea;--ok:#1f9d55;--okbg:#e9f8ef;--bad:#d64545;--badbg:#fdeeee}
   *{box-sizing:border-box}
@@ -87,13 +87,13 @@
 <div class="wrap">
 <div id="login" class="card">
   <h2>📒 Homework</h2>
-  <p class="muted">Topic: <b>Feelings</b>. A quick vocabulary review, then exercises from your coursebook.</p>
+  <p class="muted">Topic: <b>Work, people &amp; feelings</b>. A quick vocabulary review, then exercises from your coursebook.</p>
   <p>What's your name?</p>
   <input type="text" id="nameInput" placeholder="Your name" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
   <p><button class="primary" onclick="start()">Start →</button></p>
 </div>
 <div id="app" class="hidden">
-  <header><h1>Homework · Feelings</h1><div class="who">👤 <span id="who"></span></div></header>
+  <header><h1>Homework · Work &amp; feelings</h1><div class="who">👤 <span id="who"></span></div></header>
 <section id="tab-vocab">
   <div class="card">
     <p class="muted" style="margin-top:0">Go step by step: the next step opens when you finish this one. Mistakes come back at the end of each step. If you misspell a word, you need to type it correctly once.</p>
@@ -288,7 +288,7 @@ const STEP_TYPES=[
   {t:"wr",    name:"✍️ Напиши по переводу (без подсказок)"}
 ];
 const STEPS=[];
-const ORDER=["F1","b1b","b1c","F2","b1a"];
+const ORDER=["b5a","b6a","F1","b1b","b1c","F2","b1a"];
 const HW_TYPES=STEP_TYPES.filter(x=>["tr","wr"].includes(x.t)).map(x=>x.t==="tr"?{t:"tr",name:"Review: match the meaning"}:{t:"wr",name:"✍️ Write the word"});
 ORDER.forEach(o=>{ const st=SETS.find(x=>x.id===o); if(st) HW_TYPES.forEach(x=>STEPS.push({key:st.id+":"+x.t,set:st,t:x.t,name:x.name})); else STEPS.push({key:"book:"+o,t:"book",book:o,name:"📘 "+BOOK[o].name}); });
 
@@ -299,7 +299,7 @@ function renderPath(){
   $("vBar").style.width=(100*done/STEPS.length)+"%"; $("vProg").textContent="Steps completed: "+done+" of "+STEPS.length;
   let h="",last=null;
   STEPS.forEach((s,i)=>{
-    const g=s.set?s.set.name:"Final tasks";
+    const g=s.set?s.set.name:"Coursebook";
     if(g!==last){ if(last!==null)h+="</div>"; h+='<div style="margin:10px 0 4px;font-weight:700">'+esc(g)+'</div><div class="ex">'; last=g; }
     const st=STATE.vocab[s.key]?"done":i===ci?"cur":"lock";
     h+='<button class="sm '+(st==="done"?"done":"")+'" '+(st==="lock"?"disabled":"")+' onclick="openStep('+i+')">'+(st==="done"?"✓ ":st==="cur"?"▶ ":"🔒 ")+esc(s.name)+'</button>';
@@ -391,7 +391,7 @@ function dCheck(){
 const SHORT={tr:"meaning",def:"definition",ctx:"in context",gaps:"letters",lis:"listening",wr:"spelling"};
 function buildReport(){
   const mins=Math.max(1,Math.round((Date.now()-STATE.started)/60000));
-  let t="📝 <b>Homework · Feelings</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("en-GB")+" · ≈"+mins+" min\n📚 Steps completed: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" of "+STEPS.length+"\n";
+  let t="📝 <b>Homework · Work, people &amp; feelings</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("en-GB")+" · ≈"+mins+" min\n📚 Steps completed: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" of "+STEPS.length+"\n";
   SETS.forEach(st=>{
     const got=STEPS.filter(x=>x.set===st&&x.t!=="cards"&&STATE.vocab[x.key]);
     if(!got.length){ t+="\n<b>"+esc(st.name)+"</b>: not started"; return; }
