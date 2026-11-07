@@ -52,13 +52,29 @@ button{font:inherit;cursor:pointer;border-radius:12px;border:1.5px solid var(--l
 
 <div id="menu">
   <h1>사고와 사건 · быстрые задания</h1>
-  <div class="muted">4 задания, около 20 минут. Вместе они проходят по всем 109 словам. Делай по порядку или в любом порядке.</div>
+  <div class="muted">4 задания подряд, около 20 минут, все 109 слов. В конце результат уйдёт учителю.</div>
   <div class="card" id="taskList"></div>
-  <div class="card hidden" id="summary"></div>
+  <div class="card">
+    <div>Как тебя зовут?</div>
+    <input id="nameInput" placeholder="Имя" autocomplete="off" style="font:inherit;width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;margin-top:8px" onkeydown="if(event.key==='Enter')begin()">
+    <button class="main" onclick="begin()">Начать →</button>
+  </div>
+</div>
+
+<div id="final" class="hidden">
+  <div class="card" id="summary"></div>
+  <div class="card">
+    <b>📨 Учителю</b>
+    <div id="sendFb" class="muted" style="margin-top:6px"></div>
+    <button class="main" id="sendBtn" onclick="sendResults()">Отправить ещё раз</button>
+    <textarea id="copyBox" class="hidden" readonly style="width:100%;height:170px;font:13px monospace;margin-top:8px"></textarea>
+    <button class="hidden" id="copyBtn" style="width:100%;margin-top:8px" onclick="copyReport()">Скопировать текст</button>
+  </div>
+  <button style="width:100%;margin-top:12px" onclick="location.reload()">Пройти заново</button>
 </div>
 
 <div id="play" class="hidden">
-  <div class="top"><button onclick="toMenu()" style="padding:6px 10px">← Задания</button><span id="pInfo"></span><span id="clock"></span></div>
+  <div class="top"><span id="tInfo" style="font-weight:600;color:var(--accent)"></span><span id="pInfo"></span><span id="clock"></span></div>
   <div class="bar"><i id="prog"></i></div>
   <div class="card" id="stage"></div>
 </div>
@@ -254,27 +270,22 @@ const TASKS=[
 ];
 let RES={}; // id → {ok, total, mist:[], time}
 
-/* ---------- меню ---------- */
-function toMenu(){
-  clearInterval(timer);
-  $("play").classList.add("hidden"); $("menu").classList.remove("hidden");
-  $("taskList").innerHTML=TASKS.map((t,i)=>{const r=RES[t.id];
-    return `<button class="task ${r?"done":""}" onclick="run('${t.id}')"><span class="n">${r?"✓":i+1}</span><span class="t"><b>${t.name}</b><br><span class="muted">${t.hint}</span></span><span class="r">${r?`${r.ok}/${r.total}<br>${fmt(r.time)}`:t.min}</span></button>`;}).join("");
-  const done=TASKS.filter(t=>RES[t.id]);
-  const sm=$("summary");
-  if(!done.length){ sm.classList.add("hidden"); return; }
-  sm.classList.remove("hidden");
-  const ok=done.reduce((a,t)=>a+RES[t.id].ok,0), tot=done.reduce((a,t)=>a+RES[t.id].total,0), tm=done.reduce((a,t)=>a+RES[t.id].time,0);
-  const mist=done.flatMap(t=>RES[t.id].mist);
-  sm.innerHTML=`<div class="muted">${done.length===TASKS.length?"Все задания сделаны 🎉":"Пока сделано "+done.length+" из "+TASKS.length}</div>
-   <div class="big">${Math.round(ok/tot*100)}%</div><div class="muted">${ok} из ${tot} с первой попытки · время ${fmt(tm)}</div>
-   ${mist.length?`<div style="margin-top:10px"><b>Повторить (${mist.length}):</b></div>`+mist.map(m=>`<div class="mist"><b>${esc(m.ko)}</b> ${sayBtn(m.ko)} — ${esc(m.ru)}${m.ex?`<div class="muted">${esc(m.ex)}</div>`:""}</div>`).join(""):"<div style='margin-top:8px'><b>Без ошибок!</b></div>"}`;
+/* ---------- старт и меню ---------- */
+const TG_TOKEN="9252730022:AAGhfn1DzR05foOHV6zFiTirJlRqSoUCgTU", TG_CHAT_ID="347625701";
+let NAME="", T_START=0;
+try{ $("nameInput").value=localStorage.getItem("sago_tasks_name")||""; }catch(e){}
+$("taskList").innerHTML="<b>Задания по порядку:</b>"+TASKS.map((t,i)=>`<div class="task" style="cursor:default"><span class="n">${i+1}</span><span class="t"><b>${t.name}</b><br><span class="muted">${t.hint}</span></span><span class="r">${t.min}</span></div>`).join("");
+function begin(){
+  NAME=$("nameInput").value.trim(); if(!NAME){ $("nameInput").focus(); return; }
+  try{ localStorage.setItem("sago_tasks_name",NAME); }catch(e){}
+  T_START=Date.now(); RES={}; run(TASKS[0].id);
 }
 
 /* ---------- общий ход ---------- */
 let timer=null, t0=0, cur=null;
 function run(id){
   $("menu").classList.add("hidden"); $("play").classList.remove("hidden");
+  const ti=TASKS.findIndex(t=>t.id===id); $("tInfo").textContent=`Задание ${ti+1}/${TASKS.length}`;
   t0=Date.now(); clearInterval(timer); timer=setInterval(()=>$("clock").textContent="⏱ "+fmt(Date.now()-t0),1000); $("clock").textContent="⏱ 0:00";
   cur={id, ok:0, total:0, mist:[], seen:new Set()};
   ({pairs:startPairs, collo:startCollo, sort:startSort, conf:startConf})[id]();
@@ -284,13 +295,47 @@ function miss(key, item){ if(cur.seen.has(key)) return; cur.seen.add(key); cur.m
 function finishTask(){
   clearInterval(timer);
   RES[cur.id]={ok:cur.total-cur.mist.length, total:cur.total, mist:cur.mist, time:Date.now()-t0};
-  const r=RES[cur.id], i=TASKS.findIndex(t=>t.id===cur.id), nxt=TASKS.find(t=>!RES[t.id]);
+  const r=RES[cur.id], i=TASKS.findIndex(t=>t.id===cur.id), nxt=TASKS[i+1];
   $("prog").style.width="100%";
-  $("stage").innerHTML=`<div style="text-align:center"><div class="muted">${TASKS[i].name}</div><div class="big">${r.ok} / ${r.total}</div><div class="muted">время ${fmt(r.time)}</div></div>
-   ${r.mist.length?`<div style="margin-top:8px"><b>Ошибки:</b></div>`+r.mist.map(m=>`<div class="mist"><b>${esc(m.ko)}</b> — ${esc(m.ru)}</div>`).join(""):""}
-   ${nxt?`<button class="main" onclick="run('${nxt.id}')">Следующее: ${nxt.name} →</button>`:""}
-   <button style="width:100%;margin-top:8px" onclick="toMenu()">К заданиям</button>`;
+  if(!nxt){ showFinal(); return; }
+  $("stage").innerHTML=`<div style="text-align:center"><div class="muted">Задание ${i+1} готово: ${TASKS[i].name}</div><div class="big">${r.ok} / ${r.total}</div><div class="muted">время ${fmt(r.time)}</div></div>
+   <button class="main" onclick="run('${nxt.id}')">Задание ${i+2}: ${nxt.name} →</button>`;
 }
+function showFinal(){
+  $("play").classList.add("hidden"); $("final").classList.remove("hidden");
+  const ok=TASKS.reduce((a,t)=>a+RES[t.id].ok,0), tot=TASKS.reduce((a,t)=>a+RES[t.id].total,0);
+  const mist=TASKS.flatMap(t=>RES[t.id].mist);
+  $("summary").innerHTML=`<div style="text-align:center"><div class="muted">${esc(NAME)}, все задания сделаны 🎉</div>
+   <div class="big">${Math.round(ok/tot*100)}%</div><div class="muted">${ok} из ${tot} с первой попытки · время ${fmt(Date.now()-T_START)}</div></div>
+   ${TASKS.map((t,i)=>`<div class="mist">${i+1}. ${t.name}: <b>${RES[t.id].ok}/${RES[t.id].total}</b> <span class="muted">· ${fmt(RES[t.id].time)}</span></div>`).join("")}
+   ${mist.length?`<div style="margin-top:10px"><b>Повторить (${mist.length}):</b></div>`+mist.map(m=>`<div class="mist"><b>${esc(m.ko)}</b> ${sayBtn(m.ko)} — ${esc(m.ru)}${m.ex?`<div class="muted">${esc(m.ex)}</div>`:""}</div>`).join(""):"<div style='margin-top:8px'><b>Без ошибок!</b></div>"}`;
+  window.scrollTo(0,0);
+  sendResults();
+}
+function buildReport(){
+  const ok=TASKS.reduce((a,t)=>a+RES[t.id].ok,0), tot=TASKS.reduce((a,t)=>a+RES[t.id].total,0);
+  const d=new Date(), dt=d.toLocaleDateString("ru-RU")+" "+d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+  let t=`🧩 <b>사고와 사건 · быстрые задания</b>\n👤 ${esc(NAME)}\n📅 ${dt}\n\n✅ <b>${ok}/${tot} (${Math.round(ok/tot*100)}%)</b> · ⏱ ${fmt(Date.now()-T_START)}\n`;
+  TASKS.forEach((x,i)=>{ const r=RES[x.id]; t+=`${i+1}. ${x.name}: ${r.ok}/${r.total} · ${fmt(r.time)}\n`; });
+  const mist=TASKS.flatMap(x=>RES[x.id].mist);
+  t+= mist.length? `\n❌ <b>Ошибки (${mist.length}):</b>\n`+mist.map(m=>`• ${esc(m.ko)} — ${esc(m.ru)}`).join("\n") : "\nБез ошибок 🎉";
+  return t;
+}
+let REPORT="";
+async function sendResults(){
+  REPORT=buildReport(); const fb=$("sendFb"), btn=$("sendBtn"); btn.disabled=true; fb.textContent="Отправляю учителю…";
+  try{
+    if(!TG_TOKEN || TG_TOKEN.indexOf("TOKEN")>=0) throw new Error("отправка здесь недоступна");
+    const parts=[]; let rest=REPORT; while(rest.length){ let cut=rest.length>3800?rest.lastIndexOf("\n",3800):rest.length; if(cut<=0) cut=3800; parts.push(rest.slice(0,cut)); rest=rest.slice(cut); }
+    for(const p of parts){ const r=await fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{method:"POST",body:new URLSearchParams({chat_id:TG_CHAT_ID,text:p,parse_mode:"HTML"})}); const j=await r.json(); if(!j.ok) throw new Error(j.description||"ошибка"); }
+    fb.textContent="✅ Отправлено учителю! 잘했어요!"; btn.textContent="Отправить ещё раз";
+  }catch(e){
+    fb.textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь учителю вручную:";
+    const b=$("copyBox"); b.value=REPORT.replace(/<[^>]+>/g,"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&").replace(/&quot;/g,'"'); b.classList.remove("hidden"); $("copyBtn").classList.remove("hidden");
+  }
+  btn.disabled=false;
+}
+function copyReport(){ const b=$("copyBox"); b.select(); try{ navigator.clipboard.writeText(b.value).then(()=>$("copyBtn").textContent="Скопировано ✓",()=>document.execCommand("copy")); }catch(e){ document.execCommand("copy"); } }
 
 /* ---------- 1 и 2: пары ---------- */
 let ROUNDS=[], ri=0, picked=null, left=0;
@@ -364,7 +409,6 @@ function confPick(k,b){
 }
 function nextConf(){ ci++; ci<CQ.length?drawConf():finishTask(); }
 
-toMenu();
 </script>
 </body>
 </html>
