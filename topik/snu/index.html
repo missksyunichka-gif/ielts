@@ -118,7 +118,9 @@
   <!-- главная: шкалы по урокам -->
   <section id="home">
     <div class="card">
-      <h3 style="margin-top:0">Вся программа</h3>
+      <h3 style="margin-top:0">📈 Прогресс</h3>
+      <div id="levels"></div>
+      <div style="margin-top:10px;font-weight:700">Вся программа</div>
       <div class="bar big-bar"><div id="allBar"></div></div>
       <div class="muted" id="allTxt"></div>
       <p class="muted" style="font-size:13px;margin:6px 0 0">Слово считается выученным, когда последний раз ты написал(а) его правильно и не ошибся(лась) в переводе.</p>
@@ -132,6 +134,7 @@
     </div>
     <div class="card">
       <h3 style="margin-top:0">Уроки</h3>
+      <div class="ex" style="margin-bottom:6px"><button class="sm" id="lv1" onclick="setLevel(1)">1급 (1A · 1B)</button><button class="sm" id="lv2" onclick="setLevel(2)">2급 (2A)</button></div>
       <p class="muted" style="margin-top:0">Выбирай любой урок, в любом порядке.</p>
       <div id="lessons"></div>
     </div>
@@ -314,7 +317,7 @@ async function start(){
       $("loginFb").textContent="Нет связи с сервером — прогресс сохранится только на этом устройстве."; PIN=""; if(STATE.name!==n) STATE=fresh(); }
   } else if(STATE.name!==n) STATE=fresh();
   STATE.log=STATE.log||[]; save();
-  $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goHome();
+  $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goHome(); loadCurrent();
 }
 
 /* ============ ПРОГРЕСС ============ */
@@ -329,12 +332,29 @@ function goHome(){
   const rv=ALLW.filter(toReview);
   $("reviewTxt").textContent=rv.length?"Слов с ошибками: "+rv.length+". Можно прогнать их ещё раз — до 20 за раз.":"Пока нет слов с ошибками. Они появятся здесь сами, если ошибёшься в уроке.";
   $("reviewBtn").disabled=!rv.length;
-  let h="",book=null;
-  LESSONS.forEach((l,i)=>{ if(l.book!==book){ h+='<div class="book">'+l.book+'</div>'; book=l.book; }
+  renderLevels();
+  let h="",book=null; const lv=STATE.level||1; $("lv1").className="sm"+(lv===1?" primary":""); $("lv2").className="sm"+(lv===2?" primary":"");
+  LESSONS.forEach((l,i)=>{ if(levelOf(l)!==lv) return; if(l.book!==book){ h+='<div class="book">'+l.book+'</div>'; book=l.book; }
     const q=pct(l.words), touched=l.words.some(w=>STATE.words[w.key])||Object.keys(STATE.steps).some(k=>k.startsWith(l.id+":"));
     h+='<div class="les"><span class="nm">'+l.n+'과</span><div class="bar"><div class="'+(q===100?"full":"")+'" style="width:'+q+'%"></div></div><span class="pc">'+q+'%</span><button class="sm '+(touched?"":"primary")+'" onclick="openLesson('+i+')">'+(touched?"Открыть":"Начать")+'</button></div>'; });
   $("lessons").innerHTML=h; window.scrollTo(0,0);
 }
+
+/* уровни и текущий урок */
+const levelOf=l=>l.book[0]==="1"?1:2;
+function setLevel(v){ STATE.level=v; save(); goHome(); }
+const CURRENT={key:"topik_school_state_v1", total:8};   // тренажёр из вкладки «Слова урока»: ключ и число шагов
+let curLesson=null;
+function readCurrent(s){ return s&&s.vocab?{done:Math.min(Object.keys(s.vocab).length,CURRENT.total),total:CURRENT.total}:null; }
+async function loadCurrent(){
+  try{ const s=JSON.parse(localStorage.getItem(CURRENT.key)); if(s&&s.name&&s.name.toLowerCase()===STATE.name.toLowerCase()) curLesson=readCurrent(s); }catch(e){}
+  if(SB_ON&&PIN){ try{ const s=await rpc("load_progress",{p_site:CURRENT.key,p_name:STATE.name,p_pin:PIN}); if(s) curLesson=readCurrent(s); }catch(e){} }
+  if(!$("home").classList.contains("hidden")) renderLevels(); }
+function bar(label,p,sub){ return '<div class="les"><span class="nm" style="min-width:118px">'+label+'</span><div class="bar"><div class="'+(p===100?"full":"")+'" style="width:'+p+'%"></div></div><span class="pc">'+p+'%</span></div>'+(sub?'<div class="muted" style="font-size:12px;margin:2px 0 4px">'+sub+'</div>':''); }
+function renderLevels(){ let h="";
+  [["1A","1급 · 1A"],["1B","1급 · 1B"],["2A","2급 · 2A"]].forEach(([b,lab])=>{ const ws=LESSONS.filter(l=>l.book===b).flatMap(l=>l.words); h+=bar(lab,pct(ws),ws.filter(learned).length+" из "+ws.length+" слов"); });
+  const c=curLesson; h+=bar("📚 Текущий урок",c?Math.round(100*c.done/c.total):0,c?"шагов пройдено: "+c.done+" из "+c.total:"ещё не начат — вкладка «Слова урока»");
+  $("levels").innerHTML=h; }
 
 /* ============ УРОК ============ */
 const STEP_TYPES=[{t:"cards",name:"Карточки"},{t:"tr",name:"Выбери перевод"},{t:"rev",name:"Выбери слово"},{t:"wr",name:"✍️ Напиши по-корейски"}];
@@ -445,7 +465,7 @@ function startReview(){ const rv=shuffle(ALLW.filter(toReview)).slice(0,20); if(
 
 /* ============ ОТЧЁТ ============ */
 function buildReport(){
-  let t="📝 <b>서울대+ · повторение слов</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+"\n📈 Вся программа: <b>"+pct(ALLW)+"%</b> ("+ALLW.filter(learned).length+"/"+ALLW.length+")\n";
+  let t="📝 <b>서울대+ · повторение слов</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+"\n📈 Вся программа: <b>"+pct(ALLW)+"%</b> ("+ALLW.filter(learned).length+"/"+ALLW.length+")\n"+["1A","1B","2A"].map(b=>{ const ws=LESSONS.filter(l=>l.book===b).flatMap(l=>l.words); return "   "+b+": "+pct(ws)+"%"; }).join("\n")+(curLesson?"\n   Текущий урок: шагов "+curLesson.done+"/"+curLesson.total:"")+"\n";
   let book=null; LESSONS.forEach(l=>{
     const q=pct(l.words), done=STEP_TYPES.filter(s=>STATE.steps[l.id+":"+s.t]).length; if(!done&&!q) return;
     if(l.book!==book){ t+="\n<b>"+l.book+"</b>"; book=l.book; }
