@@ -200,7 +200,8 @@ const TG_CHAT_ID = "347625701";
 const SB_URL = "https://nusfkwtmnbhnbnckhrfk.supabase.co";
 const SB_KEY = "sb_publishable_UmWyFo7ciEc-m9x1ZIfkNw_yeQQAgf8";
 const SB_ON  = SB_URL.startsWith("https://");
-const KEY = "snu_program_v1";
+const GROUP = new URLSearchParams(location.search).get("g");
+const KEY = "snu_program_v1"+(GROUP?"_"+GROUP:"");   // у каждой группы свой прогресс, чтобы одинаковые имена не мешали
 
 /* ============ ПРОГРАММА 서울대 한국어+ ============
    Каждый урок: id, book, n (номер 단원), words: [ko, ru, alt?]. alt — другие правильные варианты написания. */
@@ -343,7 +344,8 @@ function goHome(){
 /* уровни и текущий урок */
 const levelOf=l=>l.book[0]==="1"?1:2;
 function setLevel(v){ STATE.level=v; save(); goHome(); }
-const CURRENT={key:"topik_school_state_v1", total:8};   // тренажёр из вкладки «Слова урока»: ключ и число шагов
+const QS=new URLSearchParams(location.search);
+const CURRENT={key:QS.get("cur")||"topik_school_state_v1", total:+QS.get("steps")||8};   // тренажёр из вкладки «Слова урока»: ключ и число шагов (можно задать в адресе)
 let curLesson=null;
 function readCurrent(s){ return s&&s.vocab?{done:Math.min(Object.keys(s.vocab).length,CURRENT.total),total:CURRENT.total}:null; }
 async function loadCurrent(){

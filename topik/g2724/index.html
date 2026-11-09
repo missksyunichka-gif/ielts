@@ -27,7 +27,7 @@
 <body>
 <div id="login" class="card">
   <h2 style="margin-top:0">🇰🇷 Группа 2724 · 어휘</h2>
-  <p class="muted">Слова урока (вместе с работой над ошибками) и игры со словами.</p>
+  <p class="muted">Слова урока (вместе с работой над ошибками), повторение программы 서울대 한국어+ по 1급 и 2급 и игры со словами.</p>
   <p>Как тебя зовут?</p>
   <input type="text" id="n" placeholder="Имя" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('p').focus()">
   <p style="margin-bottom:4px">PIN-код (4 цифры)</p>
@@ -39,17 +39,19 @@
 <div id="app">
   <nav>
     <button data-t="0" class="active" onclick="tab(0)">📚 Слова урока</button>
+    <button data-t="1" onclick="tab(1)">🔁 Повторение</button>
     <button data-t="2" onclick="tab(2)">🎮 Игры</button>
     <span class="who" id="who"></span>
   </nav>
   <iframe id="f0" class="on" title="Слова урока"></iframe>
+  <iframe id="f1" title="Повторение программы"></iframe>
   <iframe id="f2" title="Игры со словами"></iframe>
 </div>
 <script>
 /* ============ НАСТРОЙКА: какой тренажёр в первой вкладке ============ */
-const LESSON_URL  = "lesson/index.html?v=1794252140";   // слова текущего урока
-const PROGRAM_URL = "";      // повторение программы
-const GAMES_URL   = "games/index.html?v=1794252140";    // игры со словами
+const LESSON_URL  = "lesson/index.html?v=1794252458";   // слова текущего урока
+const PROGRAM_URL = "../snu/index.html?g=2724&cur=g2724_lesson_v1&steps=20&v=1794252458";      // повторение программы
+const GAMES_URL   = "games/index.html?v=1794252458";    // игры со словами
 const K="g2724_tabs_login";
 const $=id=>document.getElementById(id);
 try{ const s=JSON.parse(localStorage.getItem(K)); if(s){ $("n").value=s.n; $("p").value=s.p; } }catch(e){}
@@ -60,12 +62,12 @@ function go(){
   if(!/^\d{4,8}$/.test(p)){ $("fb").textContent="Введи PIN из 4 цифр."; $("p").focus(); return; }
   try{ localStorage.setItem(K,JSON.stringify({n,p})); }catch(e){}
   const a="#auto="+enc({n,p});
-  $("f0").src=LESSON_URL+a; $("f2").dataset.src=GAMES_URL+a;
+  $("f0").src=LESSON_URL+a; $("f1").dataset.src=PROGRAM_URL+a; $("f2").dataset.src=GAMES_URL+a;
   $("login").style.display="none"; $("app").style.display="flex"; $("who").textContent="👤 "+n;
 }
 function tab(i){
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",+b.dataset.t===i));
-  [0,2].forEach(k=>$("f"+k).classList.toggle("on",k===i));
+  [0,1,2].forEach(k=>$("f"+k).classList.toggle("on",k===i));
   const f=$("f"+i); if((!f.src||i===2)&&f.dataset.src) f.src=f.dataset.src;   // вкладки грузятся по желанию; игры — заново, чтобы взять свежие трудные слова
 }
 </script>
