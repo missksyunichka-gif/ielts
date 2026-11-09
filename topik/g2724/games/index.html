@@ -212,6 +212,7 @@ const SETS_B = [
 
 const SETS=[...SETS_A,...SETS_B];
 
+
 const $=id=>document.getElementById(id);
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -222,7 +223,7 @@ if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=l
 function say(t){ if(!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voices[0]){u.voice=voices[0];u.lang=voices[0].lang;} else u.lang="ko-KR"; u.rate=0.85; speechSynthesis.speak(u); }
 
 /* ---------- слова ---------- */
-const ALL=[]; const seenKo=new Set(); const WORDS_LABEL="урок и работа над ошибками";
+const ALL=[]; const seenKo=new Set(); const WORDS_LABEL="слова урока";
 (typeof LESSONS!=="undefined"?LESSONS:[]).forEach(l=>l.words.forEach(w=>{ if(!seenKo.has(w.ko)){ seenKo.add(w.ko); ALL.push({ko:w.ko,ru:w.ru,key:l.id+"|"+w.ko,src:l.name}); } }));
 SETS.forEach(s=>s.words.forEach(w=>{ if(!seenKo.has(w.ko)){ seenKo.add(w.ko); ALL.push({ko:w.ko,ru:w.ru,key:"lesson|"+w.ko,src:"текущий урок"}); } }));
 let NAME="", WEAK=[], SRC="rand";
