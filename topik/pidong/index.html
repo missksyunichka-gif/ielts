@@ -476,6 +476,11 @@ async function importFromHash(){ const m=location.hash.match(/^#p=(.+)$/); if(!m
 if(SB_ON){ $("linkCard").classList.add("hidden"); } else $("pinRow").classList.add("hidden");
 (async()=>{ load(); try{PIN=localStorage.getItem(KEY+"_pin")||"";}catch(e){} const imported=await importFromHash(); if(STATE.name) $("nameInput").value=STATE.name; if(PIN) $("pinInput").value=PIN;
   if(imported){ $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent(); } })();
+
+/* автовход из общей страницы с вкладками (#auto=...) */
+(function(){ const m=location.hash.match(/^#auto=(.+)$/); if(!m) return;
+  try{ const a=JSON.parse(decodeURIComponent(escape(atob(m[1])))); history.replaceState(null,"",location.pathname+location.search);
+    $("nameInput").value=a.n; if($("pinInput")) $("pinInput").value=a.p; setTimeout(()=>start(),50); }catch(e){} })();
 </script>
 </body>
 </html>

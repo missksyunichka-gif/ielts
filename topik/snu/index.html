@@ -462,6 +462,11 @@ async function sendResults(){ const text=buildReport(); $("sendBtn").disabled=tr
   $("sendBtn").disabled=false; }
 
 load(); if(STATE.name) $("nameInput").value=STATE.name; if(PIN) $("pinInput").value=PIN;
+
+/* автовход из общей страницы с вкладками (#auto=...) */
+(function(){ const m=location.hash.match(/^#auto=(.+)$/); if(!m) return;
+  try{ const a=JSON.parse(decodeURIComponent(escape(atob(m[1])))); history.replaceState(null,"",location.pathname+location.search);
+    $("nameInput").value=a.n; if($("pinInput")) $("pinInput").value=a.p; setTimeout(()=>start(),50); }catch(e){} })();
 </script>
 </body>
 </html>
