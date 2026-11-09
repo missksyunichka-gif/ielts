@@ -140,7 +140,7 @@
 const SB_URL = "https://nusfkwtmnbhnbnckhrfk.supabase.co";
 const SB_KEY = "sb_publishable_UmWyFo7ciEc-m9x1ZIfkNw_yeQQAgf8";
 const SB_ON  = SB_URL.startsWith("https://");
-const PROGRAM_KEY="snu_program_v1", LESSON_KEY="topik_school_state_v1";
+const PROGRAM_KEY="snu_program_v1", SET_KEYS=["topik_school_state_v1"];
 
 /* ============ ПРОГРАММА 서울대 한국어+ ============
    Каждый урок: id, book, n (номер 단원), words: [ko, ru, alt?]. alt — другие правильные варианты написания. */
@@ -253,22 +253,23 @@ if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=l
 function say(t){ if(!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voices[0]){u.voice=voices[0];u.lang=voices[0].lang;} else u.lang="ko-KR"; u.rate=0.85; speechSynthesis.speak(u); }
 
 /* ---------- слова ---------- */
-const ALL=[]; const seenKo=new Set();
-LESSONS.forEach(l=>l.words.forEach(w=>{ if(!seenKo.has(w.ko)){ seenKo.add(w.ko); ALL.push({ko:w.ko,ru:w.ru,key:l.id+"|"+w.ko,src:l.name}); } }));
+const ALL=[]; const seenKo=new Set(); const WORDS_LABEL="вся программа и текущий урок";
+(typeof LESSONS!=="undefined"?LESSONS:[]).forEach(l=>l.words.forEach(w=>{ if(!seenKo.has(w.ko)){ seenKo.add(w.ko); ALL.push({ko:w.ko,ru:w.ru,key:l.id+"|"+w.ko,src:l.name}); } }));
 SETS.forEach(s=>s.words.forEach(w=>{ if(!seenKo.has(w.ko)){ seenKo.add(w.ko); ALL.push({ko:w.ko,ru:w.ru,key:"lesson|"+w.ko,src:"текущий урок"}); } }));
 let NAME="", WEAK=[], SRC="rand";
 function weakFrom(prog,les){ const out=new Set();
   if(prog&&prog.words) Object.entries(prog.words).forEach(([k,s])=>{ if(s.wr===0||s.tr===0) out.add(k.split("|")[1]); });
-  if(les&&les.vocab) Object.values(les.vocab).forEach(v=>(v.mistakes||[]).forEach(m=>out.add(m.split(" (")[0])));
+  (les||[]).forEach(s=>s&&s.vocab&&Object.values(s.vocab).forEach(v=>(v.mistakes||[]).forEach(m=>out.add(m.split(" (")[0]))));
   return ALL.filter(w=>out.has(w.ko)); }
 async function start(anon){
   const n=$("nameInput").value.trim(), pin=$("pinInput").value.trim();
   let prog=null, les=null;
   if(!anon){ if(!n){ $("nameInput").focus(); return; } NAME=n;
     try{ const a=JSON.parse(localStorage.getItem(PROGRAM_KEY)); if(a&&a.name&&a.name.toLowerCase()===n.toLowerCase()) prog=a; }catch(e){}
-    try{ const b=JSON.parse(localStorage.getItem(LESSON_KEY)); if(b&&b.name&&b.name.toLowerCase()===n.toLowerCase()) les=b; }catch(e){}
+    les=[]; SET_KEYS.forEach(k=>{ try{ const b=JSON.parse(localStorage.getItem(k)); if(b&&b.name&&b.name.toLowerCase()===n.toLowerCase()) les.push(b); }catch(e){} });
     if(SB_ON&&/^\d{4,8}$/.test(pin)){ $("loginFb").style.color="var(--muted)"; $("loginFb").textContent="Загружаю слова…";
-      try{ prog=await rpc("load_progress",{p_site:PROGRAM_KEY,p_name:n,p_pin:pin})||prog; les=await rpc("load_progress",{p_site:LESSON_KEY,p_name:n,p_pin:pin})||les; }
+      try{ if(PROGRAM_KEY) prog=await rpc("load_progress",{p_site:PROGRAM_KEY,p_name:n,p_pin:pin})||prog;
+        const got=[]; for(const k of SET_KEYS){ const s=await rpc("load_progress",{p_site:k,p_name:n,p_pin:pin}); if(s) got.push(s); } if(got.length) les=got; }
       catch(e){ if(/wrong_pin/.test(e.message)){ $("loginFb").style.color="var(--bad)"; $("loginFb").textContent="Неверный PIN для этого имени."; return; } } } }
   WEAK=weakFrom(prog,les); SRC=WEAK.length?"weak":"rand";
   $("login").classList.add("hidden"); $("app").classList.remove("hidden"); menu(); }
@@ -278,7 +279,7 @@ function best(g){ try{return +localStorage.getItem("games_best_"+g)||0}catch(e){
 function setBest(g,v){ if(v>best(g)) try{localStorage.setItem("games_best_"+g,v)}catch(e){} }
 function menu(){ stopTimer(); $("game").classList.add("hidden"); $("menu").classList.remove("hidden");
   $("srcWeak").classList.toggle("on",SRC==="weak"); $("srcRand").classList.toggle("on",SRC==="rand");
-  $("srcInfo").textContent=SRC==="weak"?(WEAK.length?"Трудных слов: "+WEAK.length+" — это слова, в которых были ошибки в тренажёрах."+(WEAK.length<6?" Их мало, добавлю немного случайных.":""):"Трудных слов пока нет 🎉 Буду брать случайные."):"Случайные слова из всей программы и текущего урока ("+ALL.length+").";
+  $("srcInfo").textContent=SRC==="weak"?(WEAK.length?"Трудных слов: "+WEAK.length+" — это слова, в которых были ошибки в тренажёрах."+(WEAK.length<6?" Их мало, добавлю немного случайных.":""):"Трудных слов пока нет 🎉 Буду брать случайные."):"Случайные слова: "+WORDS_LABEL+" ("+ALL.length+").";
   $("best").textContent="Рекорды: ⚡ Блиц — "+best("blitz")+" · ✅❌ Верно или нет — "+best("tf"); }
 
 /* ---------- общий каркас ---------- */

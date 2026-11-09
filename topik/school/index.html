@@ -325,7 +325,8 @@ function finishCards(){ STATE.vocab[cardsStep.key]={name:cardsStep.name,seen:tru
 function syl(n){ return n+" "+(n%10===1&&n%100!==11?"слог":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?"слога":"слогов"); }
 function buildItems(s){
   const W=s.set.words;
-  const others=(w,f)=>shuffle(W.filter(x=>x!==w&&!related(x,w))).slice(0,3).map(f);
+  const others=(w,f)=>{ const pr=w.pair?W.filter(x=>x.ko===w.pair):[];   // слово, с которым путают, — всегда среди вариантов
+    return pr.concat(shuffle(W.filter(x=>x!==w&&!pr.includes(x)&&!related(x,w))).slice(0,3-pr.length)).map(f); };
   switch(s.t){
   case "tr": return {type:"mc",hint:"Послушай слово и выбери перевод.",items:W.map(w=>({prompt:'<span class="ko">'+esc(w.ko)+'</span>',sayText:w.ko,opts:shuffle([w.ru,...others(w,x=>x.ru)]),ans:w.ru,after:w.ko+" — "+w.ru,word:w.ko,w}))};
   case "ctx": return {type:"mc",hint:"Какое слово пропущено? Варианты даны в словарной форме, в предложении слово может стоять в другой форме. Как в заданиях TOPIK 읽기.",items:W.map(w=>{ const f=form(w), i=w.ex.indexOf(f);
