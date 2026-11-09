@@ -146,6 +146,16 @@
     <textarea id="copyBox" class="hidden" style="width:100%;height:180px;font:13px monospace;margin-top:8px"></textarea>
   </div>
   <div class="card">
+    <h3>📱 Продолжить на другом устройстве</h3>
+    <p class="muted">Нажми кнопку и открой полученную ссылку на телефоне или компьютере: прогресс перенесётся туда. Делай так каждый раз, когда меняешь устройство.</p>
+    <button class="dark" onclick="makeLink()">🔗 Ссылка с моим прогрессом</button>
+    <div id="linkBox" class="hidden" style="margin-top:8px">
+      <input type="text" id="linkIn" readonly onclick="this.select()">
+      <button class="sm primary" onclick="copyLink()">Скопировать</button> <button class="sm" id="shareBtn" onclick="shareLink()">Отправить…</button>
+      <div class="feedback" id="linkFb"></div>
+    </div>
+  </div>
+  <div class="card">
     <h3>Весь путь</h3>
     <p class="muted">✓ — сделано (можно нажать и повторить), ▶ — сейчас, 🔒 — пока закрыто.</p>
     <div id="path"></div>
@@ -349,7 +359,24 @@ async function sendResults(){
   catch(e){ $("sendBtn").disabled=false; $("sendFb").textContent="Не получилось отправить ("+e.message+"). Скопируй текст и отправь вручную:"; const b=$("copyBox"); b.value=text.replace(/<\/?b>/g,""); b.classList.remove("hidden"); b.select(); }
 }
 
-load(); if(STATE.name) $("nameInput").value=STATE.name;
+/* перенос прогресса ссылкой */
+const b64u={enc:u8=>btoa(String.fromCharCode(...u8)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""),
+  dec:s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0))};
+async function pack(obj){ const data=new TextEncoder().encode(JSON.stringify(obj));
+  if(window.CompressionStream){ const cs=new Blob([data]).stream().pipeThrough(new CompressionStream("deflate-raw")); return "z"+b64u.enc(new Uint8Array(await new Response(cs).arrayBuffer())); }
+  return "j"+b64u.enc(data); }
+async function unpack(s){ let bytes=b64u.dec(s.slice(1));
+  if(s[0]==="z"){ const ds=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw")); bytes=new Uint8Array(await new Response(ds).arrayBuffer()); }
+  return JSON.parse(new TextDecoder().decode(bytes)); }
+async function makeLink(){ save(); const url=location.href.split("#")[0]+"#p="+await pack(STATE);
+  $("linkIn").value=url; $("linkBox").classList.remove("hidden"); $("shareBtn").classList.toggle("hidden",!navigator.share); $("linkFb").textContent=""; $("linkIn").select(); }
+async function copyLink(){ try{ await navigator.clipboard.writeText($("linkIn").value); $("linkFb").textContent="✅ Скопировано. Отправь себе и открой на другом устройстве."; }catch(e){ $("linkIn").select(); $("linkFb").textContent="Выдели ссылку и скопируй вручную."; } }
+function shareLink(){ navigator.share({title:"Мой прогресс",url:$("linkIn").value}).catch(()=>{}); }
+async function importFromHash(){ const m=location.hash.match(/^#p=(.+)$/); if(!m) return false;
+  try{ const s=await unpack(m[1]); if(s&&s.name&&s.vocab){ STATE=s; save(); } }catch(e){ alert("Ссылка с прогрессом повреждена. Попроси новую."); }
+  history.replaceState(null,"",location.pathname+location.search); return !!STATE.name; }
+(async()=>{ load(); const imported=await importFromHash(); if(STATE.name) $("nameInput").value=STATE.name;
+  if(imported){ $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent(); } })();
 </script>
 </body>
 </html>
