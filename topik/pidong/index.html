@@ -97,11 +97,15 @@
   <p class="muted">Сначала слова из урока, потом пассивные глаголы по суффиксам: -이-, -히-, -리-, -기- и -아/어지다. Для них есть задания «образуй пассив» и «актив или пассив?».</p>
   <p class="muted">⌨️ Для письменных заданий нужна корейская раскладка (на телефоне добавь «한국어» в настройках клавиатуры).</p>
   <p>Как тебя зовут?</p>
-  <input type="text" id="nameInput" placeholder="Имя" autocomplete="off" onkeydown="if(event.key==='Enter')start()">
+  <input type="text" id="nameInput" placeholder="Имя" autocomplete="off" onkeydown="if(event.key==='Enter')$('pinInput').focus()">
+  <div id="pinRow"><p style="margin-bottom:4px">PIN-код (4 цифры)</p>
+  <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off" style="max-width:160px" onkeydown="if(event.key==='Enter')start()">
+  <p class="muted" style="margin-top:4px">Первый раз — придумай PIN и запомни. С этим именем и PIN прогресс откроется на любом устройстве.</p></div>
+  <div class="feedback" id="loginFb" style="color:var(--bad)"></div>
   <p><button class="primary" onclick="start()">Начать →</button></p>
 </div>
 <div id="app" class="hidden">
-  <header><h1>피동 · 어휘</h1><div class="who">👤 <span id="who"></span></div></header>
+  <header><h1>피동 · 어휘</h1><div class="who">👤 <span id="who"></span> <span id="cloud" title="Сохранение"></span></div></header>
   <div class="card">
     <p class="muted" style="margin-top:0">Иди по шагам: следующий откроется, когда закончишь текущий. Ошибки возвращаются в конце шага. Если ошибёшься в написании, слово нужно один раз перепечатать правильно.</p>
     <div class="bar"><div id="vBar"></div></div>
@@ -145,7 +149,7 @@
     <div class="feedback" id="sendFb"></div>
     <textarea id="copyBox" class="hidden" style="width:100%;height:180px;font:13px monospace;margin-top:8px"></textarea>
   </div>
-  <div class="card">
+  <div class="card" id="linkCard">
     <h3>📱 Продолжить на другом устройстве</h3>
     <p class="muted">Нажми кнопку и открой полученную ссылку на телефоне или компьютере: прогресс перенесётся туда. Делай так каждый раз, когда меняешь устройство.</p>
     <button class="dark" onclick="makeLink()">🔗 Ссылка с моим прогрессом</button>
@@ -166,6 +170,10 @@
 /* ============ НАСТРОЙКИ TELEGRAM ============ */
 const TG_TOKEN   = "9252730022:AAGhfn1DzR05foOHV6zFiTirJlRqSoUCgTU";
 const TG_CHAT_ID = "347625701";
+/* ============ SUPABASE (прогресс на всех устройствах) ============ */
+const SB_URL = "https://nusfkwtmnbhnbnckhrfk.supabase.co";
+const SB_KEY = "sb_publishable_UmWyFo7ciEc-m9x1ZIfkNw_yeQQAgf8";
+const SB_ON  = SB_URL.startsWith("https://");
 
 /* ============ ЛЕКСИКА ============
    Слова учителя: ko, ru, ex, exRu, f (форма в примере).
@@ -254,7 +262,14 @@ const SETS = [
 let STATE={name:"",started:null,vocab:{}};
 const $=id=>document.getElementById(id);
 const KEY="topik_pidong_state_v1";
-function save(){ try{localStorage.setItem(KEY,JSON.stringify(STATE))}catch(e){} }
+let PIN="";
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(STATE)); if(PIN) localStorage.setItem(KEY+"_pin",PIN);}catch(e){} cloudSave(); }
+async function rpc(fn,args){ const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(args)});
+  const t=await r.text(); if(!r.ok){ let m=t; try{m=JSON.parse(t).message}catch(e){} throw new Error(m); } return t?JSON.parse(t):null; }
+let cloudT=null;
+function cloudMark(s){ const c=$("cloud"); if(c) c.textContent=s; }
+function cloudSave(){ if(!SB_ON||!PIN||!STATE.name) return; clearTimeout(cloudT); cloudMark("☁️…");
+  cloudT=setTimeout(async()=>{ try{ await rpc("save_progress",{p_site:KEY,p_name:STATE.name,p_pin:PIN,p_state:STATE}); cloudMark("☁️✓"); }catch(e){ cloudMark("⚠️ не сохранено в облако"); } },1200); }
 function load(){ try{const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.name) STATE=s;}catch(e){} }
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -275,9 +290,20 @@ if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=l
 function rate(){ return parseFloat($("rate").value); }
 function say(text){ if(!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); const cv=curVoice(); if(cv){u.voice=cv;u.lang=cv.lang;} else u.lang="ko-KR"; u.rate=rate(); speechSynthesis.speak(u); }
 
-function start(){
+async function start(){
   const n=$("nameInput").value.trim(); if(!n){$("nameInput").focus();return;}
-  if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{}};
+  if(SB_ON){
+    const pin=$("pinInput").value.trim(); if(!/^\d{4,8}$/.test(pin)){ $("loginFb").textContent="Введи PIN из 4 цифр."; $("pinInput").focus(); return; }
+    $("loginFb").textContent="Загружаю…"; $("loginFb").style.color="var(--muted)";
+    try{ const remote=await rpc("load_progress",{p_site:KEY,p_name:n,p_pin:pin});
+      if(remote&&remote.vocab){ STATE=remote; STATE.name=n; }
+      else if(STATE.name.toLowerCase()!==n.toLowerCase()) STATE={name:n,started:Date.now(),vocab:{}};
+      PIN=pin; $("loginFb").textContent="";
+    }catch(e){ $("loginFb").style.color="var(--bad)";
+      if(/wrong_pin/.test(e.message)){ $("loginFb").textContent="Неверный PIN для этого имени. Если это не ты — добавь к имени фамилию."; return; }
+      $("loginFb").textContent="Нет связи с сервером — прогресс пока сохранится только на этом устройстве."; PIN="";
+      if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{}}; }
+  } else if(STATE.name!==n) STATE={name:n,started:Date.now(),vocab:{}};
   save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent();
 }
 $("rate").oninput=()=>$("rateVal").textContent=$("rate").value;
@@ -432,7 +458,8 @@ function shareLink(){ navigator.share({title:"Мой прогресс",url:$("li
 async function importFromHash(){ const m=location.hash.match(/^#p=(.+)$/); if(!m) return false;
   try{ const s=await unpack(m[1]); if(s&&s.name&&s.vocab){ STATE=s; save(); } }catch(e){ alert("Ссылка с прогрессом повреждена. Попроси новую."); }
   history.replaceState(null,"",location.pathname+location.search); return !!STATE.name; }
-(async()=>{ load(); const imported=await importFromHash(); if(STATE.name) $("nameInput").value=STATE.name;
+if(SB_ON){ $("linkCard").classList.add("hidden"); } else $("pinRow").classList.add("hidden");
+(async()=>{ load(); try{PIN=localStorage.getItem(KEY+"_pin")||"";}catch(e){} const imported=await importFromHash(); if(STATE.name) $("nameInput").value=STATE.name; if(PIN) $("pinInput").value=PIN;
   if(imported){ $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent(); } })();
 </script>
 </body>
