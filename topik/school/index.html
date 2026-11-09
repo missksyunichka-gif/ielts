@@ -114,6 +114,11 @@
     <div class="speed">🗣 Голос <select id="voiceSel" onchange="try{localStorage.setItem('topik_voice',voices[this.value].name)}catch(e){}; say('안녕하세요')" style="font:inherit;font-size:14px;max-width:240px"></select></div>
     <p class="muted" style="font-size:13px;margin:4px 0 0">Самый живой голос — в браузере <b>Microsoft Edge</b> (голоса «Natural»), на iPhone — в Safari (голос Yuna).</p>
   </div>
+  <div class="card" id="wordsCard">
+    <details id="wordsDet"><summary><b>📖 Все слова</b> <span class="muted">— нажми, чтобы открыть или скрыть</span></summary>
+      <div id="wordList" style="margin-top:8px"></div>
+    </details>
+  </div>
   <div class="card" id="stage">
     <div class="muted" id="sStep"></div>
     <h3 id="sTitle"></h3>
@@ -260,6 +265,16 @@ async function start(){
   save(); $("login").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent=STATE.name; goCurrent();
 }
 $("rate").oninput=()=>$("rateVal").textContent=$("rate").value;
+
+/* полный список слов */
+function renderWords(){ let h="";
+  SETS.forEach(st=>{ h+='<h3 class="ko" style="margin:12px 0 4px">'+esc(st.name)+'</h3><table class="res">';
+    st.words.forEach(w=>{ h+='<tr><td style="width:34px"><button class="sm" style="margin:0;padding:4px 8px" onclick="say('+esc(JSON.stringify(w.ko))+')">🔊</button></td><td class="ko" style="font-weight:600;white-space:nowrap">'+(w.act?esc(w.act)+' → ':'')+esc(w.ko)+'</td><td>'+esc(w.ru)+'</td></tr>'; });
+    h+='</table>'; });
+  $("wordList").innerHTML=h; }
+renderWords();
+try{ if(localStorage.getItem(KEY+"_words")==="1") $("wordsDet").open=true; }catch(e){}
+$("wordsDet").addEventListener("toggle",()=>{ try{localStorage.setItem(KEY+"_words",$("wordsDet").open?"1":"0")}catch(e){} });
 
 /* шаги */
 const STEP_TYPES=[
