@@ -316,6 +316,7 @@ $("rate").oninput=()=>$("rateVal").textContent=$("rate").value;
 /* полный список слов */
 function renderWords(){ let h="";
   SETS.forEach(st=>{ h+='<h3 class="ko" style="margin:12px 0 4px">'+esc(st.name)+'</h3><table class="res">';
+    if(!st.words.length){ h=h.slice(0,h.lastIndexOf('<h3')); return; }
     st.words.forEach(w=>{ h+='<tr><td style="width:34px"><button class="sm" style="margin:0;padding:4px 8px" onclick="say('+esc(JSON.stringify(w.ko))+')">🔊</button></td><td class="ko" style="font-weight:600;white-space:nowrap">'+(w.act?esc(w.act)+' → ':'')+esc(w.ko)+'</td><td>'+esc(w.ru)+'</td></tr>'; });
     h+='</table>'; });
   $("wordList").innerHTML=h; }
@@ -336,8 +337,13 @@ const PAS_TYPES=[
   {t:"pas",   name:"✍️ Образуй пассив"},
   {t:"ap",    name:"Актив или пассив?"}
 ];
+const GRAM_TYPES=[
+  {t:"rule",  name:"📘 Правило"},
+  {t:"gch",   name:"Выбери форму"},
+  {t:"gwr",   name:"✍️ Напиши форму"}
+];
 const STEPS=[];
-SETS.forEach(s=>(s.pas?PAS_TYPES:STEP_TYPES).forEach(x=>STEPS.push({key:s.id+":"+x.t,set:s,t:x.t,name:x.name})));
+SETS.forEach(s=>(s.gram?GRAM_TYPES:s.pas?PAS_TYPES:STEP_TYPES).forEach(x=>STEPS.push({key:s.id+":"+x.t,set:s,t:x.t,name:x.name})));
 
 function curIdx(){ const i=STEPS.findIndex(s=>!STATE.vocab[s.key]); return i<0?STEPS.length:i; }
 function renderPath(){
@@ -345,7 +351,7 @@ function renderPath(){
   $("vBar").style.width=(100*done/STEPS.length)+"%"; $("vProg").textContent="Пройдено шагов: "+done+" из "+STEPS.length;
   let h="",last=null;
   STEPS.forEach((s,i)=>{
-    if(s.set!==last){ if(last!==null)h+="</div>"; h+='<div style="margin:12px 0 4px;font-weight:700" class="ko">'+esc(s.set.name)+'<span class="tag'+(s.set.my?' my':'')+'">'+(s.set.my?"из урока":"피동")+'</span></div><div class="ex">'; last=s.set; }
+    if(s.set!==last){ if(last!==null)h+="</div>"; h+='<div style="margin:12px 0 4px;font-weight:700" class="ko">'+esc(s.set.name)+'<span class="tag'+(s.set.my?' my':'')+'">'+(s.set.gram?"грамматика":s.set.my?"из урока":"피동")+'</span></div><div class="ex">'; last=s.set; }
     const st=STATE.vocab[s.key]?"done":i===ci?"cur":"lock";
     h+='<button class="sm '+(st==="done"?"done":"")+'" '+(st==="lock"?"disabled":"")+' onclick="openStep('+i+')">'+(st==="done"?"✓ ":st==="cur"?"▶ ":"🔒 ")+esc(s.name)+'</button>';
   });
@@ -359,9 +365,12 @@ function openStep(i){
   const s=STEPS[i];
   $("sStep").textContent="Шаг "+(i+1)+" из "+STEPS.length+" · "+s.set.name;
   $("sTitle").textContent=s.name;
-  if(s.t==="cards") startCards(s); else runDrill(s);
+  if(s.t==="cards") startCards(s); else if(s.t==="rule") showRule(s); else runDrill(s);
   renderPath(); $("stage").scrollIntoView({behavior:"smooth",block:"start"});
 }
+
+/* правило грамматики */
+function showRule(s){ $("sHint").innerHTML='<div class="reading" style="font-family:inherit;font-size:16px">'+s.set.rule+'</div><p><button class="primary" onclick="STATE.vocab[\''+s.key+'\']={name:\'Правило\',seen:true}; save(); goCurrent();">Понятно →</button></p>'; }
 
 /* карточки */
 let CW=[],fi=0,seen=new Set(),cardsStep=null;
@@ -378,7 +387,9 @@ function finishCards(){ STATE.vocab[cardsStep.key]={name:cardsStep.name,seen:tru
 function syl(n){ return n+" "+(n%10===1&&n%100!==11?"слог":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?"слога":"слогов"); }
 function buildItems(s){
   const W=s.set.words;
-  const others=(w,f)=>shuffle(W.filter(x=>x!==w&&!related(x,w))).slice(0,3).map(f);
+  const others=(w,f)=>{ const pr=w.pair?W.filter(x=>x.ko===w.pair):[];   // слово, с которым путают, — всегда среди вариантов
+    return pr.concat(shuffle(W.filter(x=>x!==w&&!pr.includes(x)&&!related(x,w))).slice(0,3-pr.length)).map(f); };
+  const gw=t=>({ko:t.a,ex:t.s.replace("( )",t.a),exRu:t.ru,f:t.a});
   switch(s.t){
   case "tr": return {type:"mc",hint:"Послушай слово и выбери перевод.",items:W.map(w=>({prompt:'<span class="ko">'+esc(w.ko)+'</span>',sayText:w.ko,opts:shuffle([w.ru,...others(w,x=>x.ru)]),ans:w.ru,after:w.ko+" — "+w.ru,word:w.ko,w}))};
   case "ctx": return {type:"mc",hint:"Какое слово пропущено? Варианты даны в словарной форме, в предложении слово может стоять в другой форме. Как в заданиях TOPIK 읽기.",items:W.map(w=>{ const f=form(w), i=w.ex.indexOf(f);
@@ -388,6 +399,9 @@ function buildItems(s){
   case "ap": return {type:"mc",hint:"Что подходит в предложение: активная или пассивная форма? Подсказка: обычно 이/가 + пассив, 을/를 + актив (но бывает и 발을 밟히다, 장난감을 빼앗기다).",items:W.map(w=>{ const i=w.ex.indexOf(w.f);
       return {prompt:'<span class="ko" style="font-size:21px;font-weight:500">'+esc(w.ex.slice(0,i))+'<b style="color:var(--accent)">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</b>'+esc(w.ex.slice(i+w.f.length))+'</span><div class="muted" style="font-size:15px;font-weight:400;margin-top:6px">'+esc(w.exRu)+'</div>',
         opts:shuffle([w.f,w.af]),ans:w.f,sayText:null,afterSay:w.ex,after:w.ex+"  ("+w.act+" → "+w.ko+")",word:w.ko,w}; })};
+  case "gch": return {type:"mc",hint:"Выбери правильную форму. После ответа можно открыть 📖 и прочитать предложение целиком.",items:s.set.items.map(t=>({prompt:'<span class="ko" style="font-size:21px;font-weight:500">'+esc(t.s).replace("( )",'<b style="color:var(--accent)">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</b>')+'</span><div class="muted" style="font-size:15px;font-weight:400;margin-top:6px">'+esc(t.ru)+'</div>',
+      opts:shuffle(t.o),ans:t.a,sayText:null,afterSay:t.s.replace("( )",t.a),after:t.a+" — "+t.why,word:t.a,w:gw(t)}))};
+  case "gwr": return {type:"write",hint:"Соедини глагол с грамматикой и напиши форму. Пробелы не важны.",items:s.set.wr.map(t=>({prompt:'<span class="ko">'+esc(t.q)+'</span> = ? <div class="muted" style="font-size:15px;font-weight:400;margin-top:4px">'+esc(t.ru)+'</div>',ans:[t.a],word:t.a,after:t.ru,w:{ko:t.a,ex:t.a,exRu:t.ru,f:t.a}}))};
   case "wr": return {type:"write",hint:"Перевод → слово по-корейски (в словарной форме). Пробелы не важны.",items:W.map(w=>({prompt:esc(w.ru)+' <span class="muted" style="font-size:15px;font-weight:400">('+syl(w.ko.replace(/\s/g,"").length)+')</span>',ans:[w.ko],word:w.ko,after:w.ru,w}))};
   }
 }
@@ -436,12 +450,12 @@ function dCheck(){
 }
 
 /* отчёт */
-const SHORT={tr:"перевод",ctx:"в предложении",wr:"написание",pas:"образуй пассив",ap:"актив/пассив"};
+const SHORT={tr:"перевод",ctx:"в предложении",wr:"написание",pas:"образуй пассив",ap:"актив/пассив",gch:"грамматика: выбор",gwr:"грамматика: написание"};
 function buildReport(){
   const mins=Math.max(1,Math.round((Date.now()-STATE.started)/60000));
   let t="📝 <b>피동 · пассивные глаголы</b>\n👤 "+esc(STATE.name)+"\n🕒 "+new Date().toLocaleString("ru-RU")+" · ≈"+mins+" мин\n📚 Шагов пройдено: "+STEPS.filter(s=>STATE.vocab[s.key]).length+" из "+STEPS.length+"\n";
   SETS.forEach(st=>{
-    const got=STEPS.filter(x=>x.set===st&&x.t!=="cards"&&STATE.vocab[x.key]);
+    const got=STEPS.filter(x=>x.set===st&&x.t!=="cards"&&x.t!=="rule"&&STATE.vocab[x.key]);
     if(!got.length){ t+="\n<b>"+esc(st.name)+"</b>: не начато"; return; }
     const sc=got.reduce((a,x)=>a+STATE.vocab[x.key].score,0), tt=got.reduce((a,x)=>a+STATE.vocab[x.key].total,0);
     t+="\n<b>"+esc(st.name)+"</b>: "+sc+"/"+tt+"\n   "+esc(got.map(x=>SHORT[x.t]+" "+STATE.vocab[x.key].score+"/"+STATE.vocab[x.key].total).join(" · "));
