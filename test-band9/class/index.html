@@ -35,6 +35,14 @@
   .modes label{display:inline-flex;align-items:center;gap:6px;margin:4px 14px 4px 0;font-size:17px}
   table.res{width:100%;border-collapse:collapse;font-size:17px}
   table.res td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+  textarea{font:inherit;font-size:19px;padding:10px 12px;border:2px solid #c9ced8;border-radius:10px;width:100%;min-height:56px;resize:vertical}
+  .ex{border-top:1px solid var(--line);padding:14px 0}
+  .ex:first-of-type{border-top:0}
+  .ex .q{font-size:20px;font-weight:500;margin-bottom:8px}
+  .ex .q u{text-decoration:none;background:#fff3b8;border-radius:4px;padding:0 3px;font-weight:700}
+  .ex .lbl{font-size:15px;font-weight:700;color:var(--accent);margin:8px 0 2px}
+  .sample{background:var(--okbg);border-left:4px solid var(--ok);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:18px}
+  .sample b{color:var(--ok)}
   @media(max-width:560px){.opts{grid-template-columns:1fr}.big{font-size:26px}}
 </style>
 </head>
@@ -53,6 +61,15 @@
     <label><input type="checkbox" id="mWr" checked> Написание по переводу</label>
   </div>
   <p><button class="primary" onclick="startSel()">Начать →</button></p>
+  <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <p style="margin:0 0 6px"><b>✍️ Письменные задания</b> <span class="muted">— перефразирование, развитие аргументов, коллокации</span></p>
+  <p><button onclick="startWriting()">Открыть письменные задания →</button></p>
+</div>
+<div id="wApp" class="hidden">
+  <header><h1>Writing · работа и учёба</h1><button onclick="location.reload()">← В начало</button></header>
+  <div class="card"><h2>Exercise 1. Replace the repetition</h2><p class="muted">Перефразируй выделенные слова, сохранив смысл.</p><div id="ex1"></div></div>
+  <div class="card"><h2>Exercise 2. Develop your arguments</h2><p class="muted">Развей каждую идею по формуле Point → Explanation → Consequence → Example.</p><div id="ex2"></div></div>
+  <div class="card"><h2>Exercise 3. Advanced collocations</h2><p class="muted">Составь аналоги простых выражений на более сложные: для каждого напиши простой аналог и своё предложение.</p><div id="ex3"></div></div>
 </div>
 <div id="app" class="hidden">
   <header><h1>Advertising · band 9</h1><div class="stat"><span class="g" id="sOk">0</span> ✅ · <span class="r" id="sBad">0</span> ❌</div></header>
@@ -262,6 +279,51 @@ function finish(){
   $("review").innerHTML=h+(bad.length?'</table>':''); $("againBtn").classList.toggle("hidden",!bad.length);
 }
 function repeatMistakes(){ run(QS.filter((q,i)=>!RES[i].ok).map(q=>q.w)); }
+
+/* ============ ПИСЬМЕННЫЕ ЗАДАНИЯ ============ */
+const EX1=[
+ {s:'Young people can <u>earn money</u> before entering university.',a:['generate an income','make their own living','earn a wage'],full:'Young people can generate an income before entering university.'},
+ {s:'Young people may become <u>more independent</u>.',a:['more self-reliant','more self-sufficient','develop greater autonomy'],full:'Young people may become more self-reliant.'},
+ {s:'They may <u>lose interest in</u> studying.',a:['lose enthusiasm for','become disengaged from','become disillusioned with'],full:'They may become disengaged from academic study.'},
+ {s:'Some teenagers <u>prefer working to</u> continuing their education.',a:['opt for employment over','favour employment over','choose a job instead of'],full:'Some teenagers opt for employment over further education.'},
+ {s:'A <u>regular salary</u> can make employment <u>more attractive</u>.',a:['a steady income / a stable wage','more appealing / more tempting'],full:'A steady income can make employment more appealing.'}
+];
+const EX2=[
+ {p:'Working before university helps young people become independent.',
+  e:'Managing their own earnings forces them to budget and make decisions without parental guidance.',
+  c:'As a result, they arrive at university more self-reliant and better able to cope with living away from home.',
+  x:'For instance, a student who has saved for a year from a café job can pay for their own accommodation and rarely needs to ask for help.'},
+ {p:'Taking a gap before university may reduce academic motivation.',
+  e:'After a long break, students lose the habit of regular revision and the discipline of deadlines.',
+  c:'Consequently, they may struggle to refocus and achieve weaker results in their first year.',
+  x:'For example, a school-leaver who works full-time for two years may find lectures and essays exhausting and fall behind.'},
+ {p:'Having a job teaches young people practical life skills.',
+  e:'Dealing with customers, colleagues and schedules develops punctuality, teamwork and communication, which classrooms rarely train.',
+  c:'These skills make them more employable and better prepared for adult responsibilities.',
+  x:'A teenager working in a shop, for instance, learns to handle complaints calmly, a skill valued in almost any career.'}
+];
+const EX3=[
+ {w:'Financial autonomy',a:'being able to manage your own money, not depending on parents',s:'Part-time work gives teenagers a degree of financial autonomy.'},
+ {w:'Academic performance',a:'how well you do in your studies, your grades',s:'Working long hours can damage academic performance.'},
+ {w:'Enter the workforce',a:'start working, get a job',s:'Many young people choose to enter the workforce straight after school.'},
+ {w:'Pursue higher education',a:'go to university, continue studying',s:'Not everyone wants to pursue higher education immediately.'},
+ {w:'Maintain academic momentum',a:'keep studying without a break, keep up the study habit',s:'Going straight to university helps students maintain academic momentum.'},
+ {w:'Become accustomed to',a:'get used to',s:'Students quickly become accustomed to living away from home.'},
+ {w:'Long-term career prospects',a:'future job chances',s:'A degree usually improves long-term career prospects.'},
+ {w:'Financial responsibilities',a:'duties to pay for things: rent, bills, food',s:'Young workers take on financial responsibilities earlier than their peers.'}
+];
+function wBox(id,label){ return '<div class="lbl">'+label+'</div><textarea id="'+id+'" lang="en" spellcheck="false" autocapitalize="off"></textarea>'; }
+function wShow(id){ const el=$(id); el.classList.toggle("hidden"); }
+function buildWriting(){
+  $("ex1").innerHTML=EX1.map((x,i)=>'<div class="ex"><div class="q">'+(i+1)+'. '+x.s+'</div>'+wBox("e1_"+i,"Твой вариант")+
+    '<button onclick="wShow(\'s1_'+i+'\')">👀 Образец</button><div class="sample hidden" id="s1_'+i+'"><b>Варианты:</b> '+x.a.map(esc).join(' · ')+'<br><i>'+esc(x.full)+'</i></div></div>').join("");
+  $("ex2").innerHTML=EX2.map((x,i)=>'<div class="ex"><div class="q">'+(i+1)+'. '+esc(x.p)+'</div>'+
+    wBox("p2_"+i+"a","Explanation")+wBox("p2_"+i+"b","Consequence")+wBox("p2_"+i+"c","Example")+
+    '<button onclick="wShow(\'s2_'+i+'\')" style="margin-top:8px">👀 Образец</button><div class="sample hidden" id="s2_'+i+'"><b>Point:</b> '+esc(x.p)+'<br><b>Explanation:</b> '+esc(x.e)+'<br><b>Consequence:</b> '+esc(x.c)+'<br><b>Example:</b> '+esc(x.x)+'</div></div>').join("");
+  $("ex3").innerHTML=EX3.map((x,i)=>'<div class="ex"><div class="q">'+(i+1)+'. <u>'+esc(x.w)+'</u></div>'+wBox("e3_"+i+"a","Простой аналог")+wBox("e3_"+i+"b","Твоё предложение")+
+    '<button onclick="wShow(\'s3_'+i+'\')" style="margin-top:8px">👀 Образец</button><div class="sample hidden" id="s3_'+i+'"><b>Простыми словами:</b> '+esc(x.a)+'<br><i>'+esc(x.s)+'</i></div></div>').join("");
+}
+function startWriting(){ buildWriting(); $("setup").classList.add("hidden"); $("wApp").classList.remove("hidden"); window.scrollTo(0,0); }
 </script>
 </body>
 </html>
